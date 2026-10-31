@@ -122,6 +122,7 @@ class TrackLayer:
     rail2_vector: list[Point3D] = field(default_factory=list)
     center_vector: list[Point3D] = field(default_factory=list)
     predicted_points: list[Point3D] = field(default_factory=list)
+    updated_boundaries: list[Line3D] = field(default_factory=list)
 
 
 def seed_windows(seed: InitialLocation, config: ExtractionConfig | None = None) -> TrackSegment:

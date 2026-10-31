@@ -11,14 +11,77 @@ from .heads import extract_track_points
 from .config import ExtractionConfig
 from .fitting import fit_line_ransac
 from .gauge import adjust_two_lines_with_observation
-from .geometry import Line3D
+from .geometry import Line3D, direction_mode
+from .initialization import initial_kalman_states, initialize_tracks
+from .kalman import kalman_predict, kalman_update
 from .mdl import segment_track_points_mdl
 from .models import seed_windows
 from .observations import determine_observation, observation_from_support
 from .points import Point3D
 from .sampling import MsvcRand
 from .spatial import GridIndex
-from .synthetic import paired_head_cloud, parallel_head_cloud, straight_scene
+from .synthetic import initialization_scene, paired_head_cloud, parallel_head_cloud, straight_scene
+
+
+def _initialization_demo(seed: int) -> dict:
+    scene = initialization_scene()
+    random = MsvcRand(seed)
+    result = initialize_tracks(
+        scene.seed, GridIndex(scene.cloud, scene.config.grid_size), config=scene.config, rng=random
+    )
+    payload = {
+        "stage": "full seed initialization and standalone Kalman example",
+        "status": result.status,
+        "input_points": len(scene.cloud),
+        "window_point_counts": [
+            len(window.members) for window in (result.segment.track1, result.segment.track2)
+        ],
+        "head_point_counts": [len(points) for points in result.heads],
+        "saved_segments": len(result.layer.track_segments),
+        "updated_boundaries": len(result.layer.updated_boundaries),
+        "random_seed": seed,
+        "random_draws": random.draw_count,
+        "tracking_implemented": False,
+    }
+    if not result.success:
+        return payload
+    payload.update(
+        initial_heights=result.initial_heights,
+        initialized_centers=[
+            window.center.as_array().tolist()
+            for window in (result.segment.track1, result.segment.track2)
+        ],
+        initialized_gauge=result.segment.gauge,
+        updated_location_mode=result.location.mode,
+    )
+    first_line = result.segment.track1.member_line
+    mode = direction_mode(first_line.end, first_line.begin)
+    examples = []
+    for state, window in zip(
+        initial_kalman_states(result.segment), (result.segment.track1, result.segment.track2)
+    ):
+        predicted = kalman_predict(
+            state, mode=mode, angle=window.orientation, step_length=scene.config.track_window_length
+        )
+        # This controlled observation demonstrates the filter components; the
+        # next increment supplies observations through the full tracking loop.
+        observation = predicted.state.point + Point3D(0.01, -0.02, 0.005)
+        updated = kalman_update(predicted.state, observation, sigma=0.02)
+        examples.append(
+            {
+                "prediction_status": predicted.status,
+                "update_status": updated.status,
+                "current": state.point.as_array().tolist(),
+                "predicted": predicted.state.point.as_array().tolist(),
+                "observation": observation.as_array().tolist(),
+                "updated": updated.state.point.as_array().tolist(),
+                "updated_covariance": updated.state.covariance.tolist(),
+            }
+        )
+    payload.update(
+        kalman_example=examples, observation_source="controlled synthetic offsets from prediction"
+    )
+    return payload
 
 
 def _observation_demo(seed: int) -> dict:
@@ -132,7 +195,18 @@ def main(argv: list[str] | None = None) -> int:
     observation_parser.add_argument(
         "--seed", type=int, default=1, help="Microsoft CRT seed (default: 1)"
     )
+    initialization_parser = commands.add_parser(
+        "initialization-demo",
+        help="initialize paired rails from raw synthetic points and exercise Kalman components",
+    )
+    initialization_parser.add_argument(
+        "--seed", type=int, default=1, help="Microsoft CRT seed (default: 1)"
+    )
     arguments = parser.parse_args(argv)
+    if arguments.command == "initialization-demo":
+        result = _initialization_demo(arguments.seed)
+        print(json.dumps(result, indent=2, allow_nan=False))
+        return 0 if result["status"] == "ok" else 1
     if arguments.command == "observation-demo":
         result = _observation_demo(arguments.seed)
         print(json.dumps(result, indent=2, allow_nan=False))

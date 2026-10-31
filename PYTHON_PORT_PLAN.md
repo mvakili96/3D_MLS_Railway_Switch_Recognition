@@ -35,9 +35,16 @@ and weighted-distance arithmetic are preserved. Undefined three-line ties and
 nonfinite calculations are explicit. See
 [docs/PYTHON_OBSERVATION_GAUGE.md](docs/PYTHON_OBSERVATION_GAUGE.md).
 
-Verification passed 117 test methods, including 36 methods comparing against
+Full seed initialization and the three-coordinate Kalman prediction/update
+components are implemented, including layer appends, initial filter states, fixed
+noise constants, direct use of sigma and the bundled matrix inverse's pivot and
+singular behavior. See
+[docs/PYTHON_KALMAN_INITIALIZATION.md](docs/PYTHON_KALMAN_INITIALIZATION.md).
+
+Verification passed 143 test methods, including 48 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. Full Kalman initialization/tracking and recognition are pending. Their behavioral contracts
+been built. The sequential tracking loop, adaptive windows, stopping/state
+transitions and recognition are pending. Their behavioral contracts
 and checks will accompany each stage.
 
 ## Specification checklist

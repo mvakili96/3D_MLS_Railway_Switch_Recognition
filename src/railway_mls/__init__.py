@@ -7,6 +7,8 @@ from .gmm import classify_segment, classify_window, cluster_by_gmm, fit_height_g
 from .gauge import GaugeAdjustment, adjust_two_lines, adjust_two_lines_with_observation
 from .heads import TrackHeadResult, extract_track_points
 from .grouping import PointGrouping, group_points
+from .initialization import InitializationResult, initial_kalman_states, initialize_tracks
+from .kalman import KalmanPrediction, KalmanState, KalmanUpdate, kalman_predict, kalman_update
 from .mdl import MDLResult, segment_track_points_mdl
 from .models import (
     GMMParameters,
@@ -35,6 +37,10 @@ __all__ = [
     "GaugeAdjustment",
     "GridIndex",
     "InitialLocation",
+    "InitializationResult",
+    "KalmanPrediction",
+    "KalmanState",
+    "KalmanUpdate",
     "Line3D",
     "LineFitResult",
     "MDLResult",
@@ -62,6 +68,10 @@ __all__ = [
     "fit_fixed_angle",
     "fit_line_ransac",
     "group_points",
+    "initial_kalman_states",
+    "initialize_tracks",
+    "kalman_predict",
+    "kalman_update",
     "observation_from_support",
     "segment_track_points_mdl",
     "seed_windows",

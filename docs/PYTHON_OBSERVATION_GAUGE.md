@@ -3,7 +3,9 @@
 This increment ports `DetermineObservation`, `AdjustTwoLines`,
 `AdjustTwoLinesWithObservation`, and the support-to-observation calculation inside
 `Trackingrailway`. The current unpacked C++ source remains authoritative. No
-Kalman recurrence, adaptive tracking loop or switch recognition is activated.
+adaptive tracking loop or switch recognition is activated by these components.
+Kalman recurrence and full initialization are now available in the
+[following increment](PYTHON_KALMAN_INITIALIZATION.md).
 
 ## Runnable example
 
@@ -148,7 +150,7 @@ reproduction of the paper's evaluation results.
 
 ## Verification and next increment
 
-The full suite passes **117 test methods**, including **36** comparing against
+At completion of this increment, the suite passed **117 test methods**, including **36** comparing against
 compiled original C++ extracts. New comparisons exercise all nine candidate-count
 pairs, both travel directions, stack boundaries, reversed/oblique/vertical guides,
 large world coordinates, stored centers, duplicate signed distances, two-line ties,
@@ -163,6 +165,7 @@ diagnostic assignments only copy existing intermediate values; source formulas
 and branches are unchanged. The original application and its source files remain
 unchanged and the Windows application is not built.
 
-Next implement Kalman prediction/update and complete seed initialization, followed
-by the sequential tracking loop, adaptive windows and stopping/state transitions.
+Kalman prediction/update and complete seed initialization are now available in the
+[following increment](PYTHON_KALMAN_INITIALIZATION.md). Next implement the sequential
+tracking loop, adaptive windows and stopping/state transitions.
 Keep the weighted post-Kalman gauge call in that source position when integrating.
