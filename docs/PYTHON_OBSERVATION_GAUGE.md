@@ -166,6 +166,6 @@ and branches are unchanged. The original application and its source files remain
 unchanged and the Windows application is not built.
 
 Kalman prediction/update and complete seed initialization are now available in the
-[following increment](PYTHON_KALMAN_INITIALIZATION.md). Next implement the sequential
-tracking loop, adaptive windows and stopping/state transitions.
-Keep the weighted post-Kalman gauge call in that source position when integrating.
+[following increment](PYTHON_KALMAN_INITIALIZATION.md). The
+[sequential tracking increment](PYTHON_TRACKING.md) now integrates retries, stopping
+and stack transitions, with weighted gauge adjustment in its source post-Kalman position.

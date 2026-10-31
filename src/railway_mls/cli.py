@@ -20,7 +20,86 @@ from .observations import determine_observation, observation_from_support
 from .points import Point3D
 from .sampling import MsvcRand
 from .spatial import GridIndex
-from .synthetic import initialization_scene, paired_head_cloud, parallel_head_cloud, straight_scene
+from .synthetic import (
+    initialization_scene,
+    paired_head_cloud,
+    parallel_head_cloud,
+    straight_scene,
+    tracking_scene,
+)
+from .tracking import track_railway
+
+
+def _finite_json(value):
+    if isinstance(value, float) and not isfinite(value):
+        return None
+    if isinstance(value, dict):
+        return {key: _finite_json(item) for key, item in value.items()}
+    if isinstance(value, (tuple, list)):
+        return [_finite_json(item) for item in value]
+    return value
+
+
+def _tracking_demo(seed: int, max_steps: int | None, direction: int, side_rails: bool) -> dict:
+    scene = tracking_scene(side_rails=side_rails)
+    grid = GridIndex(scene.cloud, scene.config.grid_size)
+    random = MsvcRand(seed)
+    initialized = initialize_tracks(scene.seed, grid, config=scene.config, rng=random)
+    payload = {
+        "stage": "raw synthetic initialization and sequential tracking",
+        "status": initialized.status,
+        "input_points": len(scene.cloud),
+        "random_seed": seed,
+        "tracking_implemented": True,
+        "recognition_implemented": False,
+    }
+    if not initialized.success:
+        return payload
+    result = track_railway(
+        initialized,
+        grid,
+        config=scene.config,
+        rng=random,
+        track_direction=direction,
+        max_steps=max_steps,
+    )
+    payload.update(
+        status=result.status,
+        accepted_steps=result.accepted_steps,
+        saved_segments=len(result.layer.track_segments),
+        distance_from_start=result.distance_from_start,
+        rail1_vector=[point.as_array().tolist() for point in result.layer.rail1_vector],
+        completed_stack_sizes=[len(stack.track_segments) for stack in result.completed_stacks],
+        active_stack_size=len(result.active_stack.track_segments),
+        reference_comparable=result.reference_comparable,
+        random_draws=random.draw_count,
+        steps=[
+            {
+                "number": step.number,
+                "status": step.status,
+                "mode": step.mode,
+                "attempts": [
+                    {
+                        "phase": attempt.phase,
+                        "length": attempt.length,
+                        "member_counts": [
+                            len(window.members)
+                            for window in (attempt.segment.track1, attempt.segment.track2)
+                        ],
+                        "head_counts": [len(points) for points in attempt.extraction.heads]
+                        if attempt.extraction
+                        else None,
+                    }
+                    for attempt in step.attempts
+                ],
+                "selected_model_counts": [model.selected_count for model in step.models],
+                "model_statuses": [model.status for model in step.models],
+                "candidate_gauge": step.candidate.gauge if step.candidate is not None else None,
+            }
+            for step in result.steps
+        ],
+    )
+    return _finite_json(payload)
 
 
 def _initialization_demo(seed: int) -> dict:
@@ -202,7 +281,47 @@ def main(argv: list[str] | None = None) -> int:
     initialization_parser.add_argument(
         "--seed", type=int, default=1, help="Microsoft CRT seed (default: 1)"
     )
+    tracking_parser = commands.add_parser(
+        "tracking-demo", help="initialize and sequentially trace raw synthetic rail neighborhoods"
+    )
+    tracking_parser.add_argument(
+        "--seed", type=int, default=1, help="Microsoft CRT seed (default: 1)"
+    )
+    tracking_parser.add_argument(
+        "--max-steps", type=int, help="optional diagnostic limit; default runs to a source stop"
+    )
+    tracking_parser.add_argument(
+        "--direction",
+        type=int,
+        choices=(0, 1),
+        default=0,
+        help="source observation direction; does not reverse seed geometry",
+    )
+    tracking_parser.add_argument(
+        "--side-rails",
+        action="store_true",
+        help="include close secondary rails to exercise turnout stacks",
+    )
     arguments = parser.parse_args(argv)
+    if arguments.command == "tracking-demo":
+        if arguments.max_steps is not None and arguments.max_steps < 0:
+            parser.error("--max-steps must be nonnegative")
+        result = _tracking_demo(
+            arguments.seed, arguments.max_steps, arguments.direction, arguments.side_rails
+        )
+        print(json.dumps(result, indent=2, allow_nan=False))
+        return (
+            0
+            if result["status"]
+            in {
+                "insufficient_window_points",
+                "insufficient_head_points",
+                "gauge_difference",
+                "trajectory_end",
+                "step_limit",
+            }
+            else 1
+        )
     if arguments.command == "initialization-demo":
         result = _initialization_demo(arguments.seed)
         print(json.dumps(result, indent=2, allow_nan=False))

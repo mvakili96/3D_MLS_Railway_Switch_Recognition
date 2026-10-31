@@ -41,10 +41,17 @@ noise constants, direct use of sigma and the bundled matrix inverse's pivot and
 singular behavior. See
 [docs/PYTHON_KALMAN_INITIALIZATION.md](docs/PYTHON_KALMAN_INITIALIZATION.md).
 
-Verification passed 143 test methods, including 48 methods comparing against
+The sequential tracking loop is implemented, including prediction-window lookup,
+separate point/head retry sequences, accumulated head references, MDL/observation
+selection, Kalman observations, weighted gauge placement, stop ordering and
+predicted turnout-stack snapshots. It retains source identity-covariance behavior
+and exposes undefined/nonfinite paths. See
+[docs/PYTHON_TRACKING.md](docs/PYTHON_TRACKING.md).
+
+Verification passed 171 test methods, including 55 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. The sequential tracking loop, adaptive windows, stopping/state
-transitions and recognition are pending. Their behavioral contracts
+been built. Recognition templates, toes, branch/bidirectional orchestration and
+the remaining source features are pending. Their behavioral contracts
 and checks will accompany each stage.
 
 ## Specification checklist

@@ -114,7 +114,7 @@ class TrackSegment:
 
 @dataclass
 class TrackLayer:
-    """Geometry/state storage only; no tracing or switch inference is run yet."""
+    """Source layer geometry and shared point references."""
 
     number: int | None = None
     track_segments: list[TrackSegment] = field(default_factory=list)
@@ -123,6 +123,14 @@ class TrackLayer:
     center_vector: list[Point3D] = field(default_factory=list)
     predicted_points: list[Point3D] = field(default_factory=list)
     updated_boundaries: list[Line3D] = field(default_factory=list)
+    turnout_boundaries: list[Line3D] = field(default_factory=list)
+
+
+@dataclass
+class TrackStack:
+    """Predicted turnout segments; recognition metadata is added in its own stage."""
+
+    track_segments: list[TrackSegment] = field(default_factory=list)
 
 
 def seed_windows(seed: InitialLocation, config: ExtractionConfig | None = None) -> TrackSegment:
