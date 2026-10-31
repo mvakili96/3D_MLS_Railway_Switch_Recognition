@@ -157,8 +157,9 @@ The custom height EM-GMM and rail-head extraction are now implemented in the
 adds the other fitting variants, source grouping and MDL selection. The
 [observation/gauge increment](PYTHON_OBSERVATION_GAUGE.md) adds observation/side
 selection, support state vectors and both gauge routines. The complete suite
-currently passes 117 test methods. The next work is Kalman initialization and
-sequential tracking. Downstream
+currently passes 143 test methods. Full initialization and the filter components
+are available in the [Kalman/initialization increment](PYTHON_KALMAN_INITIALIZATION.md).
+The next work is sequential tracking. Downstream
 recognition models and cached tracking state will be specified with their stage.
 
 Packaging and array interfaces follow the official

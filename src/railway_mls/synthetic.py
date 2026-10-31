@@ -58,7 +58,36 @@ def paired_head_cloud(config: ExtractionConfig | None = None) -> PointCloud:
     """
     settings = config if config is not None else ExtractionConfig()
     first = parallel_head_cloud().xyz.copy()
-    first[:, 1] += .004 * np.sin(np.arange(len(first)) * .71)
+    first[:, 1] += 0.004 * np.sin(np.arange(len(first)) * 0.71)
     shift = settings.track_gauge / np.sqrt(2)
-    second = first + np.array([-shift, shift, .01])
+    second = first + np.array([-shift, shift, 0.01])
     return PointCloud(np.vstack((first, second)))
+
+
+def initialization_scene(
+    *,
+    angle: float = 35.0,
+    mode: int = 1,
+    config: ExtractionConfig | None = None,
+) -> SyntheticScene:
+    """Oblique raw ground/web/head neighborhoods with unique heights for parity.
+
+    Points are supplied for initialization, without preassigned classes or heads.
+    Unique heights avoid native std::sort's unspecified equal-key permutation.
+    """
+    settings = config if config is not None else ExtractionConfig()
+    seed = InitialLocation(Point3D(1000, 2000, 0.2), angle, mode)
+    radians = angle * np.pi / 180
+    dx, dy = abs(np.cos(radians)), abs(np.sin(radians))
+    sx, sy = (-1 if mode in (2, 3) else 1), (1 if mode in (1, 2) else -1)
+    along = np.array([sx * dx, sy * dy])
+    across = np.array([-sy * dy, sx * dx])
+    points = []
+    for rail in range(2):
+        center = seed.point.as_array()[:2] + rail * settings.track_gauge * across
+        for position in np.linspace(-1.5, 1.5, 61):
+            for lateral in (-0.08, 0.0, 0.08):
+                xy = center + position * along + lateral * across
+                for height in (0.0, 0.1, 0.2):
+                    points.append((*xy, height + len(points) * 1e-7))
+    return SyntheticScene(PointCloud(points), seed, settings)

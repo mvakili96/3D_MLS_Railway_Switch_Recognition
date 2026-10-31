@@ -213,6 +213,7 @@ Python's documented policy for those cases is checked separately. The long-chain
 test also verifies iterative growing beyond Python's usual recursion depth.
 
 Observation selection and paired-line/gauge adjustment are now available in the
-[following increment](PYTHON_OBSERVATION_GAUGE.md), with Kalman initialization and
-sequential tracking still pending. No full rail-path or
+[following increment](PYTHON_OBSERVATION_GAUGE.md). Full initialization and filter
+components are also available in the [Kalman increment](PYTHON_KALMAN_INITIALIZATION.md),
+with sequential tracking still pending. No full rail-path or
 switch-recognition result is claimed by this local fitting stage.

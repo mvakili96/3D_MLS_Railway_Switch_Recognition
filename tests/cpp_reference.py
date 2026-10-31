@@ -9,9 +9,14 @@ Gauge diagnostic assignments likewise only copy existing intermediate values.
 observe_prefix stops the original selection body before its discarded local gauge
 adjustment; it can check defined point vectors when a tied three-line comparison
 would subsequently read an uninitialized local line in the full native function.
+The bundled matrix/vector templates are included for Kalman tests. Input-only
+references and size getters receive mechanical const qualifiers for GCC rvalue
+binding; matrix arithmetic and LU branches remain original. Inverse diagnostics
+capture its valid flag and count the source's existing TINY substitutions.
 """
 
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import tempfile
@@ -34,6 +39,77 @@ def function(text: str, signature: str) -> str:
             if depth == 0:
                 return text[start : position + 1]
     raise ValueError(f"Cannot extract {signature}")
+
+
+def matrix_source() -> str:
+    def methods(name: str, owner: str, names: tuple[str, ...]) -> str:
+        original = (SOURCE / "etc" / name).read_text()
+        blocks = re.split(r"(?=template <typename _T>)", original)
+        selected = []
+        for block in blocks:
+            signature = "".join(block.split("{", 1)[0].split())
+            if not any("::" + method + "(" in signature for method in names):
+                continue
+            if (
+                owner == "Matrix"
+                and "::operator*(" in signature
+                and "constMatrix<_T>&" not in signature
+            ):
+                continue
+            if "::operator()(" in signature and "_Col" not in signature:
+                continue
+            selected.append(block)
+        return "\n".join(selected)
+
+    # Unused legacy methods contain unrelated compile errors; extract only the
+    # actual matrix/vector operations reached by the two Kalman routines.
+    parts = [
+        (SOURCE / "etc" / "vector.h").read_text(),
+        methods("vector.inl", "Vector", ("Vector", "~Vector", "Define", "__Create", "__Delete")),
+        (SOURCE / "etc" / "matrix.h").read_text(),
+        methods(
+            "matrix.inl",
+            "Matrix",
+            (
+                "Matrix",
+                "~Matrix",
+                "Define",
+                "__Create",
+                "__Delete",
+                "operator+",
+                "operator-",
+                "operator*",
+                "operator=",
+                "operator[]",
+                "operator()",
+                "Inverse",
+                "Transpose",
+                "LUbacksb",
+                "LUDecompose",
+            ),
+        ),
+    ]
+    source = "\n".join(
+        line
+        for part in parts
+        for line in part.splitlines()
+        if not line.startswith(("#include", "#pragma"))
+    )
+    source = source.replace("IN Matrix<_T>&", "IN const Matrix<_T>&")
+    source = source.replace("IN Vector<_T>&", "IN const Vector<_T>&")
+    for getter in ("GetRows", "GetCols", "GetSize"):
+        source = source.replace(getter + "() {", getter + "() const {")
+    inverse = function(source, "Matrix<_T> Matrix<_T>::Inverse()")
+    modified = inverse.replace("{", "{\nlast_inverse_valid=false; matrix_zero_pivots=0;", 1)
+    modified = modified.replace(
+        "ret.m_isValid = true;", "ret.m_isValid = true; last_inverse_valid=true;"
+    )
+    source = source.replace(inverse, modified)
+    source = source.replace("_LUd[i][i] = TINY;", "{ _LUd[i][i] = TINY; ++matrix_zero_pivots; }")
+    return (
+        "\n#define IN\n#define OUT\nusing UINT = unsigned int;\nbool last_inverse_valid;\nint matrix_zero_pivots;\n"
+        + source
+    )
 
 
 class CppReference:
@@ -62,6 +138,11 @@ class CppReference:
             declarations = """
 struct Cloud { vector<PointXYZDouble> points; };
 struct TrackStack { vector<TrackSegment> trkSegs; };
+struct TrackLayer {
+    vector<TrackSegment> m_TrackSegList;
+    vector<POINT3D> m_RailVec1, m_RailVec2, m_RailVecCenter;
+    vector<Line3D> m_updateBnd;
+};
 class RailwayExtraction {
 public:
     Cloud *point_cloud;
@@ -75,8 +156,17 @@ public:
     double lastGaugeAngle, lastGaugeGap, lastGaugeScale, lastWeightedDistance;
     vector<double> lastGaugeErrors, lastGaugeDistances;
     Grid *m_pGrid;
+    bool m_bInit = false;
+    double m_distFromSp = -1, m_InitTrkHgt1, m_InitTrkHgt2;
+    TrackLayer *currentLayer;
+    InitialLocation initialLocation;
     void progressCallback(double, double) {}
     void generateGrid();
+    bool Setinitiallocation(int, POINT3D, double);
+    void GetLnsFromVtx(vector<POINT3D>, vector<Line3D>&);
+    int ReCount(int, int);
+    void KalmanPredict(int, double, double, Matrix<double>, Matrix<double>, Matrix<double>&, Matrix<double>&);
+    void KalmanUpdate(Matrix<double>, Matrix<double>, Matrix<double>, double, Matrix<double>&, Matrix<double>&);
     vector<int> GetNeighborIdx(double, double, int, int, double, int);
     POINT3D ComputeFootOfPerpendicular(POINT3D, Line3D);
     double DistanceBetweenPointAndLine2D(POINT3D, Line3D);
@@ -145,11 +235,18 @@ public:
                     "void RailwayExtraction::AdjustTwoLines(",
                     "void RailwayExtraction::AdjustTwoLinesWithObservation(",
                     "void RailwayExtraction::DetermineObservation(",
+                    "bool RailwayExtraction::Setinitiallocation(",
+                    "void RailwayExtraction::GetLnsFromVtx(",
+                    "int RailwayExtraction::ReCount(",
+                    "void RailwayExtraction::KalmanPredict(",
+                    "void RailwayExtraction::KalmanUpdate(",
                 )
             )
             observation = function(extraction, "void RailwayExtraction::DetermineObservation(")
-            prefix = observation[:observation.index("\n\tint mode1, mode2;")] + "\n}"
-            functions += "\n" + prefix.replace("::DetermineObservation(", "::DetermineObservationPrefix(")
+            prefix = observation[: observation.index("\n\tint mode1, mode2;")] + "\n}"
+            functions += "\n" + prefix.replace(
+                "::DetermineObservation(", "::DetermineObservationPrefix("
+            )
             functions = functions.replace(
                 "tmpln = tmpln.ExtendEndingPts(_dist / fdist);",
                 """lastGaugeAngle = ang; lastGaugeGap = fdist; lastGaugeScale = _dist / fdist;
@@ -205,12 +302,16 @@ int reference_rand() {
             path = Path(self.directory.name) / "reference.cpp"
             path.write_text(
                 preamble
+                + matrix_source()
                 + isnan
                 + polygon
                 + primitives
                 + segments
                 + higher_z
                 + larger
+                + header[
+                    header.index("struct InitialLocation {") : header.index("struct GradeSect {")
+                ]
                 + declarations
                 + "\n#define rand reference_rand\n"
                 + functions
@@ -275,6 +376,16 @@ Line3D readStateLine(Cloud &cloud) {
     line.MemPts = readSelection(cloud);
     return line;
 }
+Matrix<double> readMatrix(int rows, int columns) {
+    Matrix<double> result(rows, columns, 0);
+    for (int row = 0; row < rows; ++row)
+        for (int column = 0; column < columns; ++column) result(row, column) = readScalar();
+    return result;
+}
+void printMatrix(Matrix<double> value) {
+    for (UINT row = 0; row < value.GetRows(); ++row)
+        for (UINT column = 0; column < value.GetCols(); ++column) cout << value(row, column) << ' ';
+}
 void printStateLine(Line3D line, Cloud &cloud) {
     printPoint(line.BeginPt); printPoint(line.EndPt); printPoint(line.CenterPt);
     cout << line.Ang << ' ' << line.A2D << ' ' << line.B2D << ' ' << line.C2D << ' ';
@@ -285,7 +396,53 @@ int main() {
     string operation;
     cin >> operation;
     RailwayExtraction engine;
-    if (operation == "gauge_basic" || operation == "gauge_weighted") {
+    if (operation == "predict") {
+        int mode; double angle, length; cin >> mode >> angle >> length;
+        auto point = readMatrix(3, 1), covariance = readMatrix(3, 3);
+        Matrix<double> nextPoint(3, 1, 0), nextCovariance(3, 3, 0);
+        engine.KalmanPredict(mode, angle, length, point, covariance, nextPoint, nextCovariance);
+        cout << "RESULT "; printMatrix(nextPoint); printMatrix(nextCovariance);
+    } else if (operation == "update") {
+        double sigma = readScalar();
+        auto point = readMatrix(3, 1), covariance = readMatrix(3, 3), observation = readMatrix(3, 1);
+        Matrix<double> nextPoint(3, 1, 0), nextCovariance(3, 3, 0);
+        engine.KalmanUpdate(point, covariance, observation, sigma, nextPoint, nextCovariance);
+        cout << "RESULT "; printMatrix(nextPoint); printMatrix(nextCovariance);
+        cout << last_inverse_valid << ' ' << matrix_zero_pivots << ' ';
+    } else if (operation == "initialize") {
+        int mode; double angle; cin >> mode >> angle; auto point = readPoint();
+        cin >> engine.m_TrkGuage >> engine.m_gLength >> engine.m_gWidth >> engine.m_GridSize;
+        engine.m_BoundMin = readPoint(); engine.m_BoundMax = readPoint();
+        size_t count; cin >> count;
+        Cloud cloud; cloud.points.resize(count); engine.point_cloud = &cloud;
+        for (auto &p : cloud.points) cin >> p.x >> p.y >> p.z >> p.ClassCode >> p.SegmentID;
+        engine.generateGrid(); readRandom();
+        TrackLayer layer; engine.currentLayer = &layer;
+        bool ok = engine.Setinitiallocation(mode, point, angle);
+        cout << "\nRESULT " << ok << ' ' << engine.m_bInit << ' ' << engine.m_distFromSp << ' ';
+        cout << layer.m_TrackSegList.size() << ' ';
+        if (ok) {
+            cout << engine.m_InitTrkHgt1 << ' ' << engine.m_InitTrkHgt2 << ' ';
+            auto location = engine.initialLocation;
+            cout << location.x << ' ' << location.y << ' ' << location.z << ' '
+                 << location.second_x << ' ' << location.second_y << ' ' << location.second_z << ' '
+                 << location.angle << ' ' << location.mode << ' ';
+            auto segment = layer.m_TrackSegList.back();
+            printPoint(segment.m_Center); cout << segment.m_D << ' ' << segment.distFromSp << ' ';
+            for (auto window : {segment.m_Track1, segment.m_Track2}) {
+                printPoint(window.CenterPt); cout << window.ori << ' '; printVertices(window.vtx);
+                printSelection(window.MemPnts, cloud); printStateLine(window.MemLn, cloud);
+            }
+        }
+        for (auto points : {layer.m_RailVec1, layer.m_RailVec2, layer.m_RailVecCenter}) {
+            cout << points.size() << ' '; printVertices(points);
+        }
+        cout << layer.m_updateBnd.size() << ' ';
+        for (auto line : layer.m_updateBnd) { printPoint(line.BeginPt); printPoint(line.EndPt); }
+        for (auto p : cloud.points) cout << p.ClassCode << ' ' << p.SegmentID << ' ';
+        cout << random_cursor << ' ';
+        delete[] engine.m_pGrid;
+    } else if (operation == "gauge_basic" || operation == "gauge_weighted") {
         size_t count; double target; int m1, m2, mode;
         cin >> count >> engine.m_gLength >> target >> m1 >> m2 >> mode;
         Cloud cloud; cloud.points.resize(count);
