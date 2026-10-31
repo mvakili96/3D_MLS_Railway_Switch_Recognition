@@ -10,7 +10,21 @@ The user has explicitly designated the current unpacked code, as it stands, as t
 
 Real input data is not needed to start the specification or implementation. Synthetic fixtures can test equations, geometry, model selection, tracking, and switch logic. Real clouds, initial conditions, and trusted outputs or annotations are needed later to establish empirical accuracy or legacy agreement.
 
-## Immediate next step
+## Implementation progress
+
+The first Python foundation is implemented in `src/railway_mls/`. It includes the
+source defaults, stable point identities/shared labels, geometry, paired seed-window
+construction and ordered grid lookup. An installable package and synthetic demo
+are available. The source mapping and behavioral contracts for this increment
+are in [docs/PYTHON_FOUNDATION.md](docs/PYTHON_FOUNDATION.md).
+
+Verification passed 28 test methods, including eight methods that compare against
+compiled extracts of the original C++. The complete original application has not
+been built. Full tracking, GMM classification, fitting, MDL and recognition remain
+pending. The next implementation increment is the custom height GMM and rail-head
+filtering; downstream specification and checks will accompany each stage.
+
+## Specification checklist
 
 Turn this audit into an implementation-ready source-to-Python specification. Its concrete deliverables are:
 
@@ -19,7 +33,7 @@ Turn this audit into an implementation-ready source-to-Python specification. Its
 3. A package layout and dependency-ordered implementation plan, starting with point/state models, geometry and spatial lookup before classification, fitting and tracking.
 4. Acceptance checks for each stage using source-derived expected behavior and synthetic fixtures, with later C++ comparisons and real-data experiments recorded separately.
 
-This step makes implementation concrete without requiring input data or decisions about the historical evaluation. The following step is the first runnable Python foundation: package, configuration, point/state models, geometry and spatial lookup with component checks.
+Use this checklist as each stage is implemented, without requiring input data or decisions about the historical evaluation. The first runnable foundation is now available; later stages still need their detailed behavioral contracts.
 
 ## What is in the repository
 
