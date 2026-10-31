@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="VTKWindowController">
+    <Position X="19" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>gAAABBIAAAAAAEAAAIAABIAAEIAAEABAAIAAAAGAgAA=</HashCode>
+      <FileName>VTKWindowController.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RailwayExtraction">
+    <Position X="2.25" Y="0.5" Width="2.5" />
+    <AssociationLine Name="m_pGrid" Type="Grid" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.75" Y="9.562" />
+        <Point X="7.625" Y="9.562" />
+        <Point X="7.625" Y="11.129" />
+        <Point X="7.25" Y="11.129" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>gABCChFQIYEzAYEYQEAMAey6lswgQICMxMGCIKBEGcw=</HashCode>
+      <FileName>RailwayExtraction.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_BoundMax" />
+      <Field Name="m_BoundMin" />
+      <Field Name="m_pGrid" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="LiDPOINT">
+    <Position X="21.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAgAAIAAgAAAIAAAAQAAAAAIAAAQACAAAABgAUAEAQA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LASFileReader">
+    <Position X="16.25" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AQAAAABAAAABAAAAAIAEAAQAgAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>LASFileReader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="TrackWindow">
+    <Position X="10" Y="3.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAKAAAAAAAAAIABCAAIJAACCCCAIQEAhgAQAAAAAAAA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="CenterPt" />
+      <Field Name="MemLn" />
+    </ShowAsAssociation>
+  </Struct>
+  <Struct Name="TrackStack">
+    <Position X="13.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAABAIAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="trkBinary" />
+    </ShowAsAssociation>
+  </Struct>
+  <Struct Name="TrackSegment">
+    <Position X="15.75" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAACAAAAIEAEAQAQCAACQEAgAEAAAAAAAAAgACA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ToePt">
+    <Position X="5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAIAAAAAAAAAAAAAAAIAAAAAAAAAAAgAQAAAQAAgAgA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="CenterPt" />
+      <Field Name="RightPt" />
+    </ShowAsAssociation>
+  </Struct>
+  <Struct Name="SwitchBox">
+    <Position X="21" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAABACAAAAAAAAAAAgIAAAAAAAAAIAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="PtSegment">
+    <Position X="19" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="PointXYZDouble">
+    <Position X="28.25" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAgAAAAAQAAAQAAAAAAAAAAAAAACAAAAQA=</HashCode>
+      <FileName>PointXYZDouble.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="POINT3D">
+    <Position X="6.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAIAAAAAAAESAAAAAAABAAAAAAAAAgAEAAAAA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="POINT2D">
+    <Position X="25.75" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAABAAAAAQAAAAAAAAAAAAAAAABgAAAAAQA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="PlnPara">
+    <Position X="23.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACkAQAgAAAAAAA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="LoopCross">
+    <Position X="13.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Line3D">
+    <Position X="10" Y="8.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>YIGABAgIAAARBAAIAAJAENICAEAAAQAAAAAAAQBAAAA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Grid">
+    <Position X="5.75" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ADAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAGAAADAAAAA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="GMMPara">
+    <Position X="19" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAQAAAwAAAAAAA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="BinaryString">
+    <Position X="11.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAgAAAAAAABAAQAAAAAAAQAgAAAAAAA=</HashCode>
+      <FileName>LIDARPT.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

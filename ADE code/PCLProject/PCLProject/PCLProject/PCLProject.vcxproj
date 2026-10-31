@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{57B2B8CB-F983-442C-B93E-101D269F2CEA}</ProjectGuid>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <Keyword>ManagedCProj</Keyword>
+    <RootNamespace>PCLProject</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Visualizer</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="pcl-1.8.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="pcl-1.8.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;vtkDomainsChemistry_AUTOINIT=1(vtkDomainsChemistryOpenGL2);vtkIOExport_AUTOINIT=1(vtkIOExportOpenGL2);vtkRenderingContext2D_AUTOINIT=1(vtkRenderingContextOpenGL2);vtkRenderingOpenGL2_AUTOINIT=1(vtkRenderingGL2PSOpenGL2);vtkRenderingVolume_AUTOINIT=1(vtkRenderingVolumeOpenGL2);EIGEN_USE_NEW_STDVECTOR;EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET;BOOST_ALL_NO_LIB;DISABLE_OPENNI;DISABLE_ENSENSO;DISABLE_DAVIDSDK;DISABLE_DSSDK;DISABLE_RSSDK;DISABLE_PCAP;DISABLE_PNG;FLANN_STATIC;CMAKE_INTDIR="Debug";BOOST_ALL_DYN_LINK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Installations\LASlib\inc;D:\Installations\libLAS\include;D:\Installations\VTK\include\vtk-7.1;D:\Installations\PCL 1.8.0\include\pcl-1.8;D:\Installations\PCL 1.8.0\3rdParty\Eigen\eigen3;D:\Installations\boost_1_63_0;D:\Installations\PCL 1.8.0\3rdParty\OpenNI2\Include;D:\Installations\PCL 1.8.0\3rdParty\FLANN\include;D:\Installations\PCL 1.8.0\3rdParty\Qhull\include;D:\Installations\VTK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAsManaged>true</CompileAsManaged>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>advapi32.lib;comctl32.lib;comdlg32.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_atomic-vc140-mt-gd-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_chrono-vc140-mt-gd-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_date_time-vc140-mt-gd-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_filesystem-vc140-mt-gd-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_iostreams-vc140-mt-gd-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_regex-vc140-mt-gd-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_serialization-vc140-mt-gd-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_system-vc140-mt-gd-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_zlib-vc140-mt-gd-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_zlib-vc140-mt-sgd-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_zlib-vc140-sgd-1_63.lib;D:\Installations\laslib\lib\LASlib.lib;D:\Installations\libLAS\lib\liblas.lib;D:\Installations\libLAS\lib\liblas_c.lib;D:\Installations\PCL 1.8.0\3rdParty\FLANN\lib\flann_cpp_s-gd.lib;D:\Installations\PCL 1.8.0\3rdParty\Qhull\lib\qhullstatic_d.lib;D:\Installations\PCL 1.8.0\lib\pcl_common_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_features_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_filters_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_io_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_kdtree_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_keypoints_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_ml_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_octree_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_outofcore_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_people_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_recognition_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_registration_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_sample_consensus_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_search_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_segmentation_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_stereo_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_surface_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_tracking_debug.lib;D:\Installations\PCL 1.8.0\lib\pcl_visualization_debug.lib;D:\Installations\VTK\lib\vtkalglib-7.1.lib;D:\Installations\VTK\lib\vtkChartsCore-7.1.lib;D:\Installations\VTK\lib\vtkCommonColor-7.1.lib;D:\Installations\VTK\lib\vtkCommonComputationalGeometry-7.1.lib;D:\Installations\VTK\lib\vtkCommonCore-7.1.lib;D:\Installations\VTK\lib\vtkCommonDataModel-7.1.lib;D:\Installations\VTK\lib\vtkCommonExecutionModel-7.1.lib;D:\Installations\VTK\lib\vtkCommonMath-7.1.lib;D:\Installations\VTK\lib\vtkCommonMisc-7.1.lib;D:\Installations\VTK\lib\vtkCommonSystem-7.1.lib;D:\Installations\VTK\lib\vtkCommonTransforms-7.1.lib;D:\Installations\VTK\lib\vtkDICOMParser-7.1.lib;D:\Installations\VTK\lib\vtkDomainsChemistry-7.1.lib;D:\Installations\VTK\lib\vtkDomainsChemistryOpenGL2-7.1.lib;D:\Installations\VTK\lib\vtkexoIIc-7.1.lib;D:\Installations\VTK\lib\vtkexpat-7.1.lib;D:\Installations\VTK\lib\vtkFiltersAMR-7.1.lib;D:\Installations\VTK\lib\vtkFiltersCore-7.1.lib;D:\Installations\VTK\lib\vtkFiltersExtraction-7.1.lib;D:\Installations\VTK\lib\vtkFiltersFlowPaths-7.1.lib;D:\Installations\VTK\lib\vtkFiltersGeneral-7.1.lib;D:\Installations\VTK\lib\vtkFiltersGeneric-7.1.lib;D:\Installations\VTK\lib\vtkFiltersGeometry-7.1.lib;D:\Installations\VTK\lib\vtkFiltersHybrid-7.1.lib;D:\Installations\VTK\lib\vtkFiltersHyperTree-7.1.lib;D:\Installations\VTK\lib\vtkFiltersImaging-7.1.lib;D:\Installations\VTK\lib\vtkFiltersModeling-7.1.lib;D:\Installations\VTK\lib\vtkFiltersParallel-7.1.lib;D:\Installations\VTK\lib\vtkFiltersParallelImaging-7.1.lib;D:\Installations\VTK\lib\vtkFiltersPoints-7.1.lib;D:\Installations\VTK\lib\vtkFiltersProgrammable-7.1.lib;D:\Installations\VTK\lib\vtkFiltersSelection-7.1.lib;D:\Installations\VTK\lib\vtkFiltersSMP-7.1.lib;D:\Installations\VTK\lib\vtkFiltersSources-7.1.lib;D:\Installations\VTK\lib\vtkFiltersStatistics-7.1.lib;D:\Installations\VTK\lib\vtkFiltersTexture-7.1.lib;D:\Installations\VTK\lib\vtkFiltersTopology-7.1.lib;D:\Installations\VTK\lib\vtkFiltersVerdict-7.1.lib;D:\Installations\VTK\lib\vtkfreetype-7.1.lib;D:\Installations\VTK\lib\vtkGeovisCore-7.1.lib;D:\Installations\VTK\lib\vtkgl2ps-7.1.lib;D:\Installations\VTK\lib\vtkglew-7.1.lib;D:\Installations\VTK\lib\vtkhdf5-7.1.lib;D:\Installations\VTK\lib\vtkhdf5_hl-7.1.lib;D:\Installations\VTK\lib\vtkImagingColor-7.1.lib;D:\Installations\VTK\lib\vtkImagingCore-7.1.lib;D:\Installations\VTK\lib\vtkImagingFourier-7.1.lib;D:\Installations\VTK\lib\vtkImagingGeneral-7.1.lib;D:\Installations\VTK\lib\vtkImagingHybrid-7.1.lib;D:\Installations\VTK\lib\vtkImagingMath-7.1.lib;D:\Installations\VTK\lib\vtkImagingMorphological-7.1.lib;D:\Installations\VTK\lib\vtkImagingSources-7.1.lib;D:\Installations\VTK\lib\vtkImagingStatistics-7.1.lib;D:\Installations\VTK\lib\vtkImagingStencil-7.1.lib;D:\Installations\VTK\lib\vtkInfovisCore-7.1.lib;D:\Installations\VTK\lib\vtkInfovisLayout-7.1.lib;D:\Installations\VTK\lib\vtkInteractionImage-7.1.lib;D:\Installations\VTK\lib\vtkInteractionStyle-7.1.lib;D:\Installations\VTK\lib\vtkInteractionWidgets-7.1.lib;D:\Installations\VTK\lib\vtkIOAMR-7.1.lib;D:\Installations\VTK\lib\vtkIOCore-7.1.lib;D:\Installations\VTK\lib\vtkIOEnSight-7.1.lib;D:\Installations\VTK\lib\vtkIOExodus-7.1.lib;D:\Installations\VTK\lib\vtkIOExport-7.1.lib;D:\Installations\VTK\lib\vtkIOExportOpenGL2-7.1.lib;D:\Installations\VTK\lib\vtkIOGeometry-7.1.lib;D:\Installations\VTK\lib\vtkIOImage-7.1.lib;D:\Installations\VTK\lib\vtkIOImport-7.1.lib;D:\Installations\VTK\lib\vtkIOInfovis-7.1.lib;D:\Installations\VTK\lib\vtkIOLegacy-7.1.lib;D:\Installations\VTK\lib\vtkIOLSDyna-7.1.lib;D:\Installations\VTK\lib\vtkIOMINC-7.1.lib;D:\Installations\VTK\lib\vtkIOMovie-7.1.lib;D:\Installations\VTK\lib\vtkIONetCDF-7.1.lib;D:\Installations\VTK\lib\vtkIOParallel-7.1.lib;D:\Installations\VTK\lib\vtkIOParallelXML-7.1.lib;D:\Installations\VTK\lib\vtkIOPLY-7.1.lib;D:\Installations\VTK\lib\vtkIOSQL-7.1.lib;D:\Installations\VTK\lib\vtkIOTecplotTable-7.1.lib;D:\Installations\VTK\lib\vtkIOVideo-7.1.lib;D:\Installations\VTK\lib\vtkIOXML-7.1.lib;D:\Installations\VTK\lib\vtkIOXMLParser-7.1.lib;D:\Installations\VTK\lib\vtkjpeg-7.1.lib;D:\Installations\VTK\lib\vtkjsoncpp-7.1.lib;D:\Installations\VTK\lib\vtklibxml2-7.1.lib;D:\Installations\VTK\lib\vtklz4-7.1.lib;D:\Installations\VTK\lib\vtkmetaio-7.1.lib;D:\Installations\VTK\lib\vtkNetCDF-7.1.lib;D:\Installations\VTK\lib\vtkNetCDF_cxx-7.1.lib;D:\Installations\VTK\lib\vtkoggtheora-7.1.lib;D:\Installations\VTK\lib\vtkParallelCore-7.1.lib;D:\Installations\VTK\lib\vtkpng-7.1.lib;D:\Installations\VTK\lib\vtkproj4-7.1.lib;D:\Installations\VTK\lib\vtkRenderingAnnotation-7.1.lib;D:\Installations\VTK\lib\vtkRenderingContext2D-7.1.lib;D:\Installations\VTK\lib\vtkRenderingContextOpenGL2-7.1.lib;D:\Installations\VTK\lib\vtkRenderingCore-7.1.lib;D:\Installations\VTK\lib\vtkRenderingFreeType-7.1.lib;D:\Installations\VTK\lib\vtkRenderingGL2PSOpenGL2-7.1.lib;D:\Installations\VTK\lib\vtkRenderingImage-7.1.lib;D:\Installations\VTK\lib\vtkRenderingLabel-7.1.lib;D:\Installations\VTK\lib\vtkRenderingLOD-7.1.lib;D:\Installations\VTK\lib\vtkRenderingOpenGL2-7.1.lib;D:\Installations\VTK\lib\vtkRenderingVolume-7.1.lib;D:\Installations\VTK\lib\vtkRenderingVolumeOpenGL2-7.1.lib;D:\Installations\VTK\lib\vtksqlite-7.1.lib;D:\Installations\VTK\lib\vtksys-7.1.lib;D:\Installations\VTK\lib\vtktiff-7.1.lib;D:\Installations\VTK\lib\vtkverdict-7.1.lib;D:\Installations\VTK\lib\vtkViewsContext2D-7.1.lib;D:\Installations\VTK\lib\vtkViewsCore-7.1.lib;D:\Installations\VTK\lib\vtkViewsInfovis-7.1.lib;D:\Installations\VTK\lib\vtkzlib-7.1.lib;D:\Program Files\OpenNI2\Lib\OpenNI2.lib;gdi32.lib;kernel32.lib;ole32.lib;oleaut32.lib;Psapi.lib;shell32.lib;user32.lib;uuid.lib;winspool.lib;ws2_32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <AdditionalLibraryDirectories>D:\Installtions\laslib\lib;D:\Installtions\PCL\lib\$(Configuration);D:\Installtions\PCL\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
+      <StackReserveSize>
+      </StackReserveSize>
+      <HeapReserveSize>
+      </HeapReserveSize>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;vtkDomainsChemistry_AUTOINIT=1(vtkDomainsChemistryOpenGL2);vtkIOExport_AUTOINIT=1(vtkIOExportOpenGL2);vtkRenderingContext2D_AUTOINIT=1(vtkRenderingContextOpenGL2);vtkRenderingOpenGL2_AUTOINIT=1(vtkRenderingGL2PSOpenGL2);vtkRenderingVolume_AUTOINIT=1(vtkRenderingVolumeOpenGL2);EIGEN_USE_NEW_STDVECTOR;EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET;BOOST_ALL_NO_LIB;DISABLE_OPENNI;DISABLE_ENSENSO;DISABLE_DAVIDSDK;DISABLE_DSSDK;DISABLE_RSSDK;DISABLE_PCAP;DISABLE_PNG;FLANN_STATIC;BOOST_ALL_DYN_LINK;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Installations\LASlib\inc;D:\Installations\libLAS\include;D:\Installations\VTK\include\vtk-7.1;D:\Installations\PCL 1.8.0\include\pcl-1.8;D:\Installations\PCL 1.8.0\3rdParty\Eigen\eigen3;D:\Installations\boost_1_63_0;D:\Installations\PCL 1.8.0\3rdParty\OpenNI2\Include;D:\Installations\PCL 1.8.0\3rdParty\FLANN\include;D:\Installations\PCL 1.8.0\3rdParty\Qhull\include;D:\Installations\VTK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_system-vc140-mt-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_filesystem-vc140-mt-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_date_time-vc140-mt-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_iostreams-vc140-mt-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_serialization-vc140-mt-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_chrono-vc140-mt-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_atomic-vc140-mt-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_regex-vc140-mt-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_zlib-vc140-mt-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_zlib-vc140-mt-sgd-1_63.lib;D:\Installations\boost_1_63_0\lib64-msvc-14.0\libboost_zlib-vc140-sgd-1_63.lib;D:\Installations\PCL 1.8.0\lib\pcl_common_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_octree_release.lib;D:\Program Files\OpenNI2\Lib\OpenNI2.lib;D:\Installations\VTK\lib\vtksqlite-7.1.lib;D:\Installations\PCL 1.8.0\lib\pcl_io_release.lib;D:\Installations\PCL 1.8.0\3rdParty\FLANN\lib\flann_cpp_s.lib;D:\Installations\PCL 1.8.0\lib\pcl_kdtree_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_search_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_sample_consensus_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_filters_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_features_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_ml_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_segmentation_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_visualization_release.lib;D:\Installations\PCL 1.8.0\3rdParty\Qhull\lib\qhullstatic_d.lib;D:\Installations\PCL 1.8.0\lib\pcl_surface_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_registration_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_keypoints_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_tracking_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_recognition_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_stereo_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_outofcore_release.lib;D:\Installations\PCL 1.8.0\lib\pcl_people_release.lib;D:\Installations\VTK\lib\vtkDomainsChemistryOpenGL2-7.1.lib;D:\Installations\VTK\lib\vtkFiltersFlowPaths-7.1.lib;D:\Installations\VTK\lib\vtkFiltersGeneric-7.1.lib;D:\Installations\VTK\lib\vtkFiltersHyperTree-7.1.lib;D:\Installations\VTK\lib\vtkFiltersParallelImaging-7.1.lib;D:\Installations\VTK\lib\vtkFiltersPoints-7.1.lib;D:\Installations\VTK\lib\vtkFiltersProgrammable-7.1.lib;D:\Installations\VTK\lib\vtkFiltersSMP-7.1.lib;D:\Installations\VTK\lib\vtkFiltersSelection-7.1.lib;D:\Installations\VTK\lib\vtkFiltersTexture-7.1.lib;D:\Installations\VTK\lib\vtkFiltersVerdict-7.1.lib;D:\Installations\VTK\lib\vtkverdict-7.1.lib;D:\Installations\VTK\lib\vtkGeovisCore-7.1.lib;D:\Installations\VTK\lib\vtkIOAMR-7.1.lib;D:\Installations\VTK\lib\vtkIOEnSight-7.1.lib;D:\Installations\VTK\lib\vtkIOExodus-7.1.lib;D:\Installations\VTK\lib\vtkIOExportOpenGL2-7.1.lib;D:\Installations\VTK\lib\vtkIOImport-7.1.lib;D:\Installations\VTK\lib\vtkIOInfovis-7.1.lib;D:\Installations\VTK\lib\vtklibxml2-7.1.lib;D:\Installations\VTK\lib\vtkIOLSDyna-7.1.lib;D:\Installations\VTK\lib\vtkIOMINC-7.1.lib;D:\Installations\VTK\lib\vtkIOMovie-7.1.lib;D:\Installations\VTK\lib\vtkoggtheora-7.1.lib;D:\Installations\VTK\lib\vtkIOPLY-7.1.lib;D:\Installations\VTK\lib\vtkIOParallel-7.1.lib;D:\Installations\VTK\lib\vtkjsoncpp-7.1.lib;D:\Installations\VTK\lib\vtkIOParallelXML-7.1.lib;D:\Installations\VTK\lib\vtkIOSQL-7.1.lib;D:\Installations\VTK\lib\vtkIOTecplotTable-7.1.lib;D:\Installations\VTK\lib\vtkIOVideo-7.1.lib;D:\Installations\VTK\lib\vtkImagingMorphological-7.1.lib;D:\Installations\VTK\lib\vtkImagingStatistics-7.1.lib;D:\Installations\VTK\lib\vtkImagingStencil-7.1.lib;D:\Installations\VTK\lib\vtkInteractionImage-7.1.lib;D:\Installations\VTK\lib\vtkRenderingContextOpenGL2-7.1.lib;D:\Installations\VTK\lib\vtkRenderingImage-7.1.lib;D:\Installations\VTK\lib\vtkRenderingLOD-7.1.lib;D:\Installations\VTK\lib\vtkRenderingVolumeOpenGL2-7.1.lib;D:\Installations\VTK\lib\vtkViewsContext2D-7.1.lib;D:\Installations\VTK\lib\vtkViewsInfovis-7.1.lib;D:\Installations\VTK\lib\vtkDomainsChemistry-7.1.lib;D:\Installations\VTK\lib\vtkFiltersAMR-7.1.lib;D:\Installations\VTK\lib\vtkIOExport-7.1.lib;D:\Installations\VTK\lib\vtkRenderingGL2PSOpenGL2-7.1.lib;D:\Installations\VTK\lib\vtkgl2ps-7.1.lib;D:\Installations\VTK\lib\vtkFiltersParallel-7.1.lib;D:\Installations\VTK\lib\vtkexoIIc-7.1.lib;D:\Installations\VTK\lib\vtkIOGeometry-7.1.lib;D:\Installations\VTK\lib\vtkIONetCDF-7.1.lib;D:\Installations\VTK\lib\vtkNetCDF_cxx-7.1.lib;D:\Installations\VTK\lib\vtkNetCDF-7.1.lib;D:\Installations\VTK\lib\vtkhdf5_hl-7.1.lib;D:\Installations\VTK\lib\vtkhdf5-7.1.lib;D:\Installations\VTK\lib\vtkParallelCore-7.1.lib;D:\Installations\VTK\lib\vtkIOLegacy-7.1.lib;D:\Installations\VTK\lib\vtkRenderingOpenGL2-7.1.lib;D:\Installations\VTK\lib\vtkglew-7.1.lib;D:\Installations\VTK\lib\vtkImagingMath-7.1.lib;D:\Installations\VTK\lib\vtkChartsCore-7.1.lib;D:\Installations\VTK\lib\vtkRenderingContext2D-7.1.lib;D:\Installations\VTK\lib\vtkFiltersImaging-7.1.lib;D:\Installations\VTK\lib\vtkInfovisLayout-7.1.lib;D:\Installations\VTK\lib\vtkInfovisCore-7.1.lib;D:\Installations\VTK\lib\vtkViewsCore-7.1.lib;D:\Installations\VTK\lib\vtkInteractionWidgets-7.1.lib;D:\Installations\VTK\lib\vtkFiltersHybrid-7.1.lib;D:\Installations\VTK\lib\vtkImagingGeneral-7.1.lib;D:\Installations\VTK\lib\vtkImagingSources-7.1.lib;D:\Installations\VTK\lib\vtkFiltersModeling-7.1.lib;D:\Installations\VTK\lib\vtkImagingHybrid-7.1.lib;D:\Installations\VTK\lib\vtkIOImage-7.1.lib;D:\Installations\VTK\lib\vtkDICOMParser-7.1.lib;D:\Installations\VTK\lib\vtkmetaio-7.1.lib;comctl32.lib;wsock32.lib;D:\Installations\VTK\lib\vtkpng-7.1.lib;D:\Installations\VTK\lib\vtktiff-7.1.lib;D:\Installations\VTK\lib\vtkjpeg-7.1.lib;D:\Installations\VTK\lib\vtkInteractionStyle-7.1.lib;D:\Installations\VTK\lib\vtkFiltersExtraction-7.1.lib;D:\Installations\VTK\lib\vtkFiltersStatistics-7.1.lib;D:\Installations\VTK\lib\vtkImagingFourier-7.1.lib;D:\Installations\VTK\lib\vtkalglib-7.1.lib;D:\Installations\VTK\lib\vtkRenderingAnnotation-7.1.lib;D:\Installations\VTK\lib\vtkImagingColor-7.1.lib;D:\Installations\VTK\lib\vtkRenderingVolume-7.1.lib;D:\Installations\VTK\lib\vtkImagingCore-7.1.lib;D:\Installations\VTK\lib\vtkIOXML-7.1.lib;D:\Installations\VTK\lib\vtkIOXMLParser-7.1.lib;D:\Installations\VTK\lib\vtkIOCore-7.1.lib;D:\Installations\VTK\lib\vtkexpat-7.1.lib;D:\Installations\VTK\lib\vtkRenderingLabel-7.1.lib;D:\Installations\VTK\lib\vtkRenderingFreeType-7.1.lib;D:\Installations\VTK\lib\vtkRenderingCore-7.1.lib;D:\Installations\VTK\lib\vtkCommonColor-7.1.lib;D:\Installations\VTK\lib\vtkFiltersGeometry-7.1.lib;D:\Installations\VTK\lib\vtkFiltersSources-7.1.lib;D:\Installations\VTK\lib\vtkFiltersGeneral-7.1.lib;D:\Installations\VTK\lib\vtkCommonComputationalGeometry-7.1.lib;D:\Installations\VTK\lib\vtkFiltersCore-7.1.lib;D:\Installations\VTK\lib\vtkCommonExecutionModel-7.1.lib;D:\Installations\VTK\lib\vtkCommonDataModel-7.1.lib;D:\Installations\VTK\lib\vtkCommonTransforms-7.1.lib;D:\Installations\VTK\lib\vtkCommonMisc-7.1.lib;D:\Installations\VTK\lib\vtkCommonMath-7.1.lib;D:\Installations\VTK\lib\vtkCommonSystem-7.1.lib;D:\Installations\VTK\lib\vtkCommonCore-7.1.lib;D:\Installations\VTK\lib\vtksys-7.1.lib;ws2_32.lib;Psapi.lib;D:\Installations\VTK\lib\vtkfreetype-7.1.lib;D:\Installations\VTK\lib\vtkzlib-7.1.lib;D:\Installations\libLAS\lib\liblas.lib;D:\Installations\libLAS\lib\liblas_c.lib;D:\Installations\laslib\lib\LASlib.lib;D:\Installations\VTK\lib\vtkFiltersTopology-7.1.lib;D:\Installations\VTK\lib\vtkproj4-7.1.lib;D:\Installations\VTK\lib\vtklz4-7.1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <AdditionalLibraryDirectories>D:\Installtions\laslib\lib;D:\Installtions\PCL\lib\$(Configuration);D:\Installtions\PCL\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="dotnetLibLAS">
+      <HintPath>..\libs\dotnetLibLAS.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DataConverstionForm.cpp" />
+    <ClCompile Include="DataConvertor.cpp" />
+    <ClCompile Include="ExportOptionsForm.cpp" />
+    <ClCompile Include="ExtractionParameterForm.cpp" />
+    <ClCompile Include="HashMap.cpp" />
+    <ClCompile Include="InitialLocationForm.cpp" />
+    <ClCompile Include="LASFileReader.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MainForm.cpp" />
+    <ClCompile Include="RailwayExtraction.cpp" />
+    <ClCompile Include="SharedData.cpp" />
+    <ClCompile Include="SharedResources.cpp" />
+    <ClCompile Include="TXTFileReader.cpp" />
+    <ClCompile Include="UTM.cpp" />
+    <ClCompile Include="Viewer.cpp" />
+    <ClCompile Include="VTKWindowControl.cpp" />
+    <ClCompile Include="VTKWindowController.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DataConverstionForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="DataConvertor.h" />
+    <ClInclude Include="ExportOptionsForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="ExtractionParameterForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="HashMap.h" />
+    <ClInclude Include="InitialLocationForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="LASFileReader.h" />
+    <ClInclude Include="LIDARPT.h" />
+    <ClInclude Include="MainForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="PointXYZDouble.h" />
+    <ClInclude Include="RailwayExtraction.h" />
+    <ClInclude Include="SharedData.h" />
+    <ClInclude Include="SharedResources.h" />
+    <ClInclude Include="TXTFileReader.h" />
+    <ClInclude Include="UTM.h" />
+    <ClInclude Include="Viewer.h" />
+    <ClInclude Include="VTKWindowControl.h">
+      <FileType>CppControl</FileType>
+    </ClInclude>
+    <ClInclude Include="VTKWindowController.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DataConverstionForm.resx">
+      <DependentUpon>DataConverstionForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExportOptionsForm.resx">
+      <DependentUpon>ExportOptionsForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExtractionParameterForm.resx">
+      <DependentUpon>ExtractionParameterForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InitialLocationForm.resx">
+      <DependentUpon>InitialLocationForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.h</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="isometric.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
