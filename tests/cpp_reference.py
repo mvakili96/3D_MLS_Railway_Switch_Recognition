@@ -17,6 +17,9 @@ The tracking oracle compiles the original loop through DuplicatePolyPair, with
 an explicit accepted-step test limit. The omitted tail is print/progress/render
 callbacks and the separate recognition postpass. Stop diagnostics copy branches;
 predicted-window diagnostics copy existing lengths/counts without changing math.
+Recognition uses the original BinaryString/TrackStack structs, catalogue and
+matching functions. Its batch wrapper extracts only the actual signature/scoring
+postpass, stopping before toe detection; score diagnostics only copy locals.
 """
 
 from pathlib import Path
@@ -141,7 +144,6 @@ class CppReference:
             larger = function(header, "inline bool LargePts(")
             declarations = """
 struct Cloud { vector<PointXYZDouble> points; };
-struct TrackStack { vector<TrackSegment> trkSegs; };
 struct TrackLayer {
     vector<TrackSegment> m_TrackSegList;
     vector<POINT3D> m_RailVec1, m_RailVec2, m_RailVecCenter;
@@ -170,6 +172,13 @@ public:
     TrackStack referenceActiveStack;
     vector<int> m_LoopCross;
     vector<vector<double>> trackingWindows;
+    vector<BinaryString> m_Tmplts, m_TmpltBegin, m_TmpltEnd;
+    vector<double> lastRecognitionUnary, lastRecognitionContext, lastRecognitionScores;
+    void DefineTemplates();
+    void RecognitionTurnoutType(vector<BinaryString>, BinaryString, BinaryString&);
+    void TemplateMatching(vector<BinaryString>, BinaryString&);
+    void PrintTurnoutType(int);
+    void RecognizeStackBatch(bool);
     void progressCallback(double, double) {}
     void generateGrid();
     bool Setinitiallocation(int, POINT3D, double);
@@ -253,7 +262,33 @@ public:
                     "void RailwayExtraction::KalmanPredict(",
                     "void RailwayExtraction::KalmanUpdate(",
                     "void RailwayExtraction::GenerateTrkSegAssignMemPts(",
+                    "void RailwayExtraction::DefineTemplates(",
+                    "void RailwayExtraction::RecognitionTurnoutType(",
+                    "void RailwayExtraction::TemplateMatching(",
+                    "void RailwayExtraction::PrintTurnoutType(",
                 )
+            )
+            recognition = function(extraction, "void RailwayExtraction::RecognitionTurnoutType(")
+            modified = recognition.replace(
+                "\n\tdouble maxScore = 0;",
+                "\nlastRecognitionUnary=UnaryScore; lastRecognitionContext=ContextScore; lastRecognitionScores=Score;\n\tdouble maxScore = 0;",
+            )
+            functions = functions.replace(recognition, modified)
+            matching = function(extraction, "void RailwayExtraction::TemplateMatching(")
+            modified = matching.replace(
+                "\n\tint maxScore = 0;",
+                "\nlastRecognitionUnary.assign(score.begin(),score.end()); lastRecognitionContext.clear(); lastRecognitionScores=lastRecognitionUnary;\n\tint maxScore = 0;",
+            )
+            functions = functions.replace(matching, modified)
+            start = extraction.index(
+                "\n\tDefineTemplates();",
+                extraction.index("\nvoid RailwayExtraction::Trackingrailway("),
+            )
+            end = extraction.index("\n\t\t//validation of template matching", start)
+            functions += (
+                "\nvoid RailwayExtraction::RecognizeStackBatch(bool mainTrkflg) {\n"
+                + extraction[start:end]
+                + "\n}\n}"
             )
             # This routine has an unmatched brace inside a commented-out loop;
             # select its boundary directly instead of counting comment braces.
@@ -341,6 +376,7 @@ int reference_rand() {
                 + isnan
                 + polygon
                 + primitives
+                + header[header.index("struct BinaryString {") : header.index("struct ToePt {")]
                 + segments
                 + higher_z
                 + larger
@@ -436,12 +472,59 @@ void printTrackingSegment(TrackSegment segment, Cloud &cloud, bool fitted) {
         if (fitted) printStateLine(window.MemLn, cloud);
     }
 }
+BinaryString readBinary() {
+    BinaryString value; cin >> value.Type; value.Score = readScalar();
+    cin >> value.LabelPosTurnout >> value.LabelDirection >> value.LabelTurnoutType >> value.LabelPosToe;
+    size_t count; cin >> count;
+    for (size_t i=0; i<count; ++i) { int bit; cin >> bit; value.bStrings.push_back(bit); }
+    return value;
+}
+void printBinary(BinaryString value) {
+    cout << value.Type << ' ' << value.Score << ' ' << value.LabelPosTurnout << ' '
+         << value.LabelDirection << ' ' << value.LabelTurnoutType << ' ' << value.LabelPosToe << ' '
+         << value.bStrings.size() << ' ';
+    for (auto bit : value.bStrings) cout << bit << ' ';
+}
 int main() {
     cout << setprecision(17);
     string operation;
     cin >> operation;
     RailwayExtraction engine;
-    if (operation == "track") {
+    if (operation == "templates") {
+        engine.DefineTemplates(); cout << "RESULT ";
+        for (auto catalogue : {engine.m_Tmplts, engine.m_TmpltBegin, engine.m_TmpltEnd}) {
+            cout << catalogue.size() << ' '; for (auto value : catalogue) printBinary(value);
+        }
+    } else if (operation == "binary_labels") {
+        size_t count; cin >> count; cout << "RESULT ";
+        for (size_t i=0; i<count; ++i) { int type; cin >> type; BinaryString value; value.SetLables(type); printBinary(value); }
+    } else if (operation == "recognize" || operation == "match_raw") {
+        auto observed=readBinary(), previous=readBinary();
+        bool custom; cin >> custom; vector<BinaryString> templates;
+        if (custom) {
+            size_t count; cin >> count;
+            for (size_t i=0; i<count; ++i) templates.push_back(readBinary());
+        } else { engine.DefineTemplates(); templates=engine.m_Tmplts; }
+        if (operation == "recognize") engine.RecognitionTurnoutType(templates, previous, observed);
+        else engine.TemplateMatching(templates, observed);
+        cout << "RESULT "; printBinary(observed);
+        for (auto scores : {engine.lastRecognitionUnary, engine.lastRecognitionContext, engine.lastRecognitionScores}) {
+            cout << scores.size() << ' '; for (auto score : scores) cout << score << ' ';
+        }
+    } else if (operation == "stack_recognition") {
+        size_t count; bool mainTrack; cin >> mainTrack >> count;
+        for (size_t i=0; i<count; ++i) {
+            TrackStack stack; stack.trkBinary=readBinary(); size_t length; cin >> length;
+            stack.trkSegs.resize(length);
+            for (auto &segment : stack.trkSegs)
+                cin >> segment.m_Track2.bLeftTag >> segment.m_Track2.bRightTag
+                    >> segment.m_Track1.bLeftTag >> segment.m_Track1.bRightTag;
+            engine.m_TrkStks.push_back(stack);
+        }
+        engine.RecognizeStackBatch(mainTrack);
+        cout << "RESULT " << engine.m_TrkStks.size() << ' ';
+        for (auto stack : engine.m_TrkStks) printBinary(stack.trkBinary);
+    } else if (operation == "track") {
         int direction; bool mainTrack;
         cin >> engine.m_GridSize >> engine.m_TrkGuage >> engine.m_gLength >> engine.m_gWidth
             >> engine.m_ThRansac >> engine.m_ThMinPts >> engine.m_ThMinTrkPts >> engine.m_skip_rate

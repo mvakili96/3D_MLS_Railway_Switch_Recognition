@@ -15,10 +15,11 @@ from .geometry import Line3D, direction_mode
 from .initialization import initial_kalman_states, initialize_tracks
 from .kalman import kalman_predict, kalman_update
 from .mdl import segment_track_points_mdl
-from .models import seed_windows
+from .models import BinaryString, seed_windows
 from .observations import determine_observation, observation_from_support
 from .points import Point3D
 from .sampling import MsvcRand
+from .recognition import define_templates, recognize_stacks, recognize_turnout
 from .spatial import GridIndex
 from .synthetic import (
     initialization_scene,
@@ -26,6 +27,7 @@ from .synthetic import (
     parallel_head_cloud,
     straight_scene,
     tracking_scene,
+    signature_stack,
 )
 from .tracking import track_railway
 
@@ -40,6 +42,48 @@ def _finite_json(value):
     return value
 
 
+def _recognition_demo() -> dict:
+    catalogue = define_templates()
+    stacks = [signature_stack(template.bits) for template in catalogue.all]
+    result = recognize_stacks(stacks)
+    noisy = list(catalogue.all[0].bits)
+    noisy[0] = 1 - noisy[0]
+    noise_result = recognize_turnout(BinaryString(bits=noisy))
+    return {
+        "stage": "controlled stack signatures and source template recognition",
+        "template_count": len(catalogue.all),
+        "matched_count": sum(entry.status == "matched" for entry in result.entries),
+        "ambiguous_count": sum(entry.status == "ambiguous" for entry in result.entries),
+        "context_weight": 0,
+        "cases": [
+            {
+                "input_template_type": template.type,
+                "recognized_type": entry.binary.type,
+                "score": entry.binary.score,
+                "status": entry.status,
+                "matching_template_types": [
+                    entry.match.template_types[i] for i in entry.match.best_indices
+                ],
+                "labels": {
+                    "position": entry.binary.position_label,
+                    "direction": entry.binary.direction_label,
+                    "turnout": entry.binary.turnout_label,
+                    "toe": entry.binary.toe_label,
+                },
+            }
+            for template, entry in zip(catalogue.all, result.entries)
+        ],
+        "one_bit_noise_example": {
+            "recognized_type": noise_result.binary.type,
+            "score": noise_result.binary.score,
+            "status": noise_result.status,
+        },
+        "recognition_implemented": True,
+        "toe_detection_implemented": False,
+        "branch_orchestration_implemented": False,
+    }
+
+
 def _tracking_demo(seed: int, max_steps: int | None, direction: int, side_rails: bool) -> dict:
     scene = tracking_scene(side_rails=side_rails)
     grid = GridIndex(scene.cloud, scene.config.grid_size)
@@ -51,7 +95,9 @@ def _tracking_demo(seed: int, max_steps: int | None, direction: int, side_rails:
         "input_points": len(scene.cloud),
         "random_seed": seed,
         "tracking_implemented": True,
-        "recognition_implemented": False,
+        "recognition_implemented": True,
+        "toe_detection_implemented": False,
+        "branch_orchestration_implemented": False,
     }
     if not initialized.success:
         return payload
@@ -73,6 +119,18 @@ def _tracking_demo(seed: int, max_steps: int | None, direction: int, side_rails:
         active_stack_size=len(result.active_stack.track_segments),
         reference_comparable=result.reference_comparable,
         random_draws=random.draw_count,
+        recognition_postpass_ran=result.recognition is not None,
+        stack_recognition=[
+            {
+                "index": entry.index,
+                "status": entry.status,
+                "type": entry.binary.type,
+                "score": entry.binary.score,
+            }
+            for entry in result.recognition.entries
+        ]
+        if result.recognition is not None
+        else [],
         steps=[
             {
                 "number": step.number,
@@ -254,6 +312,9 @@ def _observation_demo(seed: int) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="3D MLS railway Python foundation")
     commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser(
+        "recognition-demo", help="classify controlled stack signatures with all 20 source templates"
+    )
     commands.add_parser("demo", help="construct paired windows and select synthetic points")
     heads_parser = commands.add_parser(
         "heads-demo", help="run height GMM and paired rail-head extraction"
@@ -303,6 +364,9 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command == "recognition-demo":
+        print(json.dumps(_recognition_demo(), indent=2, allow_nan=False))
+        return 0
     if arguments.command == "tracking-demo":
         if arguments.max_steps is not None and arguments.max_steps < 0:
             parser.error("--max-steps must be nonnegative")

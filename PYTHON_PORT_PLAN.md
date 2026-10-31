@@ -48,9 +48,15 @@ predicted turnout-stack snapshots. It retains source identity-covariance behavio
 and exposes undefined/nonfinite paths. See
 [docs/PYTHON_TRACKING.md](docs/PYTHON_TRACKING.md).
 
-Verification passed 171 test methods, including 55 methods comparing against
+Stack signatures, all 20 source templates, source labels and template recognition
+are implemented, including duplicate-pattern ambiguity, zero context weight,
+short-stack/branch gates and natural-completion tracking integration. The inactive
+raw-count matching helper remains standalone. See
+[docs/PYTHON_RECOGNITION.md](docs/PYTHON_RECOGNITION.md).
+
+Verification passed 198 test methods, including 64 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. Recognition templates, toes, branch/bidirectional orchestration and
+been built. Toes, branch/bidirectional orchestration and
 the remaining source features are pending. Their behavioral contracts
 and checks will accompany each stage.
 

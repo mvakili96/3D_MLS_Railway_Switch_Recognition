@@ -6,7 +6,8 @@ implementation provides point/state models, geometry, paired rail windows,
 spatial lookup, the custom height GMM, paired rail-head extraction, line fitting,
 source point grouping, MDL model selection, observation selection and paired-line
 gauge adjustment, full seed initialization, Kalman components and sequential
-tracking with window retries, stopping rules and turnout stacks. The current
+tracking with window retries, stopping rules, turnout stacks and source template
+recognition. The current
 unpacked C++ code is the source of truth: preserve its computational behavior and
 document proposed corrections separately.
 
@@ -36,6 +37,8 @@ document proposed corrections separately.
   seed initialization, filter formulas, bundled matrix behavior and numerical cases.
 - [docs/PYTHON_TRACKING.md](docs/PYTHON_TRACKING.md): sequential loop, retry order,
   accepted/rejected candidates, stack snapshots and native-comparison scope.
+- [docs/PYTHON_RECOGNITION.md](docs/PYTHON_RECOGNITION.md): all 20 templates, stack
+  signatures, labels, ambiguity, disabled context and tracking postpass integration.
 
 The original application uses Windows Forms/C++/CLI, PCL, VTK, Boost and LAS
 libraries. Project files contain machine-specific paths. Retaining them documents
@@ -56,6 +59,7 @@ python -m railway_mls mdl-demo
 python -m railway_mls observation-demo
 python -m railway_mls initialization-demo
 python -m railway_mls tracking-demo
+python -m railway_mls recognition-demo
 python -m unittest discover -s tests -v
 ```
 
@@ -78,10 +82,12 @@ synthetic initialization through sequential inference, saves eight additional
 segments, and reaches the source point-shortage stop. Its 6,192-point example
 reports the known single-rail MDL undefined-intermediate policy explicitly.
 `tracking-demo --side-rails --max-steps 3` exercises fully initialized models and
-an active turnout stack. Switch recognition and bidirectional orchestration remain
-future stages.
+an active turnout stack. On natural completion the tracker recognizes eligible
+completed stacks. `recognition-demo` exercises all 20 source patterns: 16 are unique
+matches and four return ambiguity code 999 because the catalogue contains duplicate
+patterns. Toe detection, branches and bidirectional orchestration remain future stages.
 
-The installed `railway-mls` command supports the same six demos.
+The installed `railway-mls` command supports the same seven demos.
 Tests use `unittest`; when a C++ compiler is available they also compile temporary
 extracts of the original
 source for direct behavior comparisons. Full implementation details and API
@@ -90,7 +96,8 @@ contracts are in the [foundation guide](docs/PYTHON_FOUNDATION.md) and the
 [fitting/MDL guide](docs/PYTHON_FITTING_MDL.md) and
 [observation/gauge guide](docs/PYTHON_OBSERVATION_GAUGE.md), and
 [Kalman/initialization guide](docs/PYTHON_KALMAN_INITIALIZATION.md), and
-[tracking guide](docs/PYTHON_TRACKING.md). These document source
+[tracking guide](docs/PYTHON_TRACKING.md), and
+[recognition guide](docs/PYTHON_RECOGNITION.md). These document source
 uninitialized-candidate cases and nonfinite arithmetic explicitly.
 
 ## What stays local
@@ -113,8 +120,8 @@ repository refer to its separate history.
 
 ## Development direction
 
-Continue from the implemented sequential tracker to stack templates, switch
-recognition, toes, branch seeds and bidirectional orchestration.
+Continue from the implemented tracker and stack-template recognition to toes,
+branch seeds, bidirectional orchestration and remaining source features.
 Include computational orchestration that currently lives in the GUI. Keep inactive source paths inactive
 and preserve defaults, templates, ordering, precision and reproducible quirks.
 

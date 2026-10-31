@@ -185,4 +185,5 @@ adjustment are implemented in the [observation/gauge increment](PYTHON_OBSERVATI
 Full initialization and filter components are available in the
 [Kalman/initialization increment](PYTHON_KALMAN_INITIALIZATION.md).
 The [sequential tracking increment](PYTHON_TRACKING.md) integrates these components.
-The full suite currently passes 171 test methods. The next work is recognition.
+The [recognition increment](PYTHON_RECOGNITION.md) adds stack classification.
+The full suite currently passes 198 test methods. The next work is toe and branch integration.
