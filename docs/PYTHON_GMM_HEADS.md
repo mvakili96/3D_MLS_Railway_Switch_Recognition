@@ -62,7 +62,8 @@ Lower-level operations are available independently:
 - `filter_height_band(selection, current_height)` keeps the inclusive source band.
 - `fitting.fit_rail_head_line(selection, threshold=0.04, rng=...)` implements only
   the required 100-attempt RANSAC overload. The 500-attempt uncertainty-producing
-  overload, fixed-angle fitting, connectivity grouping and MDL are still pending.
+  overload, fixed-angle fitting, connectivity grouping and MDL are available in
+  the subsequent [fitting/MDL increment](PYTHON_FITTING_MDL.md).
 
 The returned point selections reference their original cloud. Only the active
 `extract_track_points` operation writes class code 3; intensity and segment IDs
@@ -178,5 +179,7 @@ labels, heights, retries, supplied raw draws, source NaN behavior and edge thres
 The demo and Python lint checks pass. Complete Windows-binary equivalence, runtime
 on real MLS clouds and published accuracy remain later experimental work.
 
-The next increment is the remaining line-fitting variants, point grouping and
-MDL model selection, followed by observation selection and sequential tracking.
+The remaining line-fitting variants, grouping and MDL are now implemented in the
+[fitting/MDL increment](PYTHON_FITTING_MDL.md). The full suite currently passes
+94 test methods. The next work is observation selection, paired-line adjustment
+and sequential tracking.
