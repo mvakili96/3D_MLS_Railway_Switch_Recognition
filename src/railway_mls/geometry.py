@@ -70,6 +70,7 @@ class Line3D:
     c: float = field(init=False)
     angle: float = field(init=False)
     members: PointSelection | None = field(default=None, repr=False, compare=False)
+    _center: Point3D | None = field(default=None, init=False, repr=False, compare=False)
 
     def __post_init__(self) -> None:
         self.update_parameters()
@@ -81,7 +82,16 @@ class Line3D:
 
     @property
     def center(self) -> Point3D:
-        return (self.begin + self.end) / 2
+        return self._center if self._center is not None else (self.begin + self.end) / 2
+
+    @center.setter
+    def center(self, point: Point3D) -> None:
+        self._center = point
+
+    def update_center(self) -> Point3D:
+        """GetCenterPt: explicitly refresh the source's separately stored center."""
+        self._center = (self.begin + self.end) / 2
+        return self._center
 
     @property
     def unit_vector(self) -> Point3D:
@@ -94,6 +104,11 @@ class Line3D:
         else:
             swap = self.begin.y > self.end.y if mode in (1, 2) else self.begin.y < self.end.y
         if swap:
+            self.begin, self.end = self.end, self.begin
+
+    def order_endpoints_by_reference(self, reference: Point3D) -> None:
+        """SetEndByReferencePt: closer XY endpoint is begin; ties do not swap."""
+        if distance_2d(self.begin, reference) > distance_2d(self.end, reference):
             self.begin, self.end = self.end, self.begin
 
     def topology(self, x: float, y: float) -> int:

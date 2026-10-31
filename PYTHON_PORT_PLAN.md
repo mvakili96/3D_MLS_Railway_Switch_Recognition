@@ -24,14 +24,20 @@ label updates and retry accumulation. Their specification and portability decisi
 are in [docs/PYTHON_GMM_HEADS.md](docs/PYTHON_GMM_HEADS.md).
 
 The remaining line-fitting variants, source point growing, and greedy MDL selection
-are implemented on the feature branch, including source RMS uncertainty, component
+are implemented, including source RMS uncertainty, component
 retention/label quirks, initialized-output reuse, and explicit missing-candidate
 diagnostics. See [docs/PYTHON_FITTING_MDL.md](docs/PYTHON_FITTING_MDL.md).
 
-Verification passed 94 test methods, including 27 methods comparing against
+Observation and side-point selection, support-derived observation vectors, and
+both paired-line/gauge adjustments are implemented. The source's directional
+stack cutoffs, signed-distance duplicate lookup, tie behavior, stored line state
+and weighted-distance arithmetic are preserved. Undefined three-line ties and
+nonfinite calculations are explicit. See
+[docs/PYTHON_OBSERVATION_GAUGE.md](docs/PYTHON_OBSERVATION_GAUGE.md).
+
+Verification passed 117 test methods, including 36 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. Observation selection, paired-line/gauge adjustment, full Kalman
-initialization/tracking and recognition are pending. Their behavioral contracts
+been built. Full Kalman initialization/tracking and recognition are pending. Their behavioral contracts
 and checks will accompany each stage.
 
 ## Specification checklist

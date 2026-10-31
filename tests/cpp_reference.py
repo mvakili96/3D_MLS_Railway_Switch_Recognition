@@ -5,6 +5,10 @@ accommodates the source's double array length in GCC. For stochastic comparisons
 rand() reads a supplied raw-draw stream instead of the host CRT generator. Tested
 arithmetic, branches and thresholds remain unchanged. MDL diagnostic assignments
 capture its existing local scores/flags without changing the selection rules.
+Gauge diagnostic assignments likewise only copy existing intermediate values.
+observe_prefix stops the original selection body before its discarded local gauge
+adjustment; it can check defined point vectors when a tied three-line comparison
+would subsequently read an uninitialized local line in the full native function.
 """
 
 from pathlib import Path
@@ -57,6 +61,7 @@ class CppReference:
             larger = function(header, "inline bool LargePts(")
             declarations = """
 struct Cloud { vector<PointXYZDouble> points; };
+struct TrackStack { vector<TrackSegment> trkSegs; };
 class RailwayExtraction {
 public:
     Cloud *point_cloud;
@@ -67,6 +72,8 @@ public:
     int m_skip_rate;
     vector<double> lastMDLScores, lastMDLCloseness;
     vector<int> lastMDLFlags;
+    double lastGaugeAngle, lastGaugeGap, lastGaugeScale, lastWeightedDistance;
+    vector<double> lastGaugeErrors, lastGaugeDistances;
     Grid *m_pGrid;
     void progressCallback(double, double) {}
     void generateGrid();
@@ -90,6 +97,18 @@ public:
     void SegmentTrackPtsByMDL(int, vector<PointXYZDouble*>, vector<Line3D>&, double);
     void ExtractTrkPts(TrackSegment, double, double, vector<PointXYZDouble*>&,
                       vector<PointXYZDouble*>&, double&, double&);
+    int GetDirectionMode(double, double, double, double);
+    void AdjustTwoLines(Line3D&, Line3D&, int, int, int, double);
+    void AdjustTwoLinesWithObservation(POINT3D, POINT3D, Line3D&, Line3D&,
+                                      vector<PointXYZDouble*>, vector<PointXYZDouble*>, int, int, int, double);
+    void DetermineObservation(int, TrackStack, Line3D, Line3D, vector<Line3D>, vector<Line3D>, int,
+                              vector<PointXYZDouble*>&, vector<PointXYZDouble*>&,
+                              vector<PointXYZDouble*>&, vector<PointXYZDouble*>&,
+                              vector<PointXYZDouble*>&, vector<PointXYZDouble*>&);
+    void DetermineObservationPrefix(int, TrackStack, Line3D, Line3D, vector<Line3D>, vector<Line3D>, int,
+                                    vector<PointXYZDouble*>&, vector<PointXYZDouble*>&,
+                                    vector<PointXYZDouble*>&, vector<PointXYZDouble*>&,
+                                    vector<PointXYZDouble*>&, vector<PointXYZDouble*>&);
     TrackSegment seedGeometry(int inMode, POINT3D inPt, double inAng) {
 """
             initialization = function(extraction, "bool RailwayExtraction::Setinitiallocation(")
@@ -122,7 +141,29 @@ public:
                     "void RailwayExtraction::PointGrowing(",
                     "double RailwayExtraction::ComputeCloseness(",
                     "void RailwayExtraction::SegmentTrackPtsByMDL(",
+                    "int RailwayExtraction::GetDirectionMode(",
+                    "void RailwayExtraction::AdjustTwoLines(",
+                    "void RailwayExtraction::AdjustTwoLinesWithObservation(",
+                    "void RailwayExtraction::DetermineObservation(",
                 )
+            )
+            observation = function(extraction, "void RailwayExtraction::DetermineObservation(")
+            prefix = observation[:observation.index("\n\tint mode1, mode2;")] + "\n}"
+            functions += "\n" + prefix.replace("::DetermineObservation(", "::DetermineObservationPrefix(")
+            functions = functions.replace(
+                "tmpln = tmpln.ExtendEndingPts(_dist / fdist);",
+                """lastGaugeAngle = ang; lastGaugeGap = fdist; lastGaugeScale = _dist / fdist;
+    lastWeightedDistance = nan(\"\"); lastGaugeErrors.clear(); lastGaugeDistances.clear();
+    tmpln = tmpln.ExtendEndingPts(_dist / fdist);""",
+            )
+            functions = functions.replace(
+                "weightedDist = weightedDist / weight;",
+                """weightedDist = weightedDist / weight;
+    lastGaugeAngle = ang; lastGaugeGap = DistanceBetweenPoints2D(pt1, pt2);
+    lastGaugeScale = _dist / weightedDist; lastWeightedDistance = weightedDist;
+    lastGaugeErrors.clear(); lastGaugeDistances.clear();
+    for (auto value : DiffList) { lastGaugeErrors.push_back(value.z); lastGaugeDistances.push_back(value.x); }
+""",
             )
             functions = functions.replace(
                 "new Grid[m_NumGrid]", "new Grid[static_cast<size_t>(m_NumGrid)]"
@@ -227,12 +268,62 @@ vector<PointXYZDouble*> readSelection(Cloud &cloud) {
     for (size_t i = 0; i < count; ++i) { cin >> row; points.push_back(&cloud.points.at(row)); }
     return points;
 }
+Line3D readStateLine(Cloud &cloud) {
+    Line3D line;
+    line.BeginPt = readPoint(); line.EndPt = readPoint(); line.CenterPt = readPoint();
+    line.Ang = readScalar(); line.A2D = readScalar(); line.B2D = readScalar(); line.C2D = readScalar();
+    line.MemPts = readSelection(cloud);
+    return line;
+}
+void printStateLine(Line3D line, Cloud &cloud) {
+    printPoint(line.BeginPt); printPoint(line.EndPt); printPoint(line.CenterPt);
+    cout << line.Ang << ' ' << line.A2D << ' ' << line.B2D << ' ' << line.C2D << ' ';
+    printSelection(line.MemPts, cloud);
+}
 int main() {
     cout << setprecision(17);
     string operation;
     cin >> operation;
     RailwayExtraction engine;
-    if (operation == "window") {
+    if (operation == "gauge_basic" || operation == "gauge_weighted") {
+        size_t count; double target; int m1, m2, mode;
+        cin >> count >> engine.m_gLength >> target >> m1 >> m2 >> mode;
+        Cloud cloud; cloud.points.resize(count);
+        for (auto &p : cloud.points) cin >> p.x >> p.y >> p.z;
+        auto first = readStateLine(cloud), second = readStateLine(cloud);
+        if (operation == "gauge_basic") engine.AdjustTwoLines(first, second, m1, m2, mode, target);
+        else {
+            auto ref1 = readPoint(), ref2 = readPoint();
+            auto support1 = readSelection(cloud), support2 = readSelection(cloud);
+            engine.AdjustTwoLinesWithObservation(ref1, ref2, first, second, support1, support2,
+                                                m1, m2, mode, target);
+        }
+        cout << "RESULT "; printStateLine(first, cloud); printStateLine(second, cloud);
+        cout << engine.lastGaugeAngle << ' ' << engine.lastGaugeGap << ' '
+             << engine.lastGaugeScale << ' ' << engine.lastWeightedDistance << ' ';
+        cout << engine.lastGaugeErrors.size() << ' ';
+        for (auto x : engine.lastGaugeErrors) cout << x << ' ';
+        cout << engine.lastGaugeDistances.size() << ' ';
+        for (auto x : engine.lastGaugeDistances) cout << x << ' ';
+    } else if (operation == "observe" || operation == "observe_prefix") {
+        size_t count, size1, size2, stackSize; int trackMode, lineMode;
+        cin >> count >> engine.m_TrkGuage >> engine.m_gLength >> trackMode >> stackSize >> lineMode;
+        Cloud cloud; cloud.points.resize(count);
+        for (auto &p : cloud.points) cin >> p.x >> p.y >> p.z;
+        auto guide1 = readStateLine(cloud), guide2 = readStateLine(cloud);
+        vector<Line3D> lines1, lines2;
+        cin >> size1; for (size_t i = 0; i < size1; ++i) lines1.push_back(readStateLine(cloud));
+        cin >> size2; for (size_t i = 0; i < size2; ++i) lines2.push_back(readStateLine(cloud));
+        TrackStack stack; stack.trkSegs.resize(stackSize);
+        vector<PointXYZDouble*> obs1, obs2, left1, right1, left2, right2;
+        if (operation == "observe")
+            engine.DetermineObservation(trackMode, stack, guide1, guide2, lines1, lines2, lineMode,
+                                        obs1, obs2, left1, right1, left2, right2);
+        else engine.DetermineObservationPrefix(trackMode, stack, guide1, guide2, lines1, lines2, lineMode,
+                                               obs1, obs2, left1, right1, left2, right2);
+        cout << "RESULT ";
+        for (auto points : {obs1, obs2, left1, right1, left2, right2}) printSelection(points, cloud);
+    } else if (operation == "window") {
         int mode; double angle, length, width;
         cin >> mode >> angle;
         TrackWindow window;

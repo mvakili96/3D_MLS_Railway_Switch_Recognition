@@ -4,7 +4,8 @@ This repository preserves the existing C++ implementation of railway tracking
 and switch-region recognition from 3D mobile laser scanning (MLS) data. The Python
 implementation provides point/state models, geometry, paired rail windows,
 spatial lookup, the custom height GMM, paired rail-head extraction, line fitting,
-source point grouping and MDL model selection. The current
+source point grouping, MDL model selection, observation selection and paired-line
+gauge adjustment. The current
 unpacked C++ code is the source of truth: preserve its computational behavior and
 document proposed corrections separately.
 
@@ -28,6 +29,8 @@ document proposed corrections separately.
   extraction, controlled random draws, API and numerical behavior.
 - [docs/PYTHON_FITTING_MDL.md](docs/PYTHON_FITTING_MDL.md): fitting variants,
   source grouping rules, MDL scores and missing-candidate diagnostics.
+- [docs/PYTHON_OBSERVATION_GAUGE.md](docs/PYTHON_OBSERVATION_GAUGE.md): observation
+  and side-point selection, support state vectors, gauge formulas and native ties.
 
 The original application uses Windows Forms/C++/CLI, PCL, VTK, Boost and LAS
 libraries. Project files contain machine-specific paths. Retaining them documents
@@ -45,6 +48,7 @@ python -m pip install -e .
 python -m railway_mls demo
 python -m railway_mls heads-demo
 python -m railway_mls mdl-demo
+python -m railway_mls observation-demo
 python -m unittest discover -s tests -v
 ```
 
@@ -56,17 +60,22 @@ with class code 3 and reports updated heights. No real input data is required.
 `mdl-demo` fits and groups 270 synthetic candidates and selects three lines at the
 default weight. `mdl-demo --weight 0.05` selects two and `--weight 0` selects one
 from the same initialized candidates. It reports source flags, memberships and
-scores. Observation selection, paired-line adjustment, tracking and switch
-recognition are the next stages.
+scores. `observation-demo` uses 540 noisy synthetic head candidates in two
+neighborhoods, selects three models per neighborhood, chooses 100 observation
+points per rail, fits supporting lines, forms observation vectors and applies the
+source weighted gauge adjustment. Kalman tracking and switch recognition remain
+future stages; the example demonstrates the available components without tracing
+a complete path.
 
-The installed `railway-mls` command supports the same three demos.
+The installed `railway-mls` command supports the same four demos.
 Tests use `unittest`; when a C++ compiler is available they also compile temporary
 extracts of the original
 source for direct behavior comparisons. Full implementation details and API
 contracts are in the [foundation guide](docs/PYTHON_FOUNDATION.md) and the
-[GMM/head extraction guide](docs/PYTHON_GMM_HEADS.md), and
-[fitting/MDL guide](docs/PYTHON_FITTING_MDL.md). The latter documents the source's
-uninitialized-candidate cases and how Python exposes them without invented geometry.
+[GMM/head extraction guide](docs/PYTHON_GMM_HEADS.md),
+[fitting/MDL guide](docs/PYTHON_FITTING_MDL.md) and
+[observation/gauge guide](docs/PYTHON_OBSERVATION_GAUGE.md). These document source
+uninitialized-candidate cases and nonfinite arithmetic explicitly.
 
 ## What stays local
 
@@ -88,8 +97,8 @@ repository refer to its separate history.
 
 ## Development direction
 
-Continue from the implemented fitting/grouping and MDL stages to observation
-selection, paired-line adjustment, tracking and switch recognition.
+Continue from the implemented local inference and gauge components to Kalman
+initialization, sequential tracking and switch recognition.
 Include computational orchestration that currently lives in the GUI. Keep inactive source paths inactive
 and preserve defaults, templates, ordering, precision and reproducible quirks.
 
