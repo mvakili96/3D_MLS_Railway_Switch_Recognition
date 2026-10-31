@@ -494,7 +494,9 @@ class TrackingDemoTests(unittest.TestCase):
         self.assertEqual(result["status"], "insufficient_window_points")
         self.assertGreaterEqual(result["accepted_steps"], 5)
         self.assertTrue(result["tracking_implemented"])
-        self.assertFalse(result["recognition_implemented"])
+        self.assertTrue(result["recognition_implemented"])
+        self.assertTrue(result["recognition_postpass_ran"])
+        self.assertFalse(result["toe_detection_implemented"])
 
 
 if __name__ == "__main__":

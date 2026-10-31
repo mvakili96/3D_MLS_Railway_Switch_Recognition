@@ -4,7 +4,8 @@ This increment adds the remaining fitting variants, source point growing and
 greedy one/two/three-line MDL selection. It preserves the active code's objective,
 thresholds, ordering and shared-label effects. Observation selection and paired-line
 adjustment are implemented in the [following increment](PYTHON_OBSERVATION_GAUGE.md).
-The Kalman tracker and switch recognition remain future increments.
+The [tracking](PYTHON_TRACKING.md) and [recognition](PYTHON_RECOGNITION.md)
+increments now integrate these components.
 
 ## Run the synthetic example
 
@@ -216,4 +217,5 @@ Observation selection and paired-line/gauge adjustment are now available in the
 [following increment](PYTHON_OBSERVATION_GAUGE.md). Full initialization and filter
 components are also available in the [Kalman increment](PYTHON_KALMAN_INITIALIZATION.md),
 and are integrated in the [sequential tracking increment](PYTHON_TRACKING.md).
-Switch recognition remains pending; this local fitting stage alone does not trace paths.
+Stack recognition is available in the [recognition increment](PYTHON_RECOGNITION.md);
+this local fitting stage alone does not trace paths.

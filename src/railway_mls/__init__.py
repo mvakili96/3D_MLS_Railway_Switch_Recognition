@@ -11,6 +11,7 @@ from .initialization import InitializationResult, initial_kalman_states, initial
 from .kalman import KalmanPrediction, KalmanState, KalmanUpdate, kalman_predict, kalman_update
 from .mdl import MDLResult, segment_track_points_mdl
 from .models import (
+    BinaryString,
     GMMParameters,
     InitialLocation,
     TrackLayer,
@@ -28,6 +29,17 @@ from .observations import (
 from .points import Point3D, PointCloud, PointSelection
 from .sampling import MsvcRand, RecordedRand
 from .spatial import Bounds3D, GridIndex
+from .recognition import (
+    StackRecognition,
+    StackRecognitionBatch,
+    TemplateCatalogue,
+    TemplateRecognition,
+    define_templates,
+    recognize_stacks,
+    recognize_turnout,
+    stack_signature,
+    template_matching,
+)
 from .tracking import (
     SequentialTracker,
     TrackingResult,
@@ -40,6 +52,7 @@ from .tracking import (
 __version__ = "0.1.0"
 
 __all__ = [
+    "BinaryString",
     "Bounds3D",
     "ExtractionConfig",
     "GMMParameters",
@@ -62,6 +75,10 @@ __all__ = [
     "RecordedRand",
     "SupportObservation",
     "SequentialTracker",
+    "StackRecognition",
+    "StackRecognitionBatch",
+    "TemplateCatalogue",
+    "TemplateRecognition",
     "TrackHeadResult",
     "TrackLayer",
     "TrackSegment",
@@ -76,6 +93,7 @@ __all__ = [
     "classify_window",
     "cluster_by_gmm",
     "direction_mode",
+    "define_templates",
     "determine_observation",
     "extract_track_points",
     "fit_height_gmm",
@@ -88,7 +106,11 @@ __all__ = [
     "kalman_predict",
     "kalman_update",
     "observation_from_support",
+    "recognize_stacks",
+    "recognize_turnout",
     "segment_track_points_mdl",
     "seed_windows",
     "track_railway",
+    "stack_signature",
+    "template_matching",
 ]

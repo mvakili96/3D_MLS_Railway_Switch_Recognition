@@ -3,7 +3,8 @@
 This increment implements the computational loop in
 `RailwayExtraction.cpp:530–874`, before its visualization callbacks and separate
 recognition postpass. It integrates the previously ported components using the
-source call order. Templates, recognition, toes, automatic branch scheduling,
+source call order. Templates and stack recognition are available in the
+[recognition increment](PYTHON_RECOGNITION.md). Toes, automatic branch scheduling,
 bidirectional GUI orchestration and switch-box detection remain subsequent work.
 Inactive loop/cross calls remain inactive. No original C++ source is modified.
 
@@ -48,8 +49,9 @@ grid sharing its point cloud. It accepts `config`, `rng`, `track_direction`,
 initialization. Defaults on a newly constructed RNG begin a new stream.
 `track_direction` changes source observation choices; it **does not reverse seed
 geometry**. Reversing geometry and joining the two runs belong to later orchestration.
-`main_track=False` resets accumulated distance; recognition is not called for
-either flag in this loop-only increment.
+`main_track=False` resets accumulated distance and disables classification. Natural
+completion now runs the [recognition postpass](PYTHON_RECOGNITION.md) for completed
+stacks; diagnostic limits defer it. `TrackingResult.recognition` exposes its reports.
 
 For resumable diagnostics, construct
 `SequentialTracker(initialized.layer, grid, initialized.initial_heights, ...)`
@@ -161,9 +163,9 @@ before posterior updates and geometric stop checks. A terminal active stack is
 **not flushed** automatically. Stack segments copy window/line value state while
 keeping shared references to original cloud rows, matching native pointer identity.
 
-This storage prepares later template recognition. It does not assign template
-types, toe points or branch seeds. The source recognition postpass starts after
-the loop, and is not replaced with stub classifications in the Python API.
+The [recognition increment](PYTHON_RECOGNITION.md) consumes this storage after the
+loop and assigns template state to eligible completed stacks. Toe points and
+branch seeds remain pending. The active unflushed stack remains excluded.
 
 ## Undefined and nonfinite paths
 
@@ -184,7 +186,7 @@ separate from natural source stopping conditions and user-requested `step_limit`
 
 ## Verification and remaining work
 
-The suite passes **171 test methods**, including **55** using compiled original
+At completion of this increment, the suite passed **171 test methods**, including **55** using compiled original
 C++ extracts. Seven new native comparison methods exercise multiple actual loop
 iterations with fully initialized MDL candidates, both observation directions,
 single/multiple-model paths, branch distance reset, point and accumulating-head
@@ -201,7 +203,8 @@ check mixed one/multiple-model branches and nonfinite stop policy. Synthetic
 integration checks natural termination, all four geometric modes, gaps, curves,
 grade, equality thresholds, duplicate retries, stack transitions and resume state.
 
-Next implement stack signatures and source template recognition, then toe/branch
+Stack signatures and source template recognition are now implemented in the
+[recognition increment](PYTHON_RECOGNITION.md). Next implement toe/branch
 integration and bidirectional orchestration. Separately invoked source features
 remain in the port plan. Real-data accuracy, performance and published-metric
 reproduction remain pending; passing synthetic and extract comparisons does not

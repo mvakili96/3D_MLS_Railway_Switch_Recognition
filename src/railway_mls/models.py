@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from collections.abc import Iterable
 from math import cos, fabs, pi, sin
+from operator import index
 
 import numpy as np
 
@@ -127,10 +129,52 @@ class TrackLayer:
 
 
 @dataclass
+class BinaryString:
+    """LIDARPT.h binary state; labels are independent of Type and bit assignment."""
+
+    type: int = -1
+    score: float = 0.0
+    bits: tuple[int, ...] = ()
+    position_label: int = -1
+    direction_label: int = -1
+    turnout_label: int = -1
+    toe_label: int = -1
+
+    def __post_init__(self) -> None:
+        self.bits = tuple(index(bit) for bit in self.bits)
+
+    def set_bits(self, bits: Iterable[int]) -> None:
+        """SetBinaryString overwrites its 16 integers, leaving metadata intact."""
+        values = tuple(index(bit) for bit in bits)
+        if len(values) != 16:
+            raise ValueError("SetBinaryString requires exactly 16 integers")
+        self.bits = values
+
+    def set_labels(self, type_id: int) -> None:
+        """SetLables, including the source's else labels for unknown/999 types.
+
+        This method does not assign self.type, just as the source does not.
+        """
+        self.position_label = 0 if type_id in (0, 1, 2, 3, 4, 5, 12, 13, 16, 17) else 1
+        self.direction_label = 0 if type_id in (1, 3, 5, 7, 9, 11, 12, 15, 16, 19) else 1
+        self.turnout_label = 0 if type_id in (2, 3, 6, 7, 10, 11, 14, 15, 16, 17) else 1
+        self.toe_label = (
+            0
+            if type_id in (0, 1, 6, 7)
+            else 1
+            if type_id in (4, 5, 10, 11)
+            else 2
+            if type_id in (12, 13, 14, 15)
+            else -1
+        )
+
+
+@dataclass
 class TrackStack:
-    """Predicted turnout segments; recognition metadata is added in its own stage."""
+    """Predicted turnout segments and the source's independently stored signature."""
 
     track_segments: list[TrackSegment] = field(default_factory=list)
+    binary: BinaryString = field(default_factory=BinaryString)
 
 
 def seed_windows(seed: InitialLocation, config: ExtractionConfig | None = None) -> TrackSegment:

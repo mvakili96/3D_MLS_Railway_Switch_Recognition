@@ -3,7 +3,8 @@
 This increment implements `Setinitiallocation`, `KalmanPredict`, `KalmanUpdate`,
 the bundled matrix operations used by the filter, and the first filter states
 prepared at entry to `Trackingrailway`. The active C++ source remains the reference.
-The sequential tracking loop, adaptive windows and recognition are subsequent work.
+The [tracking](PYTHON_TRACKING.md) and [recognition](PYTHON_RECOGNITION.md)
+increments now integrate these components.
 
 ## Run and use
 
@@ -213,5 +214,6 @@ The original source files remain unchanged; the full Windows application is not 
 
 The [sequential tracking increment](PYTHON_TRACKING.md) now integrates prediction
 windows, retries, inference, gauge placement, stopping and stacks, preserving the
-source covariance orchestration and inactive loop/cross calls. Recognition templates,
-toes, branch/bidirectional orchestration and real-data validation remain later work.
+source covariance orchestration and inactive loop/cross calls. Templates and stack
+classification are available in the [recognition increment](PYTHON_RECOGNITION.md).
+Toes, branch/bidirectional orchestration and real-data validation remain later work.

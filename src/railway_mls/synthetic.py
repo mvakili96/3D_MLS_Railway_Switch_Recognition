@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from .config import ExtractionConfig
-from .models import InitialLocation
+from .models import InitialLocation, TrackSegment, TrackStack, TrackWindow
 from .points import Point3D, PointCloud
 
 
@@ -14,6 +14,34 @@ class SyntheticScene:
     cloud: PointCloud
     seed: InitialLocation
     config: ExtractionConfig
+
+
+def signature_stack(bits, segment_count: int = 6) -> TrackStack:
+    """Construct a tag-only recognition fixture, not a raw-cloud tracking result.
+
+    The four rows go into first/second/penultimate/last segments. Interior tags
+    are zero and are ignored by source signature extraction.
+    """
+    from operator import index
+
+    values = tuple(index(bit) for bit in bits)
+    count = index(segment_count)
+    if len(values) != 16 or count <= 4:
+        raise ValueError("signature fixtures require 16 integers and at least five segments")
+    rows = [[0] * 4 for _ in range(count)]
+    for source, destination in enumerate((0, 1, count - 2, count - 1)):
+        rows[destination] = values[source * 4 : source * 4 + 4]
+    segments = []
+    for i, (left2, right2, left1, right1) in enumerate(rows):
+        segments.append(
+            TrackSegment(
+                TrackWindow(Point3D(i, 0, 0.2), 0, turnout=True, left_tag=left1, right_tag=right1),
+                TrackWindow(
+                    Point3D(i, 1.5, 0.2), 0, turnout=True, left_tag=left2, right_tag=right2
+                ),
+            )
+        )
+    return TrackStack(segments)
 
 
 def straight_scene(config: ExtractionConfig | None = None) -> SyntheticScene:

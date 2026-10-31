@@ -25,6 +25,7 @@ from .observations import (
     observation_from_support,
 )
 from .points import Point3D
+from .recognition import StackRecognitionBatch, recognize_stacks
 from .sampling import MsvcRand, RandSource
 from .spatial import GridIndex
 
@@ -100,6 +101,7 @@ class TrackingResult:
     distance_from_start: float
     next_heights: tuple[float, float]
     status: str
+    recognition: StackRecognitionBatch | None = None
 
     @property
     def reference_comparable(self) -> bool:
@@ -119,7 +121,8 @@ class SequentialTracker:
     Reuse this object to continue after run(max_steps=...), preserving the RNG,
     active turnout stack, current heights and first-iteration state. The source's
     current covariances stay identity: its posterior-assignment lines are inactive.
-    Recognition, toe detection and GUI callbacks are outside this loop stage.
+    Natural completion recognizes completed stacks. Toe detection and GUI callbacks
+    remain separate; an optional step limit does not trigger the postpass.
     """
 
     def __init__(
@@ -152,6 +155,8 @@ class SequentialTracker:
         self.layer, self.grid = layer, grid
         self.rng = rng if rng is not None else MsvcRand()
         self.track_direction = track_direction
+        self.main_track = main_track
+        self.recognition: StackRecognitionBatch | None = None
         self.distance = distance_from_start if main_track else 0.0
         self.heights = tuple(initial_heights)
         self.completed_stacks = completed_stacks if completed_stacks is not None else []
@@ -173,14 +178,26 @@ class SequentialTracker:
             if not step.accepted or step.status != "accepted":
                 self.status = step.status
         status = "step_limit" if self.status == "ready" else self.status
+        if self.recognition is None and status in {
+            "insufficient_window_points",
+            "insufficient_head_points",
+            "gauge_difference",
+            "trajectory_end",
+            "no_support_points",
+        }:
+            self.recognition = recognize_stacks(self.completed_stacks, main_track=self.main_track)
         return TrackingResult(
             self.layer,
             tuple(self.steps),
-            tuple(TrackStack(list(stack.track_segments)) for stack in self.completed_stacks),
-            TrackStack(list(self.active_stack.track_segments)),
+            tuple(
+                TrackStack(list(stack.track_segments), replace(stack.binary))
+                for stack in self.completed_stacks
+            ),
+            TrackStack(list(self.active_stack.track_segments), replace(self.active_stack.binary)),
             self.distance,
             self.heights,
             status,
+            self.recognition,
         )
 
     def _step(self) -> TrackingStep:
@@ -404,7 +421,7 @@ def track_railway(
     main_track: bool = True,
     max_steps: int | None = None,
 ) -> TrackingResult:
-    """Run the sequential stage after initialization; no recognition postpass yet."""
+    """Run sequential tracking and completed-stack recognition, without toes/branches."""
     if initialized.source_return is not True or initialized.initial_heights is None:
         raise ValueError("successful source initialization is required before tracking")
     tracker = SequentialTracker(
