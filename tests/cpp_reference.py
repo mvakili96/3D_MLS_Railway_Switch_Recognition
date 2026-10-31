@@ -13,6 +13,10 @@ The bundled matrix/vector templates are included for Kalman tests. Input-only
 references and size getters receive mechanical const qualifiers for GCC rvalue
 binding; matrix arithmetic and LU branches remain original. Inverse diagnostics
 capture its valid flag and count the source's existing TINY substitutions.
+The tracking oracle compiles the original loop through DuplicatePolyPair, with
+an explicit accepted-step test limit. The omitted tail is print/progress/render
+callbacks and the separate recognition postpass. Stop diagnostics copy branches;
+predicted-window diagnostics copy existing lengths/counts without changing math.
 """
 
 from pathlib import Path
@@ -141,7 +145,7 @@ struct TrackStack { vector<TrackSegment> trkSegs; };
 struct TrackLayer {
     vector<TrackSegment> m_TrackSegList;
     vector<POINT3D> m_RailVec1, m_RailVec2, m_RailVecCenter;
-    vector<Line3D> m_updateBnd;
+    vector<Line3D> m_updateBnd, m_updateBnd_turnout;
 };
 class RailwayExtraction {
 public:
@@ -160,9 +164,17 @@ public:
     double m_distFromSp = -1, m_InitTrkHgt1, m_InitTrkHgt2;
     TrackLayer *currentLayer;
     InitialLocation initialLocation;
+    int m_ThMinPts, m_ThMinTrkPts, referenceMaxSteps;
+    int lastTrackingStop = 0;
+    vector<TrackStack> m_TrkStks;
+    TrackStack referenceActiveStack;
+    vector<int> m_LoopCross;
+    vector<vector<double>> trackingWindows;
     void progressCallback(double, double) {}
     void generateGrid();
     bool Setinitiallocation(int, POINT3D, double);
+    void TrackingLoop(int, bool);
+    void GenerateTrkSegAssignMemPts(TrackSegment&, TrackSegment, Matrix<double>, Matrix<double>, double, double, int);
     void GetLnsFromVtx(vector<POINT3D>, vector<Line3D>&);
     int ReCount(int, int);
     void KalmanPredict(int, double, double, Matrix<double>, Matrix<double>, Matrix<double>&, Matrix<double>&);
@@ -240,8 +252,31 @@ public:
                     "int RailwayExtraction::ReCount(",
                     "void RailwayExtraction::KalmanPredict(",
                     "void RailwayExtraction::KalmanUpdate(",
+                    "void RailwayExtraction::GenerateTrkSegAssignMemPts(",
                 )
             )
+            # This routine has an unmatched brace inside a commented-out loop;
+            # select its boundary directly instead of counting comment braces.
+            tracking = extraction[
+                extraction.index("\nvoid RailwayExtraction::Trackingrailway(") + 1 :
+            ]
+            tracking = tracking[
+                : tracking.index("\n\t\tPOINT3D nPt = nextSeg.m_Track1.MemLn.EndPt;")
+            ]
+            tracking += "\nif (iter >= referenceMaxSteps) { lastTrackingStop=5; break; }\n}\nreferenceActiveStack=trkStk;\n}"
+            tracking = tracking.replace("::Trackingrailway(", "::TrackingLoop(")
+            for marker, code in (
+                ("# of points in Track Window is too small!!", 1),
+                ("# of head points in Window", 2),
+                ("Track Guage difference:", 3),
+                ("Track End by trajectory", 4),
+            ):
+                position = tracking.index('printf("' + marker)
+                tracking = tracking[:position] + f"lastTrackingStop={code}; " + tracking[position:]
+            functions += "\n" + tracking
+            generation = function(extraction, "void RailwayExtraction::GenerateTrkSegAssignMemPts(")
+            diagnostic = "\ntrackingWindows.push_back({Length, double(nextSeg.m_Track1.MemPnts.size()), double(nextSeg.m_Track2.MemPnts.size())});\n"
+            functions = functions.replace(generation, generation[:-1] + diagnostic + "}")
             observation = function(extraction, "void RailwayExtraction::DetermineObservation(")
             prefix = observation[: observation.index("\n\tint mode1, mode2;")] + "\n}"
             functions += "\n" + prefix.replace(
@@ -391,12 +426,71 @@ void printStateLine(Line3D line, Cloud &cloud) {
     cout << line.Ang << ' ' << line.A2D << ' ' << line.B2D << ' ' << line.C2D << ' ';
     printSelection(line.MemPts, cloud);
 }
+void printTrackingSegment(TrackSegment segment, Cloud &cloud, bool fitted) {
+    printPoint(segment.m_Center); cout << segment.m_D << ' ';
+    if (fitted) cout << segment.distFromSp << ' ';
+    for (auto window : {segment.m_Track1, segment.m_Track2}) {
+        printPoint(window.CenterPt); cout << window.ori << ' '; printVertices(window.vtx);
+        for (auto points : {window.MemPnts, window.slMemPnts, window.srMemPnts}) printSelection(points, cloud);
+        cout << window.bTurnOut << ' ' << window.bLeftTag << ' ' << window.bRightTag << ' ';
+        if (fitted) printStateLine(window.MemLn, cloud);
+    }
+}
 int main() {
     cout << setprecision(17);
     string operation;
     cin >> operation;
     RailwayExtraction engine;
-    if (operation == "predict") {
+    if (operation == "track") {
+        int direction; bool mainTrack;
+        cin >> engine.m_GridSize >> engine.m_TrkGuage >> engine.m_gLength >> engine.m_gWidth
+            >> engine.m_ThRansac >> engine.m_ThMinPts >> engine.m_ThMinTrkPts >> engine.m_skip_rate
+            >> engine.m_wMDL >> engine.m_ThDistGrouping >> direction >> mainTrack
+            >> engine.m_distFromSp >> engine.referenceMaxSteps >> engine.m_InitTrkHgt1 >> engine.m_InitTrkHgt2;
+        engine.m_BoundMin = readPoint(); engine.m_BoundMax = readPoint();
+        size_t count; cin >> count;
+        Cloud cloud; cloud.points.resize(count); engine.point_cloud = &cloud;
+        for (auto &p : cloud.points) cin >> p.x >> p.y >> p.z >> p.ClassCode >> p.SegmentID;
+        TrackSegment segment; cin >> segment.distFromSp;
+        for (auto window : {&segment.m_Track1, &segment.m_Track2}) {
+            window->CenterPt = readPoint(); cin >> window->ori;
+            for (int i = 0; i < 4; ++i) window->vtx.push_back(readPoint());
+            window->MemPnts = readSelection(cloud); window->MemLn = readStateLine(cloud);
+        }
+        segment.GetCenterOfTwoTracks(); segment.GetDistanceBetweenTwoCenter();
+        TrackLayer layer; layer.m_TrackSegList.push_back(segment); engine.currentLayer = &layer;
+        layer.m_RailVec1.push_back(segment.m_Track1.CenterPt);
+        layer.m_RailVec2.push_back(segment.m_Track2.CenterPt);
+        layer.m_RailVecCenter.push_back(segment.m_Center);
+        for (auto window : {segment.m_Track1, segment.m_Track2}) {
+            vector<Line3D> edges; engine.GetLnsFromVtx(window.vtx, edges);
+            layer.m_updateBnd.insert(layer.m_updateBnd.end(), edges.begin(), edges.end());
+        }
+        engine.generateGrid(); readRandom(); engine.m_bInit = true;
+        if (engine.referenceMaxSteps > 0) engine.TrackingLoop(direction, mainTrack);
+        cout << "\nRESULT " << engine.lastTrackingStop << ' ' << engine.m_distFromSp << ' ';
+        cout << layer.m_TrackSegList.size() << ' ';
+        for (auto item : layer.m_TrackSegList) printTrackingSegment(item, cloud, true);
+        for (auto points : {layer.m_RailVec1, layer.m_RailVec2, layer.m_RailVecCenter}) {
+            cout << points.size() << ' '; printVertices(points);
+        }
+        for (auto edges : {layer.m_updateBnd, layer.m_updateBnd_turnout}) {
+            cout << edges.size() << ' ';
+            for (auto edge : edges) { printPoint(edge.BeginPt); printPoint(edge.EndPt); }
+        }
+        cout << engine.m_TrkStks.size() << ' ';
+        for (auto stack : engine.m_TrkStks) {
+            cout << stack.trkSegs.size() << ' ';
+            for (auto item : stack.trkSegs) printTrackingSegment(item, cloud, false);
+        }
+        cout << engine.referenceActiveStack.trkSegs.size() << ' ';
+        for (auto item : engine.referenceActiveStack.trkSegs) printTrackingSegment(item, cloud, false);
+        cout << engine.trackingWindows.size() << ' ';
+        for (auto attempt : engine.trackingWindows) for (auto value : attempt) cout << value << ' ';
+        for (auto p : cloud.points) cout << p.ClassCode << ' ' << p.SegmentID << ' ';
+        cout << random_cursor << ' ';
+        delete[] engine.m_pGrid;
+    } else if (operation == "predict") {
         int mode; double angle, length; cin >> mode >> angle >> length;
         auto point = readMatrix(3, 1), covariance = readMatrix(3, 3);
         Matrix<double> nextPoint(3, 1, 0), nextCovariance(3, 3, 0);

@@ -184,4 +184,5 @@ The remaining line-fitting variants, grouping and MDL are now implemented in the
 adjustment are implemented in the [observation/gauge increment](PYTHON_OBSERVATION_GAUGE.md).
 Full initialization and filter components are available in the
 [Kalman/initialization increment](PYTHON_KALMAN_INITIALIZATION.md).
-The full suite currently passes 143 test methods. The next work is sequential tracking.
+The [sequential tracking increment](PYTHON_TRACKING.md) integrates these components.
+The full suite currently passes 171 test methods. The next work is recognition.

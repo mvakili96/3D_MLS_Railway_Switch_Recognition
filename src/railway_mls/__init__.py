@@ -15,6 +15,7 @@ from .models import (
     InitialLocation,
     TrackLayer,
     TrackSegment,
+    TrackStack,
     TrackWindow,
     seed_windows,
 )
@@ -27,6 +28,14 @@ from .observations import (
 from .points import Point3D, PointCloud, PointSelection
 from .sampling import MsvcRand, RecordedRand
 from .spatial import Bounds3D, GridIndex
+from .tracking import (
+    SequentialTracker,
+    TrackingResult,
+    TrackingStep,
+    WindowAttempt,
+    generate_tracking_segment,
+    track_railway,
+)
 
 __version__ = "0.1.0"
 
@@ -52,10 +61,15 @@ __all__ = [
     "PointSelection",
     "RecordedRand",
     "SupportObservation",
+    "SequentialTracker",
     "TrackHeadResult",
     "TrackLayer",
     "TrackSegment",
+    "TrackStack",
     "TrackWindow",
+    "TrackingResult",
+    "TrackingStep",
+    "WindowAttempt",
     "adjust_two_lines",
     "adjust_two_lines_with_observation",
     "classify_segment",
@@ -68,6 +82,7 @@ __all__ = [
     "fit_fixed_angle",
     "fit_line_ransac",
     "group_points",
+    "generate_tracking_segment",
     "initial_kalman_states",
     "initialize_tracks",
     "kalman_predict",
@@ -75,4 +90,5 @@ __all__ = [
     "observation_from_support",
     "segment_track_points_mdl",
     "seed_windows",
+    "track_railway",
 ]

@@ -195,7 +195,7 @@ the component equations, without changing this future orchestration requirement.
 
 ## Verification and next increment
 
-The suite passes **143 test methods**, including **48** comparing compiled original
+At completion of this increment, the suite passed **143 test methods**, including **48** comparing compiled original
 C++ extracts. New checks cover initialization in modes 0–4, changed dimensions,
 gauge and random seed, exact point memberships, cached line state, layer vectors,
 boundary endpoints, label preservation, empty/no-head returns and nonfinite native
@@ -211,8 +211,7 @@ existing zero-pivot substitutions. Arithmetic and pivot branches remain source
 code. Native no-model/uninitialized-line cases are not executed as an oracle.
 The original source files remain unchanged; the full Windows application is not built.
 
-Next implement sequential tracking: prediction-window generation, point/head
-shortage retries, MDL/observation selection, Kalman observations, post-update gauge
-adjustment, adaptive windows, stopping and stack transitions. Preserve the source
-covariance orchestration, retry accumulation, and inactive loop/cross calls.
-Recognition templates and real-data validation follow those components.
+The [sequential tracking increment](PYTHON_TRACKING.md) now integrates prediction
+windows, retries, inference, gauge placement, stopping and stacks, preserving the
+source covariance orchestration and inactive loop/cross calls. Recognition templates,
+toes, branch/bidirectional orchestration and real-data validation remain later work.
