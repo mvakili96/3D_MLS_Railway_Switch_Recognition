@@ -61,7 +61,9 @@ def _bounded_line(
     else:
         begin = Point3D(-b / a * minimum[1] - c / a, minimum[1], height)
         end = Point3D(-b / a * maximum[1] - c / a, maximum[1], height)
-    return Line3D(begin, end)
+    line = Line3D(begin, end)
+    line.update_center()
+    return line
 
 
 def _distances(xyz: np.ndarray, coefficients: tuple[float, float, float]) -> np.ndarray:

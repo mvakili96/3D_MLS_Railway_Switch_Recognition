@@ -9,11 +9,104 @@ import numpy as np
 
 from .heads import extract_track_points
 from .config import ExtractionConfig
+from .fitting import fit_line_ransac
+from .gauge import adjust_two_lines_with_observation
+from .geometry import Line3D
 from .mdl import segment_track_points_mdl
 from .models import seed_windows
+from .observations import determine_observation, observation_from_support
+from .points import Point3D
 from .sampling import MsvcRand
 from .spatial import GridIndex
-from .synthetic import parallel_head_cloud, straight_scene
+from .synthetic import paired_head_cloud, parallel_head_cloud, straight_scene
+
+
+def _observation_demo(seed: int) -> dict:
+    config = ExtractionConfig()
+    cloud = paired_head_cloud(config)
+    random = MsvcRand(seed)
+    shift = config.track_gauge / np.sqrt(2)
+    guides = (
+        Line3D(Point3D(0, 0, 0.2), Point3D(1, 1, 0.2)),
+        Line3D(Point3D(-shift, shift, 0.21), Point3D(1 - shift, 1 + shift, 0.21)),
+    )
+    candidates = tuple(
+        segment_track_points_mdl(
+            cloud.select(np.arange(start, start + len(cloud) // 2)),
+            mode=1,
+            angle=45,
+            config=config,
+            rng=random,
+        )
+        for start in (0, len(cloud) // 2)
+    )
+    payload = {
+        "stage": "MDL, observation selection, fitting and paired gauge adjustment",
+        "status": "candidate_selection_failed",
+        "input_points": len(cloud),
+        "candidate_counts": [len(result.lines) for result in candidates],
+        "candidate_statuses": [result.status for result in candidates],
+        "random_seed": seed,
+        "tracking_implemented": False,
+    }
+    if not all(result.success for result in candidates):
+        payload["random_draws"] = random.draw_count
+        return payload
+    observations = determine_observation(
+        candidates[0].lines, candidates[1].lines, *guides, config=config, stack_size=1
+    )
+    payload.update(
+        status=observations.status,
+        observation_counts=[len(points) for points in observations.observations],
+        selected_indices=observations.selected_indices,
+        side_counts={
+            "left": [len(points) for points in observations.left_points],
+            "right": [len(points) for points in observations.right_points],
+        },
+    )
+    if not observations.success:
+        payload["random_draws"] = random.draw_count
+        return payload
+    fits = tuple(
+        fit_line_ransac(points, threshold=config.max_distance_for_ransac, rng=random)
+        for points in observations.observations
+    )
+    if not all(fit.success for fit in fits):
+        payload.update(
+            status="line_fit_failed",
+            fit_statuses=[fit.status for fit in fits],
+            random_draws=random.draw_count,
+        )
+        return payload
+    states = tuple(observation_from_support(fit.support) for fit in fits)
+    # Standalone component demonstration: full tracking applies this adjustment
+    # after its Kalman update, which is a subsequent implementation stage.
+    adjusted = adjust_two_lines_with_observation(
+        fits[0].line,
+        fits[1].line,
+        states[0].support,
+        states[1].support,
+        references=(guides[0].begin, guides[1].begin),
+        config=config,
+    )
+    payload.update(
+        status=adjusted.status,
+        observation_vectors=[state.point.as_array().tolist() for state in states],
+        fit_sigma=[fit.sigma for fit in fits],
+        gauge_adjustment={
+            "status": adjusted.status,
+            "common_angle": adjusted.common_angle,
+            "initial_gap": adjusted.initial_gap,
+            "weighted_distance": adjusted.weighted_distance,
+            "scale": adjusted.scale,
+            "lines": [
+                {"begin": line.begin.as_array().tolist(), "end": line.end.as_array().tolist()}
+                for line in adjusted.lines
+            ],
+        },
+        random_draws=random.draw_count,
+    )
+    return payload
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -33,7 +126,17 @@ def main(argv: list[str] | None = None) -> int:
     mdl_parser.add_argument(
         "--weight", type=float, default=0.4, help="source MDL weight (default: 0.4)"
     )
+    observation_parser = commands.add_parser(
+        "observation-demo", help="select paired observations, fit supports and adjust gauge"
+    )
+    observation_parser.add_argument(
+        "--seed", type=int, default=1, help="Microsoft CRT seed (default: 1)"
+    )
     arguments = parser.parse_args(argv)
+    if arguments.command == "observation-demo":
+        result = _observation_demo(arguments.seed)
+        print(json.dumps(result, indent=2, allow_nan=False))
+        return 0 if result["status"] == "ok" else 1
     if arguments.command == "mdl-demo":
         if not isfinite(arguments.weight):
             parser.error("--weight must be finite for JSON output")

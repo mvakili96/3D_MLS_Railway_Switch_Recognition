@@ -180,6 +180,7 @@ The demo and Python lint checks pass. Complete Windows-binary equivalence, runti
 on real MLS clouds and published accuracy remain later experimental work.
 
 The remaining line-fitting variants, grouping and MDL are now implemented in the
-[fitting/MDL increment](PYTHON_FITTING_MDL.md). The full suite currently passes
-94 test methods. The next work is observation selection, paired-line adjustment
-and sequential tracking.
+[fitting/MDL increment](PYTHON_FITTING_MDL.md). Observation selection and paired-line
+adjustment are implemented in the [observation/gauge increment](PYTHON_OBSERVATION_GAUGE.md).
+The full suite currently passes 117 test methods. The next work is Kalman
+initialization and sequential tracking.

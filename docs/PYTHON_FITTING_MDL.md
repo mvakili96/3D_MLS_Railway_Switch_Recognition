@@ -2,8 +2,9 @@
 
 This increment adds the remaining fitting variants, source point growing and
 greedy one/two/three-line MDL selection. It preserves the active code's objective,
-thresholds, ordering and shared-label effects. Observation selection, paired-line
-adjustment, the Kalman tracker and switch recognition remain future increments.
+thresholds, ordering and shared-label effects. Observation selection and paired-line
+adjustment are implemented in the [following increment](PYTHON_OBSERVATION_GAUGE.md).
+The Kalman tracker and switch recognition remain future increments.
 
 ## Run the synthetic example
 
@@ -196,7 +197,7 @@ of undefined native intermediates, not a correction based on the paper.
 
 ## Verification and next stage
 
-The full suite passes **94 test methods**, including **27** methods comparing
+At completion of this increment, the suite passed **94 test methods**, including **27** methods comparing
 against compiled extracts of the original C++. New comparisons cover:
 
 - 500-attempt models, support identities, sigma and random consumption;
@@ -211,6 +212,7 @@ or branches. Native tests do not execute the missing-candidate undefined cases;
 Python's documented policy for those cases is checked separately. The long-chain
 test also verifies iterative growing beyond Python's usual recursion depth.
 
-The next increment is observation selection and paired-line/gauge adjustment,
-followed by Kalman initialization and sequential tracking. No full rail-path or
+Observation selection and paired-line/gauge adjustment are now available in the
+[following increment](PYTHON_OBSERVATION_GAUGE.md), with Kalman initialization and
+sequential tracking still pending. No full rail-path or
 switch-recognition result is claimed by this local fitting stage.

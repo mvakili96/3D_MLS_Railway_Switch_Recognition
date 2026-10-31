@@ -154,9 +154,11 @@ methods; the demo selected **180/180** points; the editable install succeeded.
 The custom height EM-GMM and rail-head extraction are now implemented in the
 [GMM/head extraction increment](PYTHON_GMM_HEADS.md), including its required
 100-attempt RANSAC line fit. The [fitting/MDL increment](PYTHON_FITTING_MDL.md) now
-adds the other fitting variants, source grouping and MDL selection. The complete
-suite currently passes 94 test methods. The next work is observation selection
-and paired-line adjustment before integrating the sequential tracker. Downstream
+adds the other fitting variants, source grouping and MDL selection. The
+[observation/gauge increment](PYTHON_OBSERVATION_GAUGE.md) adds observation/side
+selection, support state vectors and both gauge routines. The complete suite
+currently passes 117 test methods. The next work is Kalman initialization and
+sequential tracking. Downstream
 recognition models and cached tracking state will be specified with their stage.
 
 Packaging and array interfaces follow the official

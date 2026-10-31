@@ -47,3 +47,18 @@ def parallel_head_cloud() -> PointCloud:
             x = position * 0.01
             points.append((x, x + rail * 0.3, 0.2 + len(points) * 1e-6))
     return PointCloud(points)
+
+
+def paired_head_cloud(config: ExtractionConfig | None = None) -> PointCloud:
+    """Two 270-point oblique candidate neighborhoods for observation/gauge demos.
+
+    Each has three rails (100/90/80 points). Small deterministic transverse noise
+    exercises the weighted gauge arithmetic without its uniform-error NaNs. This
+    enters after head extraction; it is not a raw-cloud tracking scene.
+    """
+    settings = config if config is not None else ExtractionConfig()
+    first = parallel_head_cloud().xyz.copy()
+    first[:, 1] += .004 * np.sin(np.arange(len(first)) * .71)
+    shift = settings.track_gauge / np.sqrt(2)
+    second = first + np.array([-shift, shift, .01])
+    return PointCloud(np.vstack((first, second)))
