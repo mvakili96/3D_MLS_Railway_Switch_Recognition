@@ -3,7 +3,8 @@
 This repository preserves the existing C++ implementation of railway tracking
 and switch-region recognition from 3D mobile laser scanning (MLS) data. The Python
 implementation provides point/state models, geometry, paired rail windows,
-spatial lookup, the custom height GMM and paired rail-head extraction. The current
+spatial lookup, the custom height GMM, paired rail-head extraction, line fitting,
+source point grouping and MDL model selection. The current
 unpacked C++ code is the source of truth: preserve its computational behavior and
 document proposed corrections separately.
 
@@ -25,13 +26,15 @@ document proposed corrections separately.
   source mapping, preserved quirks and remaining scope.
 - [docs/PYTHON_GMM_HEADS.md](docs/PYTHON_GMM_HEADS.md): source GMM, rail-head
   extraction, controlled random draws, API and numerical behavior.
+- [docs/PYTHON_FITTING_MDL.md](docs/PYTHON_FITTING_MDL.md): fitting variants,
+  source grouping rules, MDL scores and missing-candidate diagnostics.
 
 The original application uses Windows Forms/C++/CLI, PCL, VTK, Boost and LAS
 libraries. Project files contain machine-specific paths. Retaining them documents
 the existing setup; it does not provide a portable build of the Windows application.
 The Python foundation runs independently of those native dependencies.
 
-## Run the Python foundation
+## Run the implemented Python stages
 
 From the repository root, using Python 3.10 or newer:
 
@@ -41,6 +44,7 @@ source .venv/bin/activate
 python -m pip install -e .
 python -m railway_mls demo
 python -m railway_mls heads-demo
+python -m railway_mls mdl-demo
 python -m unittest discover -s tests -v
 ```
 
@@ -49,15 +53,20 @@ then constructs two rail windows and selects 180 points in each. It performs
 geometry and spatial membership. `heads-demo` adds the source height GMM and its
 required 100-attempt line fit, then extracts 60 head points per rail, labels them
 with class code 3 and reports updated heights. No real input data is required.
-The remaining fitting variants, grouping, MDL, tracking and switch recognition
-are the next stages.
+`mdl-demo` fits and groups 270 synthetic candidates and selects three lines at the
+default weight. `mdl-demo --weight 0.05` selects two and `--weight 0` selects one
+from the same initialized candidates. It reports source flags, memberships and
+scores. Observation selection, paired-line adjustment, tracking and switch
+recognition are the next stages.
 
-The installed `railway-mls demo` and `railway-mls heads-demo` commands are equivalent.
+The installed `railway-mls` command supports the same three demos.
 Tests use `unittest`; when a C++ compiler is available they also compile temporary
 extracts of the original
 source for direct behavior comparisons. Full implementation details and API
 contracts are in the [foundation guide](docs/PYTHON_FOUNDATION.md) and the
-[GMM/head extraction guide](docs/PYTHON_GMM_HEADS.md).
+[GMM/head extraction guide](docs/PYTHON_GMM_HEADS.md), and
+[fitting/MDL guide](docs/PYTHON_FITTING_MDL.md). The latter documents the source's
+uninitialized-candidate cases and how Python exposes them without invented geometry.
 
 ## What stays local
 
@@ -79,8 +88,8 @@ repository refer to its separate history.
 
 ## Development direction
 
-Continue from the implemented classification and rail-head extraction to the
-remaining fitting/grouping and MDL stages, then tracking and switch recognition.
+Continue from the implemented fitting/grouping and MDL stages to observation
+selection, paired-line adjustment, tracking and switch recognition.
 Include computational orchestration that currently lives in the GUI. Keep inactive source paths inactive
 and preserve defaults, templates, ordering, precision and reproducible quirks.
 

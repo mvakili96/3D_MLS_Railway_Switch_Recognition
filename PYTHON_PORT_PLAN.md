@@ -23,10 +23,15 @@ are also implemented, including the required 100-attempt RANSAC overload, shared
 label updates and retry accumulation. Their specification and portability decisions
 are in [docs/PYTHON_GMM_HEADS.md](docs/PYTHON_GMM_HEADS.md).
 
-Verification passed 58 test methods, including sixteen methods comparing against
+The remaining line-fitting variants, source point growing, and greedy MDL selection
+are implemented on the feature branch, including source RMS uncertainty, component
+retention/label quirks, initialized-output reuse, and explicit missing-candidate
+diagnostics. See [docs/PYTHON_FITTING_MDL.md](docs/PYTHON_FITTING_MDL.md).
+
+Verification passed 94 test methods, including 27 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. The remaining fitting variants, point grouping, MDL, observation
-selection, full tracking and recognition are pending. Those behavioral contracts
+been built. Observation selection, paired-line/gauge adjustment, full Kalman
+initialization/tracking and recognition are pending. Their behavioral contracts
 and checks will accompany each stage.
 
 ## Specification checklist

@@ -3,14 +3,17 @@
 import argparse
 from dataclasses import asdict
 import json
+from math import isfinite
 
 import numpy as np
 
 from .heads import extract_track_points
+from .config import ExtractionConfig
+from .mdl import segment_track_points_mdl
 from .models import seed_windows
 from .sampling import MsvcRand
 from .spatial import GridIndex
-from .synthetic import straight_scene
+from .synthetic import parallel_head_cloud, straight_scene
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -23,7 +26,54 @@ def main(argv: list[str] | None = None) -> int:
     heads_parser.add_argument(
         "--seed", type=int, default=1, help="Microsoft CRT random seed (default: 1)"
     )
+    mdl_parser = commands.add_parser(
+        "mdl-demo", help="fit, group and select one/two/three-line models"
+    )
+    mdl_parser.add_argument("--seed", type=int, default=1, help="Microsoft CRT seed (default: 1)")
+    mdl_parser.add_argument(
+        "--weight", type=float, default=0.4, help="source MDL weight (default: 0.4)"
+    )
     arguments = parser.parse_args(argv)
+    if arguments.command == "mdl-demo":
+        if not isfinite(arguments.weight):
+            parser.error("--weight must be finite for JSON output")
+        cloud = parallel_head_cloud()
+        random = MsvcRand(arguments.seed)
+        result = segment_track_points_mdl(
+            cloud.select(),
+            mode=1,
+            angle=45,
+            config=ExtractionConfig(mdl_weight=arguments.weight),
+            rng=random,
+        )
+        print(
+            json.dumps(
+                {
+                    "stage": "line fitting, source grouping and MDL selection",
+                    "status": result.status,
+                    "input_points": len(cloud),
+                    "selected_count": result.selected_count,
+                    "hypotheses": [asdict(hypothesis) for hypothesis in result.hypotheses],
+                    "selected_lines": [
+                        {
+                            "begin": line.begin.as_array().tolist(),
+                            "end": line.end.as_array().tolist(),
+                            "member_count": len(line.members) if line.members is not None else 0,
+                        }
+                        for line in result.lines
+                    ],
+                    "source_uninitialized_candidates": result.uninitialized_candidates,
+                    "reference_comparable": result.reference_comparable,
+                    "visited_segment_points": int(np.count_nonzero(cloud.segment_ids == 0)),
+                    "random_seed": arguments.seed,
+                    "random_draws": random.draw_count,
+                    "tracking_implemented": False,
+                },
+                indent=2,
+                allow_nan=False,
+            )
+        )
+        return 0 if result.success else 1
     scene = straight_scene()
     segment = seed_windows(scene.seed, scene.config)
     grid = GridIndex(scene.cloud, scene.config.grid_size)

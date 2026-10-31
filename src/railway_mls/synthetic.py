@@ -33,3 +33,17 @@ def straight_scene(config: ExtractionConfig | None = None) -> SyntheticScene:
     points.extend(((center.x, center.y - 2, 1), (center.x, center.y + 4, 1)))
     cloud = PointCloud(points, intensity=np.full(len(points), 100, dtype=np.int32))
     return SyntheticScene(cloud, InitialLocation(center, angle=0, mode=1), config)
+
+
+def parallel_head_cloud() -> PointCloud:
+    """270 oblique head candidates in three rails (100/90/80), for MDL alone.
+
+    Distinct heights make source sort comparisons unambiguous. This fixture enters
+    at the local head-candidate stage; it does not perform GMM or full tracing.
+    """
+    points = []
+    for rail, count in enumerate((100, 90, 80)):
+        for position in range(count):
+            x = position * 0.01
+            points.append((x, x + rail * 0.3, 0.2 + len(points) * 1e-6))
+    return PointCloud(points)

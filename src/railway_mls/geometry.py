@@ -12,7 +12,7 @@ from math import acos, fabs, isfinite, pi, sqrt, tan
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
-from .points import Point3D
+from .points import Point3D, PointSelection
 
 
 def direction_mode(next_point: Point3D, previous_point: Point3D) -> int:
@@ -69,6 +69,7 @@ class Line3D:
     b: float = field(init=False)
     c: float = field(init=False)
     angle: float = field(init=False)
+    members: PointSelection | None = field(default=None, repr=False, compare=False)
 
     def __post_init__(self) -> None:
         self.update_parameters()
