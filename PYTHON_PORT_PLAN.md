@@ -18,11 +18,16 @@ construction and ordered grid lookup. An installable package and synthetic demo
 are available. The source mapping and behavioral contracts for this increment
 are in [docs/PYTHON_FOUNDATION.md](docs/PYTHON_FOUNDATION.md).
 
-Verification passed 28 test methods, including eight methods that compare against
+The custom height GMM, source clustering and active paired rail-head extraction
+are also implemented, including the required 100-attempt RANSAC overload, shared
+label updates and retry accumulation. Their specification and portability decisions
+are in [docs/PYTHON_GMM_HEADS.md](docs/PYTHON_GMM_HEADS.md).
+
+Verification passed 58 test methods, including sixteen methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. Full tracking, GMM classification, fitting, MDL and recognition remain
-pending. The next implementation increment is the custom height GMM and rail-head
-filtering; downstream specification and checks will accompany each stage.
+been built. The remaining fitting variants, point grouping, MDL, observation
+selection, full tracking and recognition are pending. Those behavioral contracts
+and checks will accompany each stage.
 
 ## Specification checklist
 

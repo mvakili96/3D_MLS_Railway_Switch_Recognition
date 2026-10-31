@@ -2,8 +2,10 @@
 
 The current unpacked C++ code is authoritative. This first increment implements
 point/state storage, geometry, paired seed windows, and spatial membership. It
-does not yet implement GMM fitting, RANSAC, MDL, Kalman tracking, switch recognition,
-toes, branch scheduling, grade analysis, or the Windows GUI.
+does not itself implement local inference, MDL, Kalman tracking, switch recognition,
+toes, branch scheduling, grade analysis, or the Windows GUI. The subsequent
+[GMM/head extraction increment](PYTHON_GMM_HEADS.md) now adds local classification
+and the required rail-head RANSAC fit.
 
 ## Run it
 
@@ -147,13 +149,14 @@ unavailable; the other component tests still run.
 Initial verification: **28 test methods passed**, including all eight C++ comparison
 methods; the demo selected **180/180** points; the editable install succeeded.
 
-## Next increment
+## Subsequent increments
 
-Port the source's custom height EM-GMM and head-point filtering, with its exact
-initialization, stopping rules, component selection and numerical behavior.
-Then add line fitting/grouping and MDL before integrating the sequential tracker.
-The downstream constants, recognition models and cached tracking state will be
-specified with their owning stage rather than presented as already implemented.
+The custom height EM-GMM and rail-head extraction are now implemented in the
+[GMM/head extraction increment](PYTHON_GMM_HEADS.md), including its required
+100-attempt RANSAC line fit. The complete suite currently passes 58 test methods.
+The next work is the remaining line fitting/grouping and MDL before integrating
+the sequential tracker. Downstream constants, recognition models and cached
+tracking state will be specified with their owning stage.
 
 Packaging and array interfaces follow the official
 [setuptools pyproject guidance](https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html)
