@@ -16,6 +16,7 @@ from .points import Point3D
 from .sampling import MsvcRand, RandSource
 from .spatial import GridIndex
 from .tracking import SequentialTracker, TrackingResult
+from .grades import GradeAnalysis, compute_layer_grades
 
 
 # This is the scheduler's exclusion list, independent of DetectToePnts support.
@@ -26,6 +27,7 @@ SKIPPED_BRANCH_TYPES = frozenset((2, 3, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 
 class VectorTag:
     status: str
     index: int | None = None
+    reference_comparable: bool = True
 
 
 def tag_rail_vector(points: list[Point3D], point: Point3D, point_type: int = 2) -> VectorTag:
@@ -36,7 +38,7 @@ def tag_rail_vector(points: list[Point3D], point: Point3D, point_type: int = 2) 
     unsigned size()-1 underflow and an invalid access; report that explicitly.
     """
     if not points:
-        return VectorTag("undefined_source_empty_vector")
+        return VectorTag("undefined_source_empty_vector", reference_comparable=False)
     for i, vertex in enumerate(points):
         if vertex.x == point.x and vertex.y == point.y:
             points[i] = replace(vertex, point_type=point_type)
@@ -47,8 +49,12 @@ def tag_rail_vector(points: list[Point3D], point: Point3D, point_type: int = 2) 
         if min(first.x, second.x) < foot.x < max(first.x, second.x) and min(
             first.y, second.y
         ) < foot.y < max(first.y, second.y):
+            # Native vector insertion can assign XYZ without shifting PtType when
+            # capacity suffices, or copy-construct tags on reallocation. Retain
+            # Python value transport and expose mixed-tail uncertainty explicitly.
+            comparable = len({point.point_type for point in points[i + 1 :]}) <= 1
             points.insert(i + 1, replace(foot, point_type=point_type))
-            return VectorTag("inserted_projection", i + 1)
+            return VectorTag("inserted_projection", i + 1, comparable)
     nearest, minimum = None, 1e100
     for i, vertex in enumerate(points):
         distance = distance_2d(vertex, point)
@@ -69,13 +75,16 @@ class VectorReversal:
 def reverse_layer_vectors(layers: list[TrackLayer]) -> VectorReversal:
     """ReserverVectors: reverse/swap every layer, then pop layer zero's tails.
 
+    std::reverse uses POINT3D assignment: XYZ reverse while slot tags stay put.
     Segment history, boundaries, toes and stacks are deliberately untouched.
     Earlier mutations survive an undefined empty-vector pop.
     """
     for layer in layers:
-        layer.rail1_vector.reverse()
-        layer.rail2_vector.reverse()
-        layer.center_vector.reverse()
+        for vector in (layer.rail1_vector, layer.rail2_vector, layer.center_vector):
+            vector[:] = [
+                replace(point, x=other.x, y=other.y, z=other.z)
+                for point, other in zip(vector, reversed(vector))
+            ]
         layer.rail1_vector[:], layer.rail2_vector[:] = layer.rail2_vector[:], layer.rail1_vector[:]
     if not layers:
         return VectorReversal("undefined_source_reverse_layer")
@@ -142,6 +151,7 @@ class TrackingPass:
         return (
             self.status == "completed"
             and self.main.reference_comparable
+            and all(tag.result.reference_comparable for tag in self.tags)
             and all(
                 branch.initialization is None
                 or (
@@ -219,6 +229,10 @@ class TrackingEngine:
     def current_layer_index(self) -> int:
         # Layer equality can descend into NumPy arrays; source uses pointer identity.
         return next(i for i, layer in enumerate(self.layers) if layer is self.current_layer)
+
+    def compute_grades(self) -> tuple[GradeAnalysis, ...]:
+        """The separate grade-analysis menu action, retaining center-vector tag changes."""
+        return compute_layer_grades(self.layers)
 
     def initialize(
         self, seed: InitialLocation, *, reset_layers: bool = True
@@ -366,7 +380,13 @@ class TrackingEngine:
         for n, layer in enumerate(self.layers):
             for i, toe in enumerate(layer.toe_points):
                 if toe.center is None:
-                    tags.append(LayerToeTag(n, i, VectorTag("undefined_source_toe_center")))
+                    tags.append(
+                        LayerToeTag(
+                            n,
+                            i,
+                            VectorTag("undefined_source_toe_center", reference_comparable=False),
+                        )
+                    )
                     return finish("undefined_source_toe_center")
                 tag = tag_rail_vector(layer.center_vector, toe.center)
                 tags.append(LayerToeTag(n, i, tag))

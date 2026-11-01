@@ -28,6 +28,9 @@ fitting and detection functions, and the separate pnpoly2 predicate. Diagnostics
 copy existing candidate/membership/model values; complete detection fixtures must
 initialize every plane before its constraint read. Uninitialized plane outputs
 are never printed or substituted by the native plane-component oracle.
+Grade comparisons compile the original struct, all four grade routines and the
+computational GWAD UI loop. Marker/offset/report diagnostics copy existing locals;
+managed names/dialogs are replaced by supplied names and an in-memory stream.
 """
 
 from pathlib import Path
@@ -223,6 +226,16 @@ public:
     vector<PlnPara> lastSwitchPlanes;
     vector<int> lastPlaneSampleCounts, lastPlaneRefinedCounts;
     int lastPlaneWrites = 0, lastPlaneBest = -1;
+    vector<vector<double>> lastGradeSplits, lastGradeReport;
+    vector<double> lastGradeOffsets;
+    vector<GradeSect> ComputeGrade(TrackLayer*);
+    void DetermineGradeSection(vector<POINT3D>&, double);
+    void DouglasPeuckerVertical(vector<POINT3D>&, int, int, double);
+    void ComputeGradeParameters(vector<POINT3D>, vector<GradeSect>&);
+    double DistanceBetweenPoints3D(POINT3D, POINT3D);
+    string GWADText(vector<string>);
+    vector<TrackLayer*> GetLayers();
+    void ComputeAllGrades();
     void ExtractPlaneByRANSAC(vector<PointXYZDouble*>, PlnPara&, double, vector<PointXYZDouble*>&);
     PlnPara GetPlaneParameters3p(POINT3D, POINT3D, POINT3D);
     PlnPara GetPlaneParametersEigen(vector<PointXYZDouble*>);
@@ -326,8 +339,53 @@ public:
                     "double RailwayExtraction::DistanceBetweenPointAndPlane(",
                     "void RailwayExtraction::GetPntsInsidePolygon(",
                     "void RailwayExtraction::DetectSwitchBox(",
+                    "vector<GradeSect> RailwayExtraction::ComputeGrade(",
+                    "void RailwayExtraction::DetermineGradeSection(",
+                    "void RailwayExtraction::DouglasPeuckerVertical(",
+                    "void RailwayExtraction::ComputeGradeParameters(",
+                    "double RailwayExtraction::DistanceBetweenPoints3D(POINT3D",
+                    "std::vector<TrackLayer *> RailwayExtraction::GetLayers()",
                 )
             )
+            grade = function(extraction, "vector<GradeSect> RailwayExtraction::ComputeGrade(")
+            modified = grade.replace("{", "{\nlastGradeReport.clear();", 1)
+            report_markers = (
+                (", grdsects[0].grade, grdsects[0].grade);",
+                 "lastGradeReport.push_back({grdsects[0].BeginPt.x,grdsects[0].BeginPt.y,grdsects[0].BeginPt.z,0,nan(\"\"),grdsects[0].grade,grdsects[0].grade});"),
+                (", totLength, grdsects[i - 1].grade, grdsects[i].grade, grdsects[i].grade - grdsects[i - 1].grade);",
+                 "lastGradeReport.push_back({grdsects[i].BeginPt.x,grdsects[i].BeginPt.y,grdsects[i].BeginPt.z,totLength,grdsects[i-1].grade,grdsects[i].grade,grdsects[i].grade-grdsects[i-1].grade});"),
+                (", grdsects[grdsects.size() - 1].grade, -1 * grdsects[grdsects.size() - 1].grade);",
+                 "auto last=grdsects.back(); lastGradeReport.push_back({last.EndPt.x,last.EndPt.y,last.EndPt.z,totLength,last.grade,nan(\"\"),-1*last.grade});"),
+            )
+            for marker, diagnostic in report_markers:
+                assert modified.count(marker) == 1
+                modified = modified.replace(marker, marker + "\n" + diagnostic)
+            functions = functions.replace(grade, modified)
+            division = function(extraction, "void RailwayExtraction::DetermineGradeSection(")
+            functions = functions.replace(division, division.replace("{", "{\nlastGradeSplits.clear();", 1))
+            dp = function(extraction, "void RailwayExtraction::DouglasPeuckerVertical(")
+            marker = "railVtx[vid].PtType = 1;"
+            functions = functions.replace(dp, dp.replace(marker, marker + "\nlastGradeSplits.push_back({double(_sIdx),double(_eIdx),double(vid),fmax});"))
+            parameters = function(extraction, "void RailwayExtraction::ComputeGradeParameters(")
+            modified = parameters.replace("{", "{\nlastGradeOffsets.clear();", 1)
+            modified = modified.replace("grdsects[i].arc = length;", "lastGradeOffsets.push_back(maxh);\n\t\tgrdsects[i].arc = length;")
+            functions = functions.replace(parameters, modified)
+            gwad = function((SOURCE / "MainForm.cpp").read_text(),
+                            "System::Void PCLProject::MainForm::exportGWADToolStripMenuItem_Click(")
+            loop = gwad[gwad.index("\n\t\tfor (int i = 0; i < layers.size(); i++)"):gwad.index("\n\t\tofs.close();")]
+            loop = loop.replace("TreeNode ^node = collection[i];", "")
+            loop = loop.replace("const char* layerName = oMarshalContext.marshal_as<const char*>(node->Text);",
+                                "string layerName=names[i];")
+            loop = loop.replace("this->railwayExtraction->", "").replace("char * type", "const char * type")
+            header_line = next(line for line in gwad.splitlines() if 'ofs << "X' in line)
+            functions += ("\nstring RailwayExtraction::GWADText(vector<string> names) {\n"
+                          "vector<TrackLayer*> layers=m_trackLayers; ostringstream ofs;\n"
+                          "ofs.setf(ios::fixed); ofs.setf(ios::showpoint);\n" + header_line
+                          + loop + "\nreturn ofs.str();\n}\n")
+            menu = function((SOURCE / "MainForm.cpp").read_text(),
+                            "System::Void PCLProject::MainForm::computeGradeToolStripMenuItem_Click(")
+            menu = "void RailwayExtraction::ComputeAllGrades()\n" + menu[menu.index("{"):]
+            functions += "\n" + menu.replace("this->railwayExtraction->", "")
             plane = function(extraction, "void RailwayExtraction::ExtractPlaneByRANSAC(")
             modified = plane.replace("{", "{\nlastPlaneSampleCounts.clear(); lastPlaneRefinedCounts.clear(); lastPlaneWrites=0; lastPlaneBest=-1;", 1)
             modified = modified.replace("tmpPara = GetPlaneParametersEigen(tmptmpPnts);",
@@ -469,6 +527,7 @@ public:
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <sstream>
 #include "jama_eig.h"
 using namespace std;
 #define PI 3.1415926535897932
@@ -500,6 +559,7 @@ int reference_rand() {
                 + header[
                     header.index("struct InitialLocation {") : header.index("struct GradeSect {")
                 ]
+                + header[header.index("struct GradeSect {") : header.index("struct ExtractionParameters {")]
                 + declarations
                 + "\n#define rand reference_rand\n"
                 + functions
@@ -520,7 +580,7 @@ int reference_rand() {
     def close(self):
         self.directory.cleanup()
 
-    def run(self, operation, *values):
+    def run_text(self, operation, *values):
         completed = subprocess.run(
             [str(self.executable)],
             input=operation + " " + " ".join(map(str, values)),
@@ -528,8 +588,10 @@ int reference_rand() {
             capture_output=True,
             check=True,
         )
-        payload = completed.stdout.rsplit("RESULT ", 1)[1]
-        return [float(value) for value in payload.split()]
+        return completed.stdout.rsplit("RESULT ", 1)[1]
+
+    def run(self, operation, *values):
+        return [float(value) for value in self.run_text(operation, *values).split()]
 
 
 MAIN = r"""
@@ -656,6 +718,28 @@ vector<POINT3D> readTypedVector() {
     for (size_t i=0; i<count; ++i) { POINT3D p=readPoint(); cin >> p.PtType; result.push_back(p); }
     return result;
 }
+vector<POINT3D> readGradeVertices() {
+    size_t count; cin >> count; vector<POINT3D> result;
+    for (size_t i=0; i<count; ++i) {
+        POINT3D p; p.x=readScalar(); p.y=readScalar(); p.z=readScalar(); cin >> p.PtType;
+        result.push_back(p);
+    }
+    return result;
+}
+void printGradeSections(vector<GradeSect> sections) {
+    cout << sections.size() << ' ';
+    for (auto section : sections) {
+        printPoint(section.BeginPt); cout << section.BeginPt.PtType << ' ';
+        printPoint(section.EndPt); cout << section.EndPt.PtType << ' ';
+        printTypedVector(section.MemVtx);
+        for (auto value : {section.arc,section.chord,section.height,section.grade,section.radius,
+                           section.degOfcurve,section.gradeWithcurve}) cout << value << ' ';
+    }
+}
+void printDiagnostics(vector<vector<double>> rows) {
+    cout << rows.size() << ' ';
+    for (auto row : rows) for (auto value : row) cout << value << ' ';
+}
 bool RailwayExtraction::OrchestrationInitialize(int mode, POINT3D pt, double angle) {
     bool success=referenceInitSuccess.at(referenceInitCursor++);
     orchestrationTrace.push_back({1, double(layerIndex()), double(mode), pt.x,pt.y,pt.z,angle,double(success)});
@@ -683,7 +767,41 @@ int main() {
     string operation;
     cin >> operation;
     RailwayExtraction engine;
-    if (operation == "plane_three") {
+    if (operation == "grade_mark" || operation == "grade_dp") {
+        auto points=readGradeVertices(); double threshold=readScalar();
+        if (operation == "grade_mark") engine.DetermineGradeSection(points,threshold);
+        else { int start,end; cin >> start >> end; engine.DouglasPeuckerVertical(points,start,end,threshold); }
+        cout << "RESULT "; printTypedVector(points); printDiagnostics(engine.lastGradeSplits);
+    } else if (operation == "grade_parameters" || operation == "grade") {
+        TrackLayer layer; layer.m_RailVecCenter=readGradeVertices(); vector<GradeSect> sections;
+        if (operation == "grade") sections=engine.ComputeGrade(&layer);
+        else { sections.push_back(GradeSect()); engine.ComputeGradeParameters(layer.m_RailVecCenter,sections); }
+        cout << "\nRESULT "; printTypedVector(layer.m_RailVecCenter); printGradeSections(sections);
+        cout << engine.lastGradeOffsets.size() << ' ';
+        for (auto value : engine.lastGradeOffsets) cout << value << ' ';
+        printDiagnostics(engine.lastGradeReport);
+    } else if (operation == "grade_reset") {
+        GradeSect section; section.BeginPt=POINT3D(1,2,3); section.BeginPt.PtType=7;
+        section.EndPt=POINT3D(4,5,6); section.EndPt.PtType=9;
+        section.MemVtx.push_back(POINT3D(8,9,10)); section.arc=99;
+        section.ResetGradeSect(); cout << "RESULT "; printGradeSections({section});
+    } else if (operation == "grade_layers") {
+        size_t count; cin >> count;
+        for (size_t i=0; i<count; ++i) {
+            auto layer=new TrackLayer(); layer->m_RailVecCenter=readGradeVertices();
+            engine.m_trackLayers.push_back(layer);
+        }
+        engine.ComputeAllGrades(); cout << "\nRESULT " << engine.m_trackLayers.size() << ' ';
+        for (auto layer : engine.m_trackLayers) { printTypedVector(layer->m_RailVecCenter); delete layer; }
+    } else if (operation == "gwad") {
+        size_t count; cin >> count; vector<string> names(count);
+        for (size_t i=0; i<count; ++i) {
+            cin >> quoted(names[i]); auto layer=new TrackLayer(); layer->m_RailVecCenter=readGradeVertices();
+            engine.m_trackLayers.push_back(layer);
+        }
+        string output=engine.GWADText(names); cout << "\nRESULT " << output;
+        for (auto layer : engine.m_trackLayers) delete layer;
+    } else if (operation == "plane_three") {
         POINT3D first=readPoint(), second=readPoint(), third=readPoint();
         cout << "RESULT "; printPlane(engine.GetPlaneParameters3p(first,second,third));
     } else if (operation == "plane_eigen" || operation == "plane_ransac") {
@@ -740,10 +858,12 @@ int main() {
         for (auto p : cloud.points) cout << p.ClassCode << ' ' << p.SegmentID << ' ';
         cout << random_cursor << ' ';
         delete[] engine.m_pGrid;
-    } else if (operation == "tag_vector") {
+    } else if (operation == "tag_vector" || operation == "tag_vector_state") {
         auto points=readTypedVector(); POINT3D p=readPoint(); int type; cin >> type;
+        size_t capacity=points.capacity();
         engine.AddPointTofootOfPependicularOnRailVtx(points,p,type);
-        cout << "\nRESULT "; printTypedVector(points);
+        cout << "\nRESULT "; if (operation == "tag_vector_state") cout << capacity << ' ';
+        printTypedVector(points);
     } else if (operation == "reverse_vectors") {
         size_t count; cin >> count;
         for (size_t i=0; i<count; ++i) {

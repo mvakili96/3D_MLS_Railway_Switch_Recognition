@@ -123,12 +123,18 @@ of the endpoint heights. Horizontal/vertical segments therefore fall through to
 nearest-vertex tagging; nearest ties keep the first vertex. No spline, tolerance,
 endpoint extension or nearest-segment replacement is added.
 
-Reversal reverses all three vectors on every layer and swaps rail 1/2 contents,
+Reversal reverses XYZ on all three vectors on every layer and swaps rail 1/2 contents,
 retaining list identity. It then sets current layer to layer zero and pops one
 point from each of its rail1, rail2 and center tails, in that order. Branch layers
 are not popped. Segments, boundaries, predicted points, toes, stack order and
 labels are not geometrically reversed or cleared. These asymmetries are native
 behavior, not an opportunity to rebuild a cleaner merged trajectory.
+
+Marked-vector comparisons in the [grade increment](PYTHON_GRADES.md) establish
+that `POINT3D::operator=` copies only XYZ: native reversal leaves tags at their
+original vector indices before the rail-container swap. Python now matches this
+detail. Projection insertion into a mixed-tag tail can depend on native vector
+capacity; its non-comparable result is propagated to the pass (LIM-031).
 
 The UI reverse seed is the fitted second rail position, with mode
 `(original.mode + 2) % 4`. Mode **0** is retained. Its expression
@@ -188,7 +194,7 @@ center-vector assembly, shared labels/RNG, a detected component toe, actual
 postpass-to-scheduler transfer with initialized references, deferred work and
 undefined references. Single-candidate MDL paths remain explicitly non-comparable.
 
-Switch-box detection is now implemented. Next implement grade/curve analysis,
-remaining source features and final pipeline delivery/audit. Real-data accuracy/performance and the full native
+Switch-box and grade/curve analysis are now implemented. Next finish remaining
+source features and final pipeline delivery/audit. Real-data accuracy/performance and the full native
 application remain unverified. The post-reconstruction limitations review remains
 a required later checkpoint.

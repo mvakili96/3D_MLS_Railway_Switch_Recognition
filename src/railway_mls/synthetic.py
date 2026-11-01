@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from .config import ExtractionConfig
-from .models import BinaryString, InitialLocation, ToePoint, TrackSegment, TrackStack, TrackWindow
+from .models import BinaryString, InitialLocation, ToePoint, TrackLayer, TrackSegment, TrackStack, TrackWindow
 from .geometry import Line3D
 from .points import Point3D, PointCloud
 
@@ -37,6 +37,20 @@ class SyntheticSwitchBoxScene:
     cloud: PointCloud
     toes: tuple[ToePoint, ...]
     config: ExtractionConfig
+
+
+def grade_scene() -> TrackLayer:
+    """A curved center vector with three elevation regimes and two switch tags.
+
+    This is a post-tracking vector fixture, not extraction from raw MLS points.
+    """
+    points = []
+    for i, position in enumerate(np.arange(0.0, 80.1, 5.0)):
+        height = (0.02 * min(position, 30) + 0.20 * max(0, min(position - 30, 20))
+                  - 0.05 * max(0, position - 50))
+        points.append(Point3D(1000 + position, 2000 + 0.002 * position * position, height,
+                              2 if i in (3, 12) else 0))
+    return TrackLayer(center_vector=points)
 
 
 def switch_box_scene(

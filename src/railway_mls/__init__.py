@@ -20,6 +20,7 @@ from .models import (
     TrackWindow,
     ToePoint,
     SwitchBox,
+    GradeSection,
     seed_windows,
 )
 from .observations import (
@@ -87,10 +88,19 @@ from .switch_boxes import (
     switch_box_candidates,
     detect_switch_boxes,
 )
+from .grades import (
+    GradeAnalysis, GradeDivision, GradeParameters, GradeReportRow, GradeSplit,
+    GWADExport, GWADRow, build_gwad_rows, compute_grade, compute_grade_parameters,
+    compute_layer_grades, determine_grade_sections, douglas_peucker_vertical, format_gwad,
+)
 
 __version__ = "0.1.0"
 
 __all__ = [
+    "GradeSection", "GradeAnalysis", "GradeDivision", "GradeParameters", "GradeReportRow",
+    "GradeSplit", "GWADExport", "GWADRow", "build_gwad_rows", "compute_grade",
+    "compute_grade_parameters", "compute_layer_grades", "determine_grade_sections",
+    "douglas_peucker_vertical", "format_gwad",
     "BidirectionalTracking",
     "BranchTracking",
     "BinaryString",

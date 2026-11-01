@@ -18,6 +18,7 @@ from .mdl import segment_track_points_mdl
 from .models import BinaryString, seed_windows
 from .orchestration import TrackingEngine
 from .switch_boxes import detect_switch_boxes
+from .grades import build_gwad_rows, compute_grade, format_gwad
 from .observations import determine_observation, observation_from_support
 from .points import Point3D
 from .sampling import MsvcRand
@@ -34,6 +35,7 @@ from .synthetic import (
     branch_scene,
     bidirectional_scene,
     switch_box_scene,
+    grade_scene,
 )
 from .tracking import track_railway
 from .toes import SUPPORTED_TOE_TYPES, detect_toe_points
@@ -58,6 +60,40 @@ def _box_json(box):
         "reference_height": box.reference_height,
         "vertices": [point.as_array().tolist() for point in box.vertices],
     }
+
+
+def _grade_demo() -> dict:
+    layer = grade_scene()
+    analysis = compute_grade(layer)
+    export = build_gwad_rows([layer], ["synthetic-main"])
+    return _finite_json({
+        "stage": "source grade and curve analysis on a supplied center vector",
+        "status": analysis.status,
+        "input_vertices": len(layer.center_vector),
+        "grade_vertex_indices": analysis.division.marked_indices,
+        "new_grade_vertex_indices": analysis.division.new_indices,
+        "section_count": len(analysis.sections),
+        "sections": [
+            {"begin": s.begin.as_array().tolist(), "end": s.end.as_array().tolist(),
+             "member_count": len(s.member_vertices), "arc": s.arc, "chord": s.chord,
+             "height": s.height, "grade": s.grade, "radius": s.radius,
+             "degree_of_curve": s.degree_of_curve, "grade_with_curve": s.grade_with_curve}
+            for s in analysis.sections
+        ],
+        "report": [
+            {"point": row.point.as_array().tolist(), "distance_from_start": row.distance_from_start,
+             "grade_begin": row.grade_begin, "grade_end": row.grade_end,
+             "grade_difference": row.grade_difference}
+            for row in analysis.report
+        ],
+        "gwad_rows": [
+            {"point": row.point.as_array().tolist(), "layer_name": row.layer_name,
+             "chainage": row.chainage, "element": row.element, "parameters": row.parameters}
+            for row in export.rows
+        ],
+        "gwad_tsv": format_gwad(export),
+        "grade_analysis_implemented": True,
+    })
 
 
 def _switch_box_demo(seed: int) -> dict:
@@ -541,6 +577,7 @@ def _observation_demo(seed: int) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="3D MLS railway Python foundation")
     commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("grade-demo", help="analyze source grades/curves and build legacy GWAD rows")
     commands.add_parser(
         "recognition-demo", help="classify controlled stack signatures with all 20 source templates"
     )
@@ -614,6 +651,10 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command == "grade-demo":
+        result = _grade_demo()
+        print(json.dumps(result, indent=2, allow_nan=False))
+        return 0 if result["status"] == "ok" else 1
     if arguments.command == "switch-box-demo":
         result = _switch_box_demo(arguments.seed)
         print(json.dumps(result, indent=2, allow_nan=False))
