@@ -32,6 +32,42 @@ class SyntheticBranchScene:
     toe: ToePoint
 
 
+@dataclass(frozen=True)
+class SyntheticSwitchBoxScene:
+    cloud: PointCloud
+    toes: tuple[ToePoint, ...]
+    config: ExtractionConfig
+
+
+def switch_box_scene(
+    *,
+    angle: float = 35.0,
+    points_per_side: int = 34,
+    slope: float = 0.0,
+    config: ExtractionConfig | None = None,
+) -> SyntheticSwitchBoxScene:
+    """Dense planar patches beside an explicit toe, with height-band distractors."""
+    from .switch_boxes import switch_box_candidates
+
+    settings = config if config is not None else ExtractionConfig()
+    radians = angle * np.pi / 180
+    across = Point3D(-np.sin(radians), np.cos(radians), 0)
+    right = Point3D(1000, 2000, 0.2)
+    left = right + across * settings.track_gauge
+    toe = ToePoint((left + right) / 2, left, right, track_type=0, angle=angle, mode=1)
+    points = []
+    for candidate in switch_box_candidates([toe]).candidates:
+        center = candidate.region.center
+        reference = candidate.region.reference_height
+        for u in np.linspace(-0.3, 0.3, points_per_side):
+            for v in np.linspace(-0.3, 0.3, points_per_side):
+                points.append((center.x + u, center.y + v,
+                               reference + 0.05 + slope * u + 0.0002 * np.sin(len(points) * 0.71)))
+        points.extend([(center.x, center.y, reference), (center.x, center.y, reference + 0.10)])
+    cloud = PointCloud(points, class_codes=[9] * len(points), segment_ids=[7] * len(points))
+    return SyntheticSwitchBoxScene(cloud, (toe,), settings)
+
+
 def branch_scene(config: ExtractionConfig | None = None) -> SyntheticBranchScene:
     """Two raw rail corridors and one supplied toe fixture for scheduling.
 

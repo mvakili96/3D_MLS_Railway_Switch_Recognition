@@ -5,8 +5,8 @@ This increment implements the computational loop in
 recognition postpass. It integrates the previously ported components using the
 source call order. Templates and stack recognition are available in the
 [recognition increment](PYTHON_RECOGNITION.md), followed by the
-[toe increment](PYTHON_TOES.md). Automatic branch scheduling,
-bidirectional GUI orchestration and switch-box detection remain subsequent work.
+[toe increment](PYTHON_TOES.md). Branch/bidirectional orchestration and
+[switch-box detection](PYTHON_SWITCH_BOXES.md) are also implemented.
 Inactive loop/cross calls remain inactive. No original C++ source is modified.
 
 ## Run and use
@@ -167,7 +167,8 @@ keeping shared references to original cloud rows, matching native pointer identi
 The [recognition increment](PYTHON_RECOGNITION.md) consumes this storage after the
 loop and assigns template state to eligible completed stacks. The
 [toe increment](PYTHON_TOES.md) consumes eligible classified stacks while exposing
-their missing member-line references. Branch seeds remain pending. The active
+their missing member-line references. Branch scheduling consumes initialized toe
+geometry through the orchestration API. The active
 unflushed stack remains excluded.
 
 ## Undefined and nonfinite paths
@@ -210,7 +211,7 @@ Stack signatures and source template recognition are now implemented in the
 [recognition increment](PYTHON_RECOGNITION.md), and toe detection/refinement in the
 [toe increment](PYTHON_TOES.md). Branch integration and bidirectional assembly are
 now available in [the orchestration increment](PYTHON_ORCHESTRATION.md).
-Switch-box detection and separately invoked source features
+Switch-box detection is now implemented; separately invoked source features
 remain in the port plan. Real-data accuracy, performance and published-metric
 reproduction remain pending; passing synthetic and extract comparisons does not
 establish those results or complete Windows-binary equivalence.

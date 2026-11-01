@@ -26,7 +26,7 @@ into actual branch initialization/tracking.
 directions, reverses/swaps vectors, and appends the forward run to the main layer.
 JSON contains the actual seeds, pass/branch statuses, accepted-step counts, local
 and global used markers, vector coordinates/types and random-draw count. Ten
-stage demos are available; the existing eight remain valid.
+stage demos were available at this increment; switch-box detection adds an eleventh.
 
 ```python
 from railway_mls import GridIndex, MsvcRand, TrackingEngine
@@ -61,8 +61,8 @@ and mutable labels. Database/file adapters remain outside this API.
 | `MainForm.cpp:101–137`, tracking handler | `reverse_seed`, `TrackingEngine.run_bidirectional` | Save original location, reverse seed/run, vector reversal, direct original seed/run; source expressions and unchecked defined initialization failures |
 
 GUI rendering, progress callbacks and layer-list presentation are excluded from
-computation. The active switch-box postpass is still pending in the next source
-feature increment; the engine does not claim that computation is complete.
+computation. The active switch-box postpass is now implemented in
+[the switch-box increment](PYTHON_SWITCH_BOXES.md), sharing engine/layer box pools.
 
 ## Persistent state and initialization
 
@@ -173,7 +173,7 @@ is closed by this increment.
 
 ## Verification and remaining scope
 
-The complete suite passes **259 test methods**, including **83** using compiled
+At completion of this increment, the suite passed **259 test methods**, including **83** using compiled
 original C++ extracts. This increment adds 37 methods, including 10 native
 comparisons. Native vector tagging/reversal use actual complete source helpers.
 The original reset/tracking wrappers and the UI computation body are compiled
@@ -188,7 +188,7 @@ center-vector assembly, shared labels/RNG, a detected component toe, actual
 postpass-to-scheduler transfer with initialized references, deferred work and
 undefined references. Single-candidate MDL paths remain explicitly non-comparable.
 
-Next implement switch-box detection, then remaining source features and final
-pipeline delivery/audit. Real-data accuracy/performance and the full native
+Switch-box detection is now implemented. Next implement grade/curve analysis,
+remaining source features and final pipeline delivery/audit. Real-data accuracy/performance and the full native
 application remain unverified. The post-reconstruction limitations review remains
 a required later checkpoint.

@@ -17,7 +17,7 @@ from .heads import TrackHeadResult, extract_track_points
 from .initialization import InitializationResult
 from .kalman import KalmanPrediction, KalmanState, KalmanUpdate, kalman_predict, kalman_update
 from .mdl import MDLResult, segment_track_points_mdl
-from .models import ToePoint, TrackLayer, TrackSegment, TrackStack, TrackWindow
+from .models import SwitchBox, ToePoint, TrackLayer, TrackSegment, TrackStack, TrackWindow
 from .observations import (
     ObservationSelection,
     SupportObservation,
@@ -29,6 +29,7 @@ from .recognition import StackRecognitionBatch, recognize_stacks
 from .sampling import MsvcRand, RandSource
 from .spatial import GridIndex
 from .toes import ToeBatchResult, detect_stack_toes
+from .switch_boxes import SwitchBoxBatch, detect_switch_boxes
 
 
 def _snapshot(segment: TrackSegment) -> TrackSegment:
@@ -104,6 +105,7 @@ class TrackingResult:
     status: str
     recognition: StackRecognitionBatch | None = None
     toe_detection: ToeBatchResult | None = None
+    switch_box_detection: SwitchBoxBatch | None = None
 
     @property
     def reference_comparable(self) -> bool:
@@ -112,6 +114,7 @@ class TrackingResult:
             not self.status.startswith(("undefined_source", "nonfinite"))
             and all(model.reference_comparable for step in self.steps for model in step.models)
             and (self.toe_detection is None or self.toe_detection.reference_comparable)
+            and (self.switch_box_detection is None or self.switch_box_detection.reference_comparable)
         )
 
     @property
@@ -125,9 +128,9 @@ class SequentialTracker:
     Reuse this object to continue after run(max_steps=...), preserving the RNG,
     active turnout stack, current heights and first-iteration state. The source's
     current covariances stay identity: its posterior-assignment lines are inactive.
-    Natural completion recognizes completed stacks and detects eligible toes.
-    Branch/switch-box computation and GUI callbacks remain separate. Diagnostic
-    step limits do not trigger either postpass.
+    Natural completion recognizes stacks, detects toes and evaluates switch boxes.
+    Branch scheduling and GUI callbacks remain separate. Diagnostic step limits
+    defer all three postpasses.
     """
 
     def __init__(
@@ -143,6 +146,7 @@ class SequentialTracker:
         distance_from_start: float = 0.0,
         completed_stacks: list[TrackStack] | None = None,
         toe_points: list[ToePoint] | None = None,
+        switch_boxes: list[SwitchBox] | None = None,
     ) -> None:
         self.config = config if config is not None else ExtractionConfig()
         if self.config.grid_size != grid.grid_size:
@@ -164,7 +168,9 @@ class SequentialTracker:
         self.main_track = main_track
         self.recognition: StackRecognitionBatch | None = None
         self.toe_detection: ToeBatchResult | None = None
+        self.switch_box_detection: SwitchBoxBatch | None = None
         self.toe_points = toe_points if toe_points is not None else []
+        self.switch_boxes = switch_boxes if switch_boxes is not None else []
         self.distance = distance_from_start if main_track else 0.0
         self.heights = tuple(initial_heights)
         self.completed_stacks = completed_stacks if completed_stacks is not None else []
@@ -203,6 +209,15 @@ class SequentialTracker:
                 toes=self.toe_points,
                 main_track=self.main_track,
             )
+            self.switch_box_detection = detect_switch_boxes(
+                self.toe_points,
+                self.grid,
+                config=self.config,
+                rng=self.rng,
+                layer=self.layer,
+                boxes=self.switch_boxes,
+                main_track=self.main_track,
+            )
         return TrackingResult(
             self.layer,
             tuple(self.steps),
@@ -216,6 +231,7 @@ class SequentialTracker:
             status,
             self.recognition,
             self.toe_detection,
+            self.switch_box_detection,
         )
 
     def _step(self) -> TrackingStep:
@@ -439,7 +455,7 @@ def track_railway(
     main_track: bool = True,
     max_steps: int | None = None,
 ) -> TrackingResult:
-    """Run tracking, completed-stack recognition and toes, without branch/switch-box work."""
+    """Run tracking, recognition, toes and switch boxes, without branch scheduling."""
     if initialized.source_return is not True or initialized.initial_heights is None:
         raise ValueError("successful source initialization is required before tracking")
     tracker = SequentialTracker(

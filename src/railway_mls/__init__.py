@@ -19,6 +19,7 @@ from .models import (
     TrackStack,
     TrackWindow,
     ToePoint,
+    SwitchBox,
     seed_windows,
 )
 from .observations import (
@@ -69,6 +70,23 @@ from .orchestration import (
     reverse_seed,
     tag_rail_vector,
 )
+from .planes import (
+    PlaneParameters,
+    PlaneEigenFit,
+    PlaneFitResult,
+    plane_from_three_points,
+    plane_from_eigen,
+    plane_distances,
+    fit_plane_ransac,
+)
+from .switch_boxes import (
+    SwitchBoxCandidate,
+    SwitchBoxCandidates,
+    SwitchBoxDetection,
+    SwitchBoxBatch,
+    switch_box_candidates,
+    detect_switch_boxes,
+)
 
 __version__ = "0.1.0"
 
@@ -96,6 +114,9 @@ __all__ = [
     "PointCloud",
     "PointGrouping",
     "PointSelection",
+    "PlaneParameters",
+    "PlaneEigenFit",
+    "PlaneFitResult",
     "RecordedRand",
     "SupportObservation",
     "SequentialTracker",
@@ -107,6 +128,11 @@ __all__ = [
     "ToeBatchResult",
     "ToeDetection",
     "StackToeDetection",
+    "SwitchBox",
+    "SwitchBoxCandidate",
+    "SwitchBoxCandidates",
+    "SwitchBoxDetection",
+    "SwitchBoxBatch",
     "TrackHeadResult",
     "TrackLayer",
     "TrackSegment",
@@ -134,6 +160,7 @@ __all__ = [
     "fit_height_gmm",
     "fit_fixed_angle",
     "fit_line_ransac",
+    "fit_plane_ransac",
     "group_points",
     "generate_tracking_segment",
     "initial_kalman_states",
@@ -141,6 +168,9 @@ __all__ = [
     "kalman_predict",
     "kalman_update",
     "observation_from_support",
+    "plane_from_three_points",
+    "plane_from_eigen",
+    "plane_distances",
     "recognize_stacks",
     "recognize_turnout",
     "reverse_layer_vectors",
@@ -151,4 +181,6 @@ __all__ = [
     "stack_signature",
     "template_matching",
     "tag_rail_vector",
+    "switch_box_candidates",
+    "detect_switch_boxes",
 ]

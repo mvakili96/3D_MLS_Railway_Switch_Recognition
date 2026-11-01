@@ -23,6 +23,11 @@ postpass, stopping before toe detection; score diagnostics only copy locals.
 Orchestration compiles the original wrappers and vector helpers. Its initialization
 and tracking callbacks use controlled stubs to isolate scheduling from undefined
 native fits; this is a control-flow comparison, not whole-application equivalence.
+Plane/switch-box comparisons include the original bundled JAMA header, complete
+fitting and detection functions, and the separate pnpoly2 predicate. Diagnostics
+copy existing candidate/membership/model values; complete detection fixtures must
+initialize every plane before its constraint read. Uninitialized plane outputs
+are never printed or substituted by the native plane-component oracle.
 """
 
 from pathlib import Path
@@ -136,7 +141,7 @@ class CppReference:
             ]
             polygon = header[
                 header.index("inline int pnpoly(") : header.index("inline int pnpoly2(")
-            ]
+            ] + function(header, "inline int pnpoly2(")
             isnan = header[
                 header.index("inline bool bIsNan(") : header.index("inline int FLOOR_double")
             ]
@@ -152,6 +157,7 @@ struct TrackLayer {
     vector<POINT3D> m_RailVec1, m_RailVec2, m_RailVecCenter;
     vector<Line3D> m_updateBnd, m_updateBnd_turnout;
     vector<ToePt> m_ToePts;
+    vector<SwitchBox> m_SwitchBoxes;
 };
 class RailwayExtraction {
 public:
@@ -212,6 +218,18 @@ public:
     POINT3D lastToeSelected;
     double lastToeSigma;
     int lastToeStage = 0;
+    vector<SwitchBox> m_SwitchBoxes, lastSwitchCandidates;
+    vector<vector<PointXYZDouble*>> lastSwitchRegions, lastSwitchHeights, lastSwitchGroups, lastSwitchSupport;
+    vector<PlnPara> lastSwitchPlanes;
+    vector<int> lastPlaneSampleCounts, lastPlaneRefinedCounts;
+    int lastPlaneWrites = 0, lastPlaneBest = -1;
+    void ExtractPlaneByRANSAC(vector<PointXYZDouble*>, PlnPara&, double, vector<PointXYZDouble*>&);
+    PlnPara GetPlaneParameters3p(POINT3D, POINT3D, POINT3D);
+    PlnPara GetPlaneParametersEigen(vector<PointXYZDouble*>);
+    double DistanceBetweenPointAndPlane(POINT3D, PlnPara);
+    void GetPntsInsidePolygon(vector<POINT3D>, vector<PointXYZDouble*>, vector<PointXYZDouble*>&);
+    void DetectSwitchBox(vector<ToePt>, vector<SwitchBox>&);
+    vector<SwitchBox> SwitchCandidates(vector<ToePt>);
     void progressCallback(double, double) {}
     void generateGrid();
     bool Setinitiallocation(int, POINT3D, double);
@@ -302,8 +320,32 @@ public:
                     "bool RailwayExtraction::DetectToePnts(",
                     "void RailwayExtraction::AddPointTofootOfPependicularOnRailVtx(",
                     "void RailwayExtraction::ReserverVectors()",
+                    "void RailwayExtraction::ExtractPlaneByRANSAC(",
+                    "PlnPara RailwayExtraction::GetPlaneParameters3p(",
+                    "PlnPara RailwayExtraction::GetPlaneParametersEigen(",
+                    "double RailwayExtraction::DistanceBetweenPointAndPlane(",
+                    "void RailwayExtraction::GetPntsInsidePolygon(",
+                    "void RailwayExtraction::DetectSwitchBox(",
                 )
             )
+            plane = function(extraction, "void RailwayExtraction::ExtractPlaneByRANSAC(")
+            modified = plane.replace("{", "{\nlastPlaneSampleCounts.clear(); lastPlaneRefinedCounts.clear(); lastPlaneWrites=0; lastPlaneBest=-1;", 1)
+            modified = modified.replace("tmpPara = GetPlaneParametersEigen(tmptmpPnts);",
+                                        "lastPlaneSampleCounts.push_back(tmptmpPnts.size());\n\ttmpPara = GetPlaneParametersEigen(tmptmpPnts);")
+            modified = modified.replace("if (count > MaxCnt)", "lastPlaneRefinedCounts.push_back(count);\n\t\tif (count > MaxCnt)")
+            modified = modified.replace("para = tmpPara;", "para = tmpPara; ++lastPlaneWrites; lastPlaneBest=i;")
+            functions = functions.replace(plane, modified)
+            switch = function(extraction, "void RailwayExtraction::DetectSwitchBox(")
+            candidate_prefix = switch[:switch.index("\n\t//test")]
+            candidate_prefix = candidate_prefix.replace(
+                "void RailwayExtraction::DetectSwitchBox(vector<ToePt> toes, vector<SwitchBox> &SBs)",
+                "vector<SwitchBox> RailwayExtraction::SwitchCandidates(vector<ToePt> toes)",
+            ) + "\nreturn candidateSBs;\n}"
+            modified = switch.replace("\n\t//test", "\nlastSwitchCandidates=candidateSBs;\n\t//test", 1)
+            marker = "\n\t\t//constraints"
+            modified = modified.replace(marker,
+                "\nlastSwitchRegions.push_back(tmpRgnPts); lastSwitchHeights.push_back(tmpSBPts); lastSwitchGroups.push_back(SBPts); lastSwitchSupport.push_back(supportPts); lastSwitchPlanes.push_back(para);\n" + marker)
+            functions = functions.replace(switch, modified) + "\n" + candidate_prefix
             reset = function(extraction, "void RailwayExtraction::OnRailextractionSetinit(int")
             reset = reset.replace("Setinitiallocation(", "OrchestrationInitialize(")
             orchestration = function(extraction, "void RailwayExtraction::OnRailextractionTrackingRailway()")
@@ -427,6 +469,7 @@ public:
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include "jama_eig.h"
 using namespace std;
 #define PI 3.1415926535897932
 struct PointXYZDouble {
@@ -447,6 +490,8 @@ int reference_rand() {
                 + isnan
                 + polygon
                 + primitives
+                + header[header.index("struct SwitchBox {") : header.index("struct BinaryString {")]
+                + header[header.index("struct PlnPara {") : header.index("struct PtSegment {")]
                 + header[header.index("struct BinaryString {") : header.index("struct ToePt {")]
                 + header[header.index("struct ToePt {") : header.index("struct LoopCross {")]
                 + segments
@@ -462,7 +507,7 @@ int reference_rand() {
             )
             self.executable = path.with_suffix("")
             result = subprocess.run(
-                [compiler, "-std=c++14", "-O0", str(path), "-o", str(self.executable)],
+                [compiler, "-std=c++14", "-O0", "-I", str(SOURCE / "Jama"), str(path), "-o", str(self.executable)],
                 text=True,
                 capture_output=True,
             )
@@ -589,6 +634,23 @@ void printTypedVector(vector<POINT3D> points) {
     cout << points.size() << ' ';
     for (auto p : points) { printPoint(p); cout << p.PtType << ' '; }
 }
+PlnPara readPlane() {
+    PlnPara plane; plane.a=readScalar(); plane.b=readScalar(); plane.c=readScalar(); plane.d=readScalar();
+    return plane;
+}
+void printPlane(PlnPara plane) {
+    cout << plane.a << ' ' << plane.b << ' ' << plane.c << ' ' << plane.d << ' ';
+}
+void printSwitchBox(SwitchBox box, bool candidate) {
+    printPoint(box.CenterPt); cout << box.ang << ' ' << candidate << ' ';
+    if (candidate) cout << box.referHgt << ' ';
+    cout << box.rgn.size() << ' '; printVertices(box.rgn);
+}
+SwitchBox readSwitchBox() {
+    SwitchBox box; box.CenterPt=readPoint(); box.ang=readScalar(); size_t count; cin >> count;
+    for (size_t i=0; i<count; ++i) box.rgn.push_back(readPoint());
+    return box;
+}
 vector<POINT3D> readTypedVector() {
     size_t count; cin >> count; vector<POINT3D> result;
     for (size_t i=0; i<count; ++i) { POINT3D p=readPoint(); cin >> p.PtType; result.push_back(p); }
@@ -621,7 +683,64 @@ int main() {
     string operation;
     cin >> operation;
     RailwayExtraction engine;
-    if (operation == "tag_vector") {
+    if (operation == "plane_three") {
+        POINT3D first=readPoint(), second=readPoint(), third=readPoint();
+        cout << "RESULT "; printPlane(engine.GetPlaneParameters3p(first,second,third));
+    } else if (operation == "plane_eigen" || operation == "plane_ransac") {
+        size_t count; cin >> count; Cloud cloud; cloud.points.resize(count);
+        for (auto &p : cloud.points) cin >> p.x >> p.y >> p.z;
+        auto points=readSelection(cloud);
+        if (operation == "plane_eigen") {
+            auto plane=engine.GetPlaneParametersEigen(points); cout << "RESULT "; printPlane(plane);
+        } else {
+            double threshold; cin >> threshold; bool hasPlane; cin >> hasPlane;
+            PlnPara plane; if (hasPlane) plane=readPlane(); auto support=readSelection(cloud); readRandom();
+            engine.ExtractPlaneByRANSAC(points,plane,threshold,support);
+            bool available=hasPlane || engine.lastPlaneWrites>0;
+            cout << "RESULT " << available << ' '; if (available) printPlane(plane);
+            printSelection(support,cloud); cout << (engine.lastPlaneWrites>0) << ' ' << engine.lastPlaneBest << ' ';
+            for (auto counts : {engine.lastPlaneSampleCounts, engine.lastPlaneRefinedCounts}) {
+                cout << counts.size() << ' '; for (int value : counts) cout << value << ' ';
+            }
+            cout << random_cursor << ' ';
+        }
+    } else if (operation == "convex_polygon") {
+        size_t count; cin >> count; vector<double> x(count),y(count);
+        for (size_t i=0; i<count; ++i) cin >> x[i] >> y[i];
+        double px,py; cin >> px >> py;
+        cout << "RESULT " << pnpoly2(count,x.data(),y.data(),px,py);
+    } else if (operation == "switch_candidates") {
+        engine.m_GridSize=1; size_t count; cin >> count; vector<ToePt> toes; bool geometry;
+        for (size_t i=0; i<count; ++i) toes.push_back(readToe(geometry));
+        auto candidates=engine.SwitchCandidates(toes);
+        cout << "RESULT " << candidates.size() << ' ';
+        for (auto candidate : candidates) printSwitchBox(candidate,true);
+    } else if (operation == "switch_boxes") {
+        cin >> engine.m_GridSize >> engine.m_skip_rate;
+        engine.m_BoundMin=readPoint(); engine.m_BoundMax=readPoint();
+        size_t count; cin >> count; Cloud cloud; cloud.points.resize(count); engine.point_cloud=&cloud;
+        for (auto &p : cloud.points) cin >> p.x >> p.y >> p.z >> p.ClassCode >> p.SegmentID;
+        cin >> count; vector<ToePt> toes; bool geometry;
+        for (size_t i=0; i<count; ++i) toes.push_back(readToe(geometry));
+        TrackLayer layer; engine.currentLayer=&layer;
+        cin >> count; for (size_t i=0; i<count; ++i) engine.m_SwitchBoxes.push_back(readSwitchBox());
+        cin >> count; for (size_t i=0; i<count; ++i) layer.m_SwitchBoxes.push_back(readSwitchBox());
+        engine.generateGrid(); readRandom(); engine.DetectSwitchBox(toes,engine.m_SwitchBoxes);
+        cout << "\nRESULT " << engine.lastSwitchCandidates.size() << ' ';
+        for (auto box : engine.lastSwitchCandidates) printSwitchBox(box,true);
+        cout << engine.lastSwitchRegions.size() << ' ';
+        for (size_t i=0; i<engine.lastSwitchRegions.size(); ++i) {
+            printSelection(engine.lastSwitchRegions[i],cloud); printSelection(engine.lastSwitchHeights[i],cloud);
+            printSelection(engine.lastSwitchGroups[i],cloud); printSelection(engine.lastSwitchSupport[i],cloud);
+            printPlane(engine.lastSwitchPlanes[i]);
+        }
+        for (auto boxes : {engine.m_SwitchBoxes,layer.m_SwitchBoxes}) {
+            cout << boxes.size() << ' '; for (auto box : boxes) printSwitchBox(box,false);
+        }
+        for (auto p : cloud.points) cout << p.ClassCode << ' ' << p.SegmentID << ' ';
+        cout << random_cursor << ' ';
+        delete[] engine.m_pGrid;
+    } else if (operation == "tag_vector") {
         auto points=readTypedVector(); POINT3D p=readPoint(); int type; cin >> type;
         engine.AddPointTofootOfPependicularOnRailVtx(points,p,type);
         cout << "\nRESULT "; printTypedVector(points);

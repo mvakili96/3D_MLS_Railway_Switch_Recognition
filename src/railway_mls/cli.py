@@ -17,6 +17,7 @@ from .kalman import kalman_predict, kalman_update
 from .mdl import segment_track_points_mdl
 from .models import BinaryString, seed_windows
 from .orchestration import TrackingEngine
+from .switch_boxes import detect_switch_boxes
 from .observations import determine_observation, observation_from_support
 from .points import Point3D
 from .sampling import MsvcRand
@@ -32,6 +33,7 @@ from .synthetic import (
     toe_scene,
     branch_scene,
     bidirectional_scene,
+    switch_box_scene,
 )
 from .tracking import track_railway
 from .toes import SUPPORTED_TOE_TYPES, detect_toe_points
@@ -47,6 +49,46 @@ def _toe_json(toe):
         "angle": toe.angle,
         "mode": toe.mode,
     }
+
+
+def _box_json(box):
+    return {
+        "center": box.center.as_array().tolist(),
+        "angle": box.angle,
+        "reference_height": box.reference_height,
+        "vertices": [point.as_array().tolist() for point in box.vertices],
+    }
+
+
+def _switch_box_demo(seed: int) -> dict:
+    scene = switch_box_scene()
+    random = MsvcRand(seed)
+    result = detect_switch_boxes(scene.toes, GridIndex(scene.cloud), config=scene.config, rng=random)
+    return _finite_json({
+        "stage": "source switch-box detection from planar patches and a supplied toe",
+        "status": result.status,
+        "input_points": len(scene.cloud),
+        "candidate_count": len(result.candidates.candidates),
+        "detected_count": len(result.new_boxes),
+        "random_seed": seed,
+        "random_draws": random.draw_count,
+        "reference_comparable": result.reference_comparable,
+        "cases": [
+            {
+                "status": entry.status,
+                "region_points": len(entry.region_points),
+                "height_points": len(entry.height_points),
+                "group_points": len(entry.grouping.selected) if entry.grouping is not None else 0,
+                "plane": entry.second_fit.plane.as_array().tolist()
+                    if entry.second_fit is not None and entry.second_fit.plane is not None else None,
+                "box": _box_json(entry.box) if entry.box is not None else None,
+            }
+            for entry in result.entries
+        ],
+        "class_5_points": int(np.count_nonzero(scene.cloud.class_codes == 5)),
+        "switch_box_detection_implemented": True,
+        "switch_box_detection_run": True,
+    })
 
 
 def _toe_demo(seed: int, type_id: int | None = None) -> dict:
@@ -90,7 +132,8 @@ def _toe_demo(seed: int, type_id: int | None = None) -> dict:
             "toe_detection_implemented": True,
             "branch_orchestration_implemented": True,
             "branch_orchestration_run": False,
-            "switch_box_detection_implemented": False,
+            "switch_box_detection_implemented": True,
+            "switch_box_detection_run": False,
         }
     )
 
@@ -113,6 +156,9 @@ def _pass_json(result):
             "direction": item.direction,
             "main_track": item.main_track,
             "accepted_steps": item.result.accepted_steps if item.result is not None else 0,
+            "switch_box_status": (item.result.switch_box_detection.status
+                                  if item.result is not None
+                                  and item.result.switch_box_detection is not None else None),
         }
 
     return {
@@ -154,7 +200,7 @@ def _orchestration_demo(seed: int, bidirectional: bool, max_steps: int | None) -
         "toe_input": "automatic postpass only" if bidirectional else "supplied toe geometry fixture",
         "branch_orchestration_implemented": True,
         "bidirectional_orchestration_implemented": True,
-        "switch_box_detection_implemented": False,
+        "switch_box_detection_implemented": True,
     }
     if initialized.success:
         if bidirectional:
@@ -183,6 +229,7 @@ def _orchestration_demo(seed: int, bidirectional: bool, max_steps: int | None) -
         layer_count=len(engine.layers),
         current_layer_index=engine.current_layer_index,
         global_toe_used=[toe.used for toe in engine.toe_points],
+        switch_box_count=len(engine.switch_boxes),
         layers=[
             {
                 "saved_segments": len(layer.track_segments),
@@ -191,6 +238,7 @@ def _orchestration_demo(seed: int, bidirectional: bool, max_steps: int | None) -
                 "center_vector": [point.as_array().tolist() for point in layer.center_vector],
                 "center_point_types": [point.point_type for point in layer.center_vector],
                 "toe_count": len(layer.toe_points),
+                "switch_box_count": len(layer.switch_boxes),
             }
             for layer in engine.layers
         ],
@@ -257,6 +305,7 @@ def _tracking_demo(seed: int, max_steps: int | None, direction: int, side_rails:
         "toe_detection_implemented": True,
         "branch_orchestration_implemented": True,
         "branch_orchestration_run": False,
+        "switch_box_detection_implemented": True,
     }
     if not initialized.success:
         return payload
@@ -278,6 +327,11 @@ def _tracking_demo(seed: int, max_steps: int | None, direction: int, side_rails:
         active_stack_size=len(result.active_stack.track_segments),
         reference_comparable=result.reference_comparable,
         random_draws=random.draw_count,
+        switch_box_postpass_ran=result.switch_box_detection is not None,
+        switch_box_status=(result.switch_box_detection.status
+                           if result.switch_box_detection is not None else None),
+        switch_box_count=(len(result.switch_box_detection.new_boxes)
+                         if result.switch_box_detection is not None else 0),
         recognition_postpass_ran=result.recognition is not None,
         stack_recognition=[
             {
@@ -500,6 +554,10 @@ def main(argv: list[str] | None = None) -> int:
         choices=SUPPORTED_TOE_TYPES,
         help="supported source type; default runs all twelve",
     )
+    switch_parser = commands.add_parser(
+        "switch-box-demo", help="detect switch boxes in dense planar patches beside a supplied toe"
+    )
+    switch_parser.add_argument("--seed", type=int, default=1)
     for name, help_text in (
         ("branch-demo", "run main and branch tracking on raw corridors with a supplied toe fixture"),
         ("bidirectional-demo", "run the source UI's two-direction tracking and vector assembly"),
@@ -556,6 +614,10 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command == "switch-box-demo":
+        result = _switch_box_demo(arguments.seed)
+        print(json.dumps(result, indent=2, allow_nan=False))
+        return 0 if result["status"] == "completed" and result["detected_count"] == 2 else 1
     if arguments.command in ("branch-demo", "bidirectional-demo"):
         if arguments.max_steps is not None and arguments.max_steps < 0:
             parser.error("--max-steps must be nonnegative")
