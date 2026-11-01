@@ -216,4 +216,5 @@ The [sequential tracking increment](PYTHON_TRACKING.md) now integrates predictio
 windows, retries, inference, gauge placement, stopping and stacks, preserving the
 source covariance orchestration and inactive loop/cross calls. Templates and stack
 classification are available in the [recognition increment](PYTHON_RECOGNITION.md).
-Toes, branch/bidirectional orchestration and real-data validation remain later work.
+Toe detection/refinement is available in the [toe increment](PYTHON_TOES.md).
+Branch/bidirectional orchestration and real-data validation remain later work.

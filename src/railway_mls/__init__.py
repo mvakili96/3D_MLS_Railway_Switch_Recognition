@@ -18,6 +18,7 @@ from .models import (
     TrackSegment,
     TrackStack,
     TrackWindow,
+    ToePoint,
     seed_windows,
 )
 from .observations import (
@@ -47,6 +48,13 @@ from .tracking import (
     WindowAttempt,
     generate_tracking_segment,
     track_railway,
+)
+from .toes import (
+    ToeBatchResult,
+    ToeDetection,
+    StackToeDetection,
+    detect_stack_toes,
+    detect_toe_points,
 )
 
 __version__ = "0.1.0"
@@ -79,6 +87,10 @@ __all__ = [
     "StackRecognitionBatch",
     "TemplateCatalogue",
     "TemplateRecognition",
+    "ToePoint",
+    "ToeBatchResult",
+    "ToeDetection",
+    "StackToeDetection",
     "TrackHeadResult",
     "TrackLayer",
     "TrackSegment",
@@ -94,6 +106,8 @@ __all__ = [
     "cluster_by_gmm",
     "direction_mode",
     "define_templates",
+    "detect_stack_toes",
+    "detect_toe_points",
     "determine_observation",
     "extract_track_points",
     "fit_height_gmm",

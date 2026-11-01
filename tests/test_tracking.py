@@ -496,7 +496,8 @@ class TrackingDemoTests(unittest.TestCase):
         self.assertTrue(result["tracking_implemented"])
         self.assertTrue(result["recognition_implemented"])
         self.assertTrue(result["recognition_postpass_ran"])
-        self.assertFalse(result["toe_detection_implemented"])
+        self.assertTrue(result["toe_detection_implemented"])
+        self.assertTrue(result["toe_detection_postpass_ran"])
 
 
 if __name__ == "__main__":

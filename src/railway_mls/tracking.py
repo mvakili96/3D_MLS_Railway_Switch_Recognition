@@ -17,7 +17,7 @@ from .heads import TrackHeadResult, extract_track_points
 from .initialization import InitializationResult
 from .kalman import KalmanPrediction, KalmanState, KalmanUpdate, kalman_predict, kalman_update
 from .mdl import MDLResult, segment_track_points_mdl
-from .models import TrackLayer, TrackSegment, TrackStack, TrackWindow
+from .models import ToePoint, TrackLayer, TrackSegment, TrackStack, TrackWindow
 from .observations import (
     ObservationSelection,
     SupportObservation,
@@ -28,6 +28,7 @@ from .points import Point3D
 from .recognition import StackRecognitionBatch, recognize_stacks
 from .sampling import MsvcRand, RandSource
 from .spatial import GridIndex
+from .toes import ToeBatchResult, detect_stack_toes
 
 
 def _snapshot(segment: TrackSegment) -> TrackSegment:
@@ -102,12 +103,15 @@ class TrackingResult:
     next_heights: tuple[float, float]
     status: str
     recognition: StackRecognitionBatch | None = None
+    toe_detection: ToeBatchResult | None = None
 
     @property
     def reference_comparable(self) -> bool:
         """False if a port policy bypassed undefined native intermediate access."""
-        return not self.status.startswith(("undefined_source", "nonfinite")) and all(
-            model.reference_comparable for step in self.steps for model in step.models
+        return (
+            not self.status.startswith(("undefined_source", "nonfinite"))
+            and all(model.reference_comparable for step in self.steps for model in step.models)
+            and (self.toe_detection is None or self.toe_detection.reference_comparable)
         )
 
     @property
@@ -121,8 +125,9 @@ class SequentialTracker:
     Reuse this object to continue after run(max_steps=...), preserving the RNG,
     active turnout stack, current heights and first-iteration state. The source's
     current covariances stay identity: its posterior-assignment lines are inactive.
-    Natural completion recognizes completed stacks. Toe detection and GUI callbacks
-    remain separate; an optional step limit does not trigger the postpass.
+    Natural completion recognizes completed stacks and detects eligible toes.
+    Branch/switch-box computation and GUI callbacks remain separate. Diagnostic
+    step limits do not trigger either postpass.
     """
 
     def __init__(
@@ -137,6 +142,7 @@ class SequentialTracker:
         main_track: bool = True,
         distance_from_start: float = 0.0,
         completed_stacks: list[TrackStack] | None = None,
+        toe_points: list[ToePoint] | None = None,
     ) -> None:
         self.config = config if config is not None else ExtractionConfig()
         if self.config.grid_size != grid.grid_size:
@@ -157,6 +163,8 @@ class SequentialTracker:
         self.track_direction = track_direction
         self.main_track = main_track
         self.recognition: StackRecognitionBatch | None = None
+        self.toe_detection: ToeBatchResult | None = None
+        self.toe_points = toe_points if toe_points is not None else []
         self.distance = distance_from_start if main_track else 0.0
         self.heights = tuple(initial_heights)
         self.completed_stacks = completed_stacks if completed_stacks is not None else []
@@ -186,6 +194,15 @@ class SequentialTracker:
             "no_support_points",
         }:
             self.recognition = recognize_stacks(self.completed_stacks, main_track=self.main_track)
+            self.toe_detection = detect_stack_toes(
+                self.completed_stacks,
+                config=self.config,
+                rng=self.rng,
+                cloud=self.grid.cloud,
+                layer=self.layer,
+                toes=self.toe_points,
+                main_track=self.main_track,
+            )
         return TrackingResult(
             self.layer,
             tuple(self.steps),
@@ -198,6 +215,7 @@ class SequentialTracker:
             self.heights,
             status,
             self.recognition,
+            self.toe_detection,
         )
 
     def _step(self) -> TrackingStep:
@@ -421,7 +439,7 @@ def track_railway(
     main_track: bool = True,
     max_steps: int | None = None,
 ) -> TrackingResult:
-    """Run sequential tracking and completed-stack recognition, without toes/branches."""
+    """Run tracking, completed-stack recognition and toes, without branch/switch-box work."""
     if initialized.source_return is not True or initialized.initial_heights is None:
         raise ValueError("successful source initialization is required before tracking")
     tracker = SequentialTracker(

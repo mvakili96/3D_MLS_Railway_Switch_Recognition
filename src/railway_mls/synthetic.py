@@ -5,7 +5,8 @@ from dataclasses import dataclass
 import numpy as np
 
 from .config import ExtractionConfig
-from .models import InitialLocation, TrackSegment, TrackStack, TrackWindow
+from .models import BinaryString, InitialLocation, TrackSegment, TrackStack, TrackWindow
+from .geometry import Line3D
 from .points import Point3D, PointCloud
 
 
@@ -14,6 +15,86 @@ class SyntheticScene:
     cloud: PointCloud
     seed: InitialLocation
     config: ExtractionConfig
+
+
+@dataclass(frozen=True)
+class SyntheticToeScene:
+    cloud: PointCloud
+    stack: TrackStack
+    config: ExtractionConfig
+
+
+def toe_scene(
+    type_id: int = 0,
+    *,
+    angle: float = 35.0,
+    mode: int = 1,
+    initialized_references: bool = True,
+    config: ExtractionConfig | None = None,
+) -> SyntheticToeScene:
+    """Side-point/ref-line toe fixture, not an automatically tracked stack.
+
+    Four distinct 60-point banks cover start/end and track2-right/track1-left.
+    References can be omitted to exercise the source's uninitialized-stack path.
+    """
+    from .recognition import define_templates
+
+    settings = config if config is not None else ExtractionConfig()
+    origin = np.array([1000.0, 2000.0])
+    radians = angle * np.pi / 180
+    sx, sy = (-1 if mode in (2, 3) else 1), (1 if mode in (1, 2) else -1)
+    along = np.array([sx * abs(np.cos(radians)), sy * abs(np.sin(radians))])
+    across = np.array([-along[1], along[0]])
+    points = []
+    for start, lateral in ((0.0, 1.7), (0.0, -0.2), (4.0, 1.7), (4.0, -0.2)):
+        for i in range(60):
+            xy = origin + (start + 0.01 * (i + 1)) * along + lateral * across
+            points.append((*xy, 10.0 + len(points) * 0.001))
+    cloud = PointCloud(points, class_codes=[9] * len(points), segment_ids=[7] * len(points))
+    empty = cloud.select([])
+    segments = []
+    for i in range(6):
+        windows = []
+        for rail, (low_z, high_z) in enumerate(
+            ((0.2 + i * 0.01, 0.3 + i * 0.01), (0.4 + i * 0.02, 0.6 + i * 0.02))
+        ):
+            center = origin + i * along + rail * settings.track_gauge * across
+            line = Line3D(
+                Point3D(*(center - 0.5 * along), low_z), Point3D(*(center + 0.5 * along), high_z)
+            )
+            line.update_center()
+            windows.append(
+                TrackWindow(
+                    line.center,
+                    line.angle,
+                    members=empty,
+                    left_members=empty,
+                    right_members=empty,
+                    member_line=line if initialized_references else None,
+                    turnout=True,
+                )
+            )
+        segments.append(TrackSegment(*windows, gauge=settings.track_gauge))
+    for segment_index, begin in ((0, 0), (1, 30), (4, 120), (5, 150)):
+        segments[segment_index].track2.right_members = cloud.select(np.arange(begin, begin + 30))
+        segments[segment_index].track1.left_members = cloud.select(
+            np.arange(begin + 60, begin + 90)
+        )
+    catalogue = define_templates().all
+    binary = BinaryString(
+        type=type_id, score=1.0, bits=catalogue[type_id].bits if 0 <= type_id < 20 else ()
+    )
+    binary.set_labels(type_id)
+    if binary.bits:
+        for row, destination in enumerate((0, 1, 4, 5)):
+            segment = segments[destination]
+            (
+                segment.track2.left_tag,
+                segment.track2.right_tag,
+                segment.track1.left_tag,
+                segment.track1.right_tag,
+            ) = binary.bits[row * 4 : row * 4 + 4]
+    return SyntheticToeScene(cloud, TrackStack(segments, binary), settings)
 
 
 def signature_stack(bits, segment_count: int = 6) -> TrackStack:

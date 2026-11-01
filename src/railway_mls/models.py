@@ -126,6 +126,20 @@ class TrackLayer:
     predicted_points: list[Point3D] = field(default_factory=list)
     updated_boundaries: list[Line3D] = field(default_factory=list)
     turnout_boundaries: list[Line3D] = field(default_factory=list)
+    toe_points: list[ToePoint] = field(default_factory=list)
+
+
+@dataclass
+class ToePoint:
+    """ToePt defaults; native uninitialized geometry/angle/mode are explicit None."""
+
+    center: Point3D | None = None
+    left: Point3D | None = None
+    right: Point3D | None = None
+    track_type: int = -1
+    used: bool = False
+    angle: float | None = None
+    mode: int | None = None
 
 
 @dataclass

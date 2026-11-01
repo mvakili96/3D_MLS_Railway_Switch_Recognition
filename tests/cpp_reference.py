@@ -148,6 +148,7 @@ struct TrackLayer {
     vector<TrackSegment> m_TrackSegList;
     vector<POINT3D> m_RailVec1, m_RailVec2, m_RailVecCenter;
     vector<Line3D> m_updateBnd, m_updateBnd_turnout;
+    vector<ToePt> m_ToePts;
 };
 class RailwayExtraction {
 public:
@@ -179,6 +180,14 @@ public:
     void TemplateMatching(vector<BinaryString>, BinaryString&);
     void PrintTurnoutType(int);
     void RecognizeStackBatch(bool);
+    bool DetectToePnts(int, vector<TrackSegment>, ToePt&);
+    void DetectStackToes(bool);
+    vector<ToePt> m_ToePts;
+    vector<PointXYZDouble*> lastToeCandidates, lastToeSegment, lastToeSupport;
+    Line3D lastToeLine;
+    POINT3D lastToeSelected;
+    double lastToeSigma;
+    int lastToeStage = 0;
     void progressCallback(double, double) {}
     void generateGrid();
     bool Setinitiallocation(int, POINT3D, double);
@@ -266,7 +275,29 @@ public:
                     "void RailwayExtraction::RecognitionTurnoutType(",
                     "void RailwayExtraction::TemplateMatching(",
                     "void RailwayExtraction::PrintTurnoutType(",
+                    "bool RailwayExtraction::DetectToePnts(",
                 )
+            )
+            toe = function(extraction, "bool RailwayExtraction::DetectToePnts(")
+            modified = toe.replace(
+                "ln.SetEndingPnts(minX, maxX, minY, maxY);",
+                "ln.SetEndingPnts(minX, maxX, minY, maxY);\nlastToeCandidates=tmpPnts; lastToeSegment=segmentPts; lastToeSupport=sptPnts; lastToeLine=ln; lastToeSigma=sigma; lastToeStage=1;",
+            )
+            for index in ("0", "end"):
+                marker = f"\n\t\tln_track1 = trkSeg[{index}].m_Track1.MemLn;"
+                modified = modified.replace(
+                    marker, "\nlastToeSelected=tmpPt; lastToeStage=2;" + marker
+                )
+            functions = functions.replace(toe, modified)
+            toe_start = extraction.index(
+                "\n\t\t//detect Toes",
+                extraction.index("\nvoid RailwayExtraction::Trackingrailway("),
+            )
+            toe_end = extraction.index("\n\t\t//Detect switch box", toe_start)
+            functions += (
+                "\nvoid RailwayExtraction::DetectStackToes(bool mainTrkflg) { if (mainTrkflg) {\n"
+                + extraction[toe_start:toe_end]
+                + "\n} }"
             )
             recognition = function(extraction, "void RailwayExtraction::RecognitionTurnoutType(")
             modified = recognition.replace(
@@ -377,6 +408,7 @@ int reference_rand() {
                 + polygon
                 + primitives
                 + header[header.index("struct BinaryString {") : header.index("struct ToePt {")]
+                + header[header.index("struct ToePt {") : header.index("struct LoopCross {")]
                 + segments
                 + higher_z
                 + larger
@@ -485,12 +517,71 @@ void printBinary(BinaryString value) {
          << value.bStrings.size() << ' ';
     for (auto bit : value.bStrings) cout << bit << ' ';
 }
+ToePt readToe(bool &hasGeometry) {
+    ToePt value; cin >> value.TrkType >> value.used >> hasGeometry;
+    if (hasGeometry) {
+        value.CenterPt=readPoint(); value.LeftPt=readPoint(); value.RightPt=readPoint();
+        value.TrkAng=readScalar(); cin >> value.TrkMode;
+    }
+    return value;
+}
+void printToe(ToePt value, bool hasGeometry) {
+    cout << value.TrkType << ' ' << value.used << ' ' << hasGeometry << ' ';
+    if (hasGeometry) {
+        printPoint(value.CenterPt); printPoint(value.LeftPt); printPoint(value.RightPt);
+        cout << value.TrkAng << ' ' << value.TrkMode << ' ';
+    }
+}
+vector<TrackSegment> readToeSegments(Cloud &cloud) {
+    size_t count; cin >> count; vector<TrackSegment> segments(count);
+    for (auto &segment : segments) {
+        segment.m_Center=POINT3D(0,0,0); segment.distFromSp=0;
+        for (auto window : {&segment.m_Track1, &segment.m_Track2}) {
+            window->CenterPt=POINT3D(0,0,0); window->ori=0;
+            bool hasLine; cin >> hasLine;
+            if (hasLine) window->MemLn=readStateLine(cloud);
+            window->slMemPnts=readSelection(cloud); window->srMemPnts=readSelection(cloud);
+        }
+    }
+    return segments;
+}
 int main() {
     cout << setprecision(17);
     string operation;
     cin >> operation;
     RailwayExtraction engine;
-    if (operation == "templates") {
+    if (operation == "toe" || operation == "toe_batch") {
+        cin >> engine.m_ThRansac; size_t count; cin >> count;
+        Cloud cloud; cloud.points.resize(count); engine.point_cloud=&cloud;
+        for (auto &point : cloud.points) cin >> point.x >> point.y >> point.z >> point.ClassCode >> point.SegmentID;
+        TrackLayer layer; engine.currentLayer=&layer;
+        if (operation == "toe") {
+            int type; cin >> type; auto segments=readToeSegments(cloud);
+            bool initialized; auto output=readToe(initialized); readRandom();
+            bool ok=engine.DetectToePnts(type,segments,output);
+            cout << "RESULT " << ok << ' '; printToe(output, initialized || ok);
+            cout << engine.lastToeStage << ' ';
+            if (engine.lastToeStage > 0) {
+                for (auto points : {engine.lastToeCandidates,engine.lastToeSegment,engine.lastToeSupport}) printSelection(points,cloud);
+                cout << engine.lastToeSigma << ' '; printStateLine(engine.lastToeLine,cloud);
+                printPoint(engine.lastToeSelected);
+            }
+        } else {
+            bool mainTrack; cin >> mainTrack >> count;
+            for (size_t i=0; i<count; ++i) {
+                TrackStack stack; stack.trkBinary=readBinary(); stack.trkSegs=readToeSegments(cloud);
+                engine.m_TrkStks.push_back(stack);
+            }
+            cin >> count;
+            for (size_t i=0; i<count; ++i) { bool initialized; engine.m_ToePts.push_back(readToe(initialized)); }
+            readRandom(); engine.DetectStackToes(mainTrack);
+            cout << "RESULT " << engine.m_ToePts.size() << ' ';
+            for (auto toe : engine.m_ToePts) printToe(toe,true);
+            cout << layer.m_ToePts.size() << ' '; for (auto toe : layer.m_ToePts) printToe(toe,true);
+        }
+        for (auto point : cloud.points) cout << point.ClassCode << ' ' << point.SegmentID << ' ';
+        cout << random_cursor << ' ';
+    } else if (operation == "templates") {
         engine.DefineTemplates(); cout << "RESULT ";
         for (auto catalogue : {engine.m_Tmplts, engine.m_TmpltBegin, engine.m_TmpltEnd}) {
             cout << catalogue.size() << ' '; for (auto value : catalogue) printBinary(value);

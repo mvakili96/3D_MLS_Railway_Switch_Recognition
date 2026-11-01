@@ -4,7 +4,8 @@ This increment implements the computational loop in
 `RailwayExtraction.cpp:530–874`, before its visualization callbacks and separate
 recognition postpass. It integrates the previously ported components using the
 source call order. Templates and stack recognition are available in the
-[recognition increment](PYTHON_RECOGNITION.md). Toes, automatic branch scheduling,
+[recognition increment](PYTHON_RECOGNITION.md), followed by the
+[toe increment](PYTHON_TOES.md). Automatic branch scheduling,
 bidirectional GUI orchestration and switch-box detection remain subsequent work.
 Inactive loop/cross calls remain inactive. No original C++ source is modified.
 
@@ -164,8 +165,10 @@ before posterior updates and geometric stop checks. A terminal active stack is
 keeping shared references to original cloud rows, matching native pointer identity.
 
 The [recognition increment](PYTHON_RECOGNITION.md) consumes this storage after the
-loop and assigns template state to eligible completed stacks. Toe points and
-branch seeds remain pending. The active unflushed stack remains excluded.
+loop and assigns template state to eligible completed stacks. The
+[toe increment](PYTHON_TOES.md) consumes eligible classified stacks while exposing
+their missing member-line references. Branch seeds remain pending. The active
+unflushed stack remains excluded.
 
 ## Undefined and nonfinite paths
 
@@ -204,8 +207,9 @@ integration checks natural termination, all four geometric modes, gaps, curves,
 grade, equality thresholds, duplicate retries, stack transitions and resume state.
 
 Stack signatures and source template recognition are now implemented in the
-[recognition increment](PYTHON_RECOGNITION.md). Next implement toe/branch
-integration and bidirectional orchestration. Separately invoked source features
+[recognition increment](PYTHON_RECOGNITION.md), and toe detection/refinement in the
+[toe increment](PYTHON_TOES.md). Next implement branch integration and bidirectional
+orchestration. Separately invoked source features
 remain in the port plan. Real-data accuracy, performance and published-metric
 reproduction remain pending; passing synthetic and extract comparisons does not
 establish those results or complete Windows-binary equivalence.
