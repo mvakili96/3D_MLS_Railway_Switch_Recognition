@@ -20,6 +20,9 @@ predicted-window diagnostics copy existing lengths/counts without changing math.
 Recognition uses the original BinaryString/TrackStack structs, catalogue and
 matching functions. Its batch wrapper extracts only the actual signature/scoring
 postpass, stopping before toe detection; score diagnostics only copy locals.
+Orchestration compiles the original wrappers and vector helpers. Its initialization
+and tracking callbacks use controlled stubs to isolate scheduling from undefined
+native fits; this is a control-flow comparison, not whole-application equivalence.
 """
 
 from pathlib import Path
@@ -183,6 +186,27 @@ public:
     bool DetectToePnts(int, vector<TrackSegment>, ToePt&);
     void DetectStackToes(bool);
     vector<ToePt> m_ToePts;
+    vector<TrackLayer*> m_trackLayers;
+    vector<TrackSegment> m_TrackSegList;
+    vector<vector<double>> orchestrationTrace;
+    vector<bool> referenceInitSuccess;
+    size_t referenceInitCursor = 0;
+    vector<ToePt> referenceMainToes, referenceLocalToes;
+    void OnRailextractionSetinit(int, POINT3D, float);
+    void OnRailextractionTrackingRailway();
+    void ReserverVectors();
+    void AddPointTofootOfPependicularOnRailVtx(vector<POINT3D>&, POINT3D, int);
+    void BidirectionalOrchestration();
+    bool OrchestrationInitialize(int, POINT3D, double);
+    void OrchestrationTrack(int, bool);
+    void updateView(int) {}
+    void UpdateProgress(int, int) {}
+    void updateTrackedLayers() {}
+    int layerIndex() {
+        for (size_t i=0; i<m_trackLayers.size(); ++i)
+            if (m_trackLayers[i] == currentLayer) return int(i);
+        return -1;
+    }
     vector<PointXYZDouble*> lastToeCandidates, lastToeSegment, lastToeSupport;
     Line3D lastToeLine;
     POINT3D lastToeSelected;
@@ -276,8 +300,24 @@ public:
                     "void RailwayExtraction::TemplateMatching(",
                     "void RailwayExtraction::PrintTurnoutType(",
                     "bool RailwayExtraction::DetectToePnts(",
+                    "void RailwayExtraction::AddPointTofootOfPependicularOnRailVtx(",
+                    "void RailwayExtraction::ReserverVectors()",
                 )
             )
+            reset = function(extraction, "void RailwayExtraction::OnRailextractionSetinit(int")
+            reset = reset.replace("Setinitiallocation(", "OrchestrationInitialize(")
+            orchestration = function(extraction, "void RailwayExtraction::OnRailextractionTrackingRailway()")
+            orchestration = orchestration.replace("Setinitiallocation(", "OrchestrationInitialize(")
+            orchestration = orchestration.replace("Trackingrailway(", "OrchestrationTrack(")
+            orchestration = orchestration[:-1] + "\nreferenceLocalToes=toes;\n}"
+            ui = function(
+                (SOURCE / "MainForm.cpp").read_text(),
+                "System::Void PCLProject::MainForm::railwayTrackingToolStripMenuItem_Click(",
+            )
+            ui = "void RailwayExtraction::BidirectionalOrchestration()\n" + ui[ui.index("{"):]
+            ui = ui.replace("this->railwayExtraction->", "")
+            ui = ui.replace("Setinitiallocation(", "OrchestrationInitialize(")
+            functions += "\n" + reset + "\n" + orchestration + "\n" + ui
             toe = function(extraction, "bool RailwayExtraction::DetectToePnts(")
             modified = toe.replace(
                 "ln.SetEndingPnts(minX, maxX, minY, maxY);",
@@ -545,12 +585,98 @@ vector<TrackSegment> readToeSegments(Cloud &cloud) {
     }
     return segments;
 }
+void printTypedVector(vector<POINT3D> points) {
+    cout << points.size() << ' ';
+    for (auto p : points) { printPoint(p); cout << p.PtType << ' '; }
+}
+vector<POINT3D> readTypedVector() {
+    size_t count; cin >> count; vector<POINT3D> result;
+    for (size_t i=0; i<count; ++i) { POINT3D p=readPoint(); cin >> p.PtType; result.push_back(p); }
+    return result;
+}
+bool RailwayExtraction::OrchestrationInitialize(int mode, POINT3D pt, double angle) {
+    bool success=referenceInitSuccess.at(referenceInitCursor++);
+    orchestrationTrace.push_back({1, double(layerIndex()), double(mode), pt.x,pt.y,pt.z,angle,double(success)});
+    m_distFromSp=0; m_bInit=true;
+    if (!success) return false;
+    POINT3D first(pt.x+0.25, pt.y+0.5, pt.z+0.75);
+    POINT3D second=first+POINT3D(1,2,3);
+    currentLayer->m_RailVec1.push_back(first);
+    currentLayer->m_RailVec2.push_back(second);
+    currentLayer->m_RailVecCenter.push_back((first+second)/2);
+    currentLayer->m_TrackSegList.push_back(TrackSegment());
+    initialLocation.x=first.x; initialLocation.y=first.y; initialLocation.z=first.z;
+    initialLocation.second_x=second.x; initialLocation.second_y=second.y; initialLocation.second_z=second.z;
+    initialLocation.angle=angle+0.125; initialLocation.mode=mode;
+    return true;
+}
+void RailwayExtraction::OrchestrationTrack(int direction, bool mainTrack) {
+    orchestrationTrace.push_back({2, double(layerIndex()), double(direction), double(mainTrack)});
+    if (mainTrack) for (auto toe : referenceMainToes) {
+        m_ToePts.push_back(toe); currentLayer->m_ToePts.push_back(toe);
+    }
+}
 int main() {
     cout << setprecision(17);
     string operation;
     cin >> operation;
     RailwayExtraction engine;
-    if (operation == "toe" || operation == "toe_batch") {
+    if (operation == "tag_vector") {
+        auto points=readTypedVector(); POINT3D p=readPoint(); int type; cin >> type;
+        engine.AddPointTofootOfPependicularOnRailVtx(points,p,type);
+        cout << "\nRESULT "; printTypedVector(points);
+    } else if (operation == "reverse_vectors") {
+        size_t count; cin >> count;
+        for (size_t i=0; i<count; ++i) {
+            auto layer=new TrackLayer(); engine.m_trackLayers.push_back(layer);
+            layer->m_RailVec1=readTypedVector(); layer->m_RailVec2=readTypedVector();
+            layer->m_RailVecCenter=readTypedVector();
+        }
+        engine.ReserverVectors();
+        cout << "\nRESULT " << engine.layerIndex() << ' ' << engine.m_trackLayers.size() << ' ';
+        for (auto layer : engine.m_trackLayers) {
+            printTypedVector(layer->m_RailVec1); printTypedVector(layer->m_RailVec2);
+            printTypedVector(layer->m_RailVecCenter); delete layer;
+        }
+    } else if (operation == "orchestrate" || operation == "bidirectional_orchestrate") {
+        auto layer=new TrackLayer(); engine.currentLayer=layer; engine.m_trackLayers.push_back(layer);
+        for (int i=0; i<3; ++i) {
+            layer->m_RailVec1.push_back(POINT3D(i,i,i+1));
+            layer->m_RailVec2.push_back(POINT3D(i+2,i+2,i+3));
+            layer->m_RailVecCenter.push_back(POINT3D(i+1,i+1,i+2));
+        }
+        layer->m_TrackSegList.push_back(TrackSegment());
+        size_t count; cin >> count; bool geometry;
+        for (size_t i=0; i<count; ++i) engine.m_ToePts.push_back(readToe(geometry));
+        layer->m_ToePts=engine.m_ToePts;
+        cin >> count;
+        for (size_t i=0; i<count; ++i) engine.referenceMainToes.push_back(readToe(geometry));
+        cin >> count;
+        for (size_t i=0; i<count; ++i) { bool success; cin >> success; engine.referenceInitSuccess.push_back(success); }
+        if (operation == "orchestrate") engine.OnRailextractionTrackingRailway();
+        else {
+            auto p=readPoint(); auto q=readPoint();
+            engine.initialLocation.x=p.x; engine.initialLocation.y=p.y; engine.initialLocation.z=p.z;
+            engine.initialLocation.second_x=q.x; engine.initialLocation.second_y=q.y; engine.initialLocation.second_z=q.z;
+            cin >> engine.initialLocation.angle >> engine.initialLocation.mode;
+            engine.BidirectionalOrchestration();
+        }
+        cout << "\nRESULT " << engine.orchestrationTrace.size() << ' ';
+        for (auto event : engine.orchestrationTrace) {
+            cout << event.size() << ' '; for (auto value : event) cout << value << ' ';
+        }
+        cout << engine.layerIndex() << ' ' << engine.m_trackLayers.size() << ' ';
+        for (auto item : engine.m_trackLayers) {
+            printTypedVector(item->m_RailVec1); printTypedVector(item->m_RailVec2);
+            printTypedVector(item->m_RailVecCenter);
+            cout << item->m_TrackSegList.size() << ' ' << item->m_ToePts.size() << ' ';
+        }
+        for (auto toes : {engine.m_ToePts,engine.referenceLocalToes}) {
+            cout << toes.size() << ' '; for (auto toe : toes) cout << toe.TrkType << ' ' << toe.used << ' ';
+        }
+        // The reset wrapper intentionally does not delete discarded native layers.
+        for (auto item : engine.m_trackLayers) delete item;
+    } else if (operation == "toe" || operation == "toe_batch") {
         cin >> engine.m_ThRansac; size_t count; cin >> count;
         Cloud cloud; cloud.points.resize(count); engine.point_cloud=&cloud;
         for (auto &point : cloud.points) cin >> point.x >> point.y >> point.z >> point.ClassCode >> point.SegmentID;

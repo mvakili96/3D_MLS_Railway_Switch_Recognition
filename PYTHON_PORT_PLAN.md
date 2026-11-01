@@ -72,9 +72,15 @@ are undefined. Python reports that path after preceding grouping/fitting effects
 initialized-reference component fixtures are checked against C++. See
 [docs/PYTHON_TOES.md](docs/PYTHON_TOES.md).
 
-Verification passed 222 test methods, including 73 methods comparing against
+Branch scheduling and the UI's bidirectional orchestration are implemented,
+including shared engine state, local toe copies, source type filters, Y-as-Z branch
+seeds, center-vector tagging, reset-angle float32 narrowing and asymmetric vector
+reversal/assembly. See [docs/PYTHON_ORCHESTRATION.md](docs/PYTHON_ORCHESTRATION.md).
+LIM-001 remains open: unavailable automatic toe references are not replaced.
+
+Verification passed 259 test methods, including 83 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. Branch/bidirectional orchestration, switch boxes and
+been built. Switch boxes and
 the remaining source features are pending. Their behavioral contracts
 and checks will accompany each stage.
 
@@ -120,8 +126,8 @@ The unpacked version adds second seed coordinates, bidirectional tracking orches
 | Observation selection | `RailwayExtraction.cpp:1302,2130,2210` | Main/secondary rail assignment, side occupancy and paired-rail gauge constraints |
 | Sequential tracking | `RailwayExtraction.cpp:530,1255,4010,4070` | Prediction/update, orientation, adaptive window extension for sparse regions, termination and intermediate state |
 | Segment stacks and switch recognition | `RailwayExtraction.cpp:900–1038,2001,2789`; `LIDARPT.h:1078,1157` | Single/multiple-track stacks, boundary segments, occupancy signatures, templates, context and ambiguity |
-| Toes and branch tracks | `RailwayExtraction.cpp:251,2617` | Toe estimation, additional path seeds, branch direction and path identities |
-| Bidirectional orchestration | `MainForm.cpp:101–137`; `RailwayExtraction.cpp:5272` | Reverse-direction run, reversal and left/right swapping, then original-direction run |
+| Toes and branch tracks | `RailwayExtraction.cpp:251,2617` | Implemented: toe estimation, additional path seeds, branch direction, layer identity and local/global toe state |
+| Bidirectional orchestration | `MainForm.cpp:101–137`; `RailwayExtraction.cpp:5272` | Implemented: reverse-direction run, asymmetric reversal/rail swapping, then original-direction run |
 | Switch-box detection | `RailwayExtraction.cpp:2494` | Additional source functionality: toe-adjacent candidate regions, plane fitting and grouping |
 | Grade analysis | `RailwayExtraction.cpp:5035–5245`; `MainForm.cpp:749,824` | Additional application functionality: vertical simplification, grade and curve calculations |
 | Loop/cross-region routines | `RailwayExtraction.cpp:2342,2404` | Present in source, but initialization/tracking/validation calls are commented out at approximately lines 512, 827 and 1016 |

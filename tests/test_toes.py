@@ -468,7 +468,8 @@ class ToeIntegrationTests(unittest.TestCase):
         self.assertEqual(
             result["uninitialized_reference_example"]["status"], "undefined_source_reference_line"
         )
-        self.assertFalse(result["branch_orchestration_implemented"])
+        self.assertTrue(result["branch_orchestration_implemented"])
+        self.assertFalse(result["branch_orchestration_run"])
 
 
 if __name__ == "__main__":

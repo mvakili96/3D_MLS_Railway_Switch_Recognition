@@ -208,8 +208,9 @@ grade, equality thresholds, duplicate retries, stack transitions and resume stat
 
 Stack signatures and source template recognition are now implemented in the
 [recognition increment](PYTHON_RECOGNITION.md), and toe detection/refinement in the
-[toe increment](PYTHON_TOES.md). Next implement branch integration and bidirectional
-orchestration. Separately invoked source features
+[toe increment](PYTHON_TOES.md). Branch integration and bidirectional assembly are
+now available in [the orchestration increment](PYTHON_ORCHESTRATION.md).
+Switch-box detection and separately invoked source features
 remain in the port plan. Real-data accuracy, performance and published-metric
 reproduction remain pending; passing synthetic and extract comparisons does not
 establish those results or complete Windows-binary equivalence.
