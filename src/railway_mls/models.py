@@ -127,6 +127,25 @@ class TrackLayer:
     updated_boundaries: list[Line3D] = field(default_factory=list)
     turnout_boundaries: list[Line3D] = field(default_factory=list)
     toe_points: list[ToePoint] = field(default_factory=list)
+    switch_boxes: list[SwitchBox] = field(default_factory=list)
+
+
+@dataclass
+class SwitchBox:
+    """SwitchBox fields; final native referHgt is uninitialized and remains None."""
+
+    center: Point3D
+    angle: float
+    vertices: tuple[Point3D, ...] = ()
+    reference_height: float | None = None
+
+    def generate_region(self, size: float) -> None:
+        radius = size / 2 / cos(45 * pi / 180)
+        self.vertices = tuple(
+            Point3D(self.center.x + radius * cos((self.angle + i * 90 + 45) * pi / 180),
+                    self.center.y + radius * sin((self.angle + i * 90 + 45) * pi / 180), 0)
+            for i in range(4)
+        )
 
 
 @dataclass

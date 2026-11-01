@@ -204,6 +204,26 @@ def polygon_area(vertices: tuple[Point3D, ...]) -> float:
     return 0.5 * fabs(area)
 
 
+def points_in_convex_polygon(vertices: tuple[Point3D, ...], xy: ArrayLike) -> NDArray[np.bool_]:
+    """Source pnpoly2: ALL edge cross-product tags must agree, including zeros.
+
+    The fixed 1e-10 test excludes ordinary rectangle edges, but all-zero tags
+    qualify. This predicate is distinct from the window ray-crossing pnpoly.
+    """
+    values = np.asarray(xy, dtype=np.float64)
+    if values.ndim != 2 or values.shape[1] != 2:
+        raise ValueError("xy must have shape (N, 2)")
+    if not vertices:
+        raise ValueError("native pnpoly2 has no defined result for an empty polygon")
+    tags = []
+    for i, first in enumerate(vertices):
+        second = vertices[(i + 1) % len(vertices)]
+        cross = ((second.x - first.x) * (values[:, 1] - first.y)
+                 - (second.y - first.y) * (values[:, 0] - first.x))
+        tags.append(np.where(np.abs(cross) < 1e-10, 0, np.where(cross < 0, -1, 1)))
+    return np.all(np.asarray(tags) == tags[0], axis=0)
+
+
 def distance_2d(first: Point3D, second: Point3D) -> float:
     dx, dy = first.x - second.x, first.y - second.y
     return sqrt(dx * dx + dy * dy)

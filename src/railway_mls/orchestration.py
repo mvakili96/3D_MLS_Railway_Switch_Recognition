@@ -11,7 +11,7 @@ import numpy as np
 from .config import ExtractionConfig
 from .geometry import Line3D, distance_2d, perpendicular_foot
 from .initialization import InitializationResult, initialize_tracks
-from .models import InitialLocation, ToePoint, TrackLayer, TrackStack
+from .models import InitialLocation, SwitchBox, ToePoint, TrackLayer, TrackStack
 from .points import Point3D
 from .sampling import MsvcRand, RandSource
 from .spatial import GridIndex
@@ -212,6 +212,7 @@ class TrackingEngine:
         self.distance_from_start = 0.0
         self.completed_stacks: list[TrackStack] = []
         self.toe_points: list[ToePoint] = []
+        self.switch_boxes: list[SwitchBox] = []
         self._initialization_pending = True
 
     @property
@@ -282,6 +283,7 @@ class TrackingEngine:
             distance_from_start=self.distance_from_start,
             completed_stacks=self.completed_stacks,
             toe_points=self.toe_points,
+            switch_boxes=self.switch_boxes,
         )
         result = tracker.run(max_steps=max_steps)
         if result.steps:

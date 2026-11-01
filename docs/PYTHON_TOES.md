@@ -2,8 +2,8 @@
 
 This increment ports `DetectToePnts` and its post-recognition caller. It preserves
 the twelve supported types, side-point choices, grouping, fitting, endpoint crop,
-distance comparisons, projections and append behavior. Branch scheduling, switch
-boxes and bidirectional orchestration remain later work.
+distance comparisons, projections and append behavior. Branch/bidirectional
+orchestration and [switch-box detection](PYTHON_SWITCH_BOXES.md) are also available.
 
 **Baseline limitation:** the source tracker pushes `nextSeg` into a turnout stack
 before assigning its member lines. `Line3D` has an empty constructor, so those
@@ -31,7 +31,8 @@ The default component example processes all twelve supported source types, with
 twelve toes and consumes 12,000 raw MSVC random draws. A separate missing-reference
 example reports the undefined path after its own 1,000 draws. These fixtures enter
 at the side-membership stage; they are not automatically tracked raw MLS regions.
-All ten CLI demos are available, including branch and bidirectional orchestration.
+All eleven CLI demos are available, including branch/bidirectional orchestration
+and switch-box detection.
 
 ```python
 from railway_mls import MsvcRand, TrackLayer, detect_stack_toes, detect_toe_points
@@ -139,8 +140,8 @@ completion, using the same RNG and configuration. Step limits defer both
 postpasses. Non-main calls retain their gates. Undefined/nonfinite loop exits and
 empty-layer calls do not invoke the postpass. The active unflushed stack remains
 excluded. Results expose `toe_detection`; undefined toe paths also make
-`TrackingResult.reference_comparable=False`. Branch and switch-box routines are
-not invoked by this increment.
+`TrackingResult.reference_comparable=False`. The later switch-box increment now
+runs its postpass after this component, before outer branch scheduling.
 
 ## Undefined, nonfinite and boundary cases
 
@@ -190,5 +191,5 @@ unchanged; full Windows-binary and empirical accuracy claims remain unverified.
 
 Branch seed selection, tracking orchestration and bidirectional runs are now
 implemented in [the orchestration increment](PYTHON_ORCHESTRATION.md). The
-missing-reference limitation remains open. Next implement switch-box detection
-and remaining source features.
+missing-reference limitation remains open. Switch-box detection is now implemented;
+next implement grade/curve analysis and remaining source features.

@@ -78,10 +78,15 @@ seeds, center-vector tagging, reset-angle float32 narrowing and asymmetric vecto
 reversal/assembly. See [docs/PYTHON_ORCHESTRATION.md](docs/PYTHON_ORCHESTRATION.md).
 LIM-001 remains open: unavailable automatic toe references are not replaced.
 
-Verification passed 259 test methods, including 83 methods comparing against
+Switch-box detection and its plane-fitting dependencies are implemented, including
+candidate geometry, the separate `pnpoly2` membership test, ordered two-pass RANSAC
+and grouping, bundled symmetric JAMA eigen behavior, source output reuse, class-5
+labels, appends and main-tracking integration. Sparse undefined plane reads remain
+explicit. See [docs/PYTHON_SWITCH_BOXES.md](docs/PYTHON_SWITCH_BOXES.md).
+
+Verification passed 294 test methods, including 96 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. Switch boxes and
-the remaining source features are pending. Their behavioral contracts
+been built. Grade/curve analysis and the remaining source features are pending. Their behavioral contracts
 and checks will accompany each stage.
 
 ## Specification checklist
@@ -128,7 +133,7 @@ The unpacked version adds second seed coordinates, bidirectional tracking orches
 | Segment stacks and switch recognition | `RailwayExtraction.cpp:900–1038,2001,2789`; `LIDARPT.h:1078,1157` | Single/multiple-track stacks, boundary segments, occupancy signatures, templates, context and ambiguity |
 | Toes and branch tracks | `RailwayExtraction.cpp:251,2617` | Implemented: toe estimation, additional path seeds, branch direction, layer identity and local/global toe state |
 | Bidirectional orchestration | `MainForm.cpp:101–137`; `RailwayExtraction.cpp:5272` | Implemented: reverse-direction run, asymmetric reversal/rail swapping, then original-direction run |
-| Switch-box detection | `RailwayExtraction.cpp:2494` | Additional source functionality: toe-adjacent candidate regions, plane fitting and grouping |
+| Switch-box detection | `RailwayExtraction.cpp:2494,3912,4104,4133,4204,4242`; `LIDARPT.h:1056` | Implemented: toe-adjacent candidates, pnpoly2, plane fits/JAMA refit, grouping/gates, labels and engine/layer appends |
 | Grade analysis | `RailwayExtraction.cpp:5035–5245`; `MainForm.cpp:749,824` | Additional application functionality: vertical simplification, grade and curve calculations |
 | Loop/cross-region routines | `RailwayExtraction.cpp:2342,2404` | Present in source, but initialization/tracking/validation calls are commented out at approximately lines 512, 827 and 1016 |
 | File adapters and coordinate conversion | `LASFileReader.cpp`; `TXTFileReader.cpp`; `DataConvertor.cpp`; `UTM.cpp` | Input density, precision, output schemas and explicit coordinate metadata |
