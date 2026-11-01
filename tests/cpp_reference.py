@@ -236,6 +236,8 @@ public:
     string GWADText(vector<string>);
     vector<TrackLayer*> GetLayers();
     void ComputeAllGrades();
+    vector<double> PickedSeed(double, double, double, double, double, double);
+    double GetAngle(double, double, double, double);
     void ExtractPlaneByRANSAC(vector<PointXYZDouble*>, PlnPara&, double, vector<PointXYZDouble*>&);
     PlnPara GetPlaneParameters3p(POINT3D, POINT3D, POINT3D);
     PlnPara GetPlaneParametersEigen(vector<PointXYZDouble*>);
@@ -386,6 +388,14 @@ public:
                             "System::Void PCLProject::MainForm::computeGradeToolStripMenuItem_Click(")
             menu = "void RailwayExtraction::ComputeAllGrades()\n" + menu[menu.index("{"):]
             functions += "\n" + menu.replace("this->railwayExtraction->", "")
+            picked = function((SOURCE / "MainForm.cpp").read_text(),
+                              "void PCLProject::MainForm::ReceivedPoints(")
+            prefix = picked[picked.index("{") + 1:picked.index("this->railwayExtraction->OnRailextractionSetinit")]
+            functions += "\n" + function((SOURCE / "MainForm.cpp").read_text(),
+                                         "double PCLProject::MainForm::GetAngle(").replace(
+                                             "PCLProject::MainForm::GetAngle", "RailwayExtraction::GetAngle")
+            functions += ("\nvector<double> RailwayExtraction::PickedSeed(double x1,double y1,double z1,double x2,double y2,double z2) {\n"
+                          + prefix + "\nreturn {pt.x,pt.y,pt.z,double(angle),double(mode),double(pt.PtType)};\n}\n")
             plane = function(extraction, "void RailwayExtraction::ExtractPlaneByRANSAC(")
             modified = plane.replace("{", "{\nlastPlaneSampleCounts.clear(); lastPlaneRefinedCounts.clear(); lastPlaneWrites=0; lastPlaneBest=-1;", 1)
             modified = modified.replace("tmpPara = GetPlaneParametersEigen(tmptmpPnts);",
@@ -767,7 +777,11 @@ int main() {
     string operation;
     cin >> operation;
     RailwayExtraction engine;
-    if (operation == "grade_mark" || operation == "grade_dp") {
+    if (operation == "picked_seed") {
+        POINT3D first=readPoint(), second=readPoint();
+        auto seed=engine.PickedSeed(first.x,first.y,first.z,second.x,second.y,second.z);
+        cout << "\nRESULT "; for (auto value : seed) cout << value << ' ';
+    } else if (operation == "grade_mark" || operation == "grade_dp") {
         auto points=readGradeVertices(); double threshold=readScalar();
         if (operation == "grade_mark") engine.DetermineGradeSection(points,threshold);
         else { int start,end; cin >> start >> end; engine.DouglasPeuckerVertical(points,start,end,threshold); }

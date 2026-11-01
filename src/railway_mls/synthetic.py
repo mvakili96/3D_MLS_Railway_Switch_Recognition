@@ -39,6 +39,72 @@ class SyntheticSwitchBoxScene:
     config: ExtractionConfig
 
 
+@dataclass(frozen=True)
+class SyntheticPipelineScene:
+    cloud: PointCloud
+    seed: InitialLocation
+    config: ExtractionConfig
+    bidirectional: bool
+    supplied_toes: tuple[ToePoint, ...] = ()
+    supplied_stacks: tuple[TrackStack, ...] = ()
+    notes: tuple[str, ...] = ()
+
+
+def pipeline_scene(scenario: str = "straight") -> SyntheticPipelineScene:
+    """Automatic raw scenes or explicitly supplied component state.
+
+    The component corridors/stack are spatially separated fixtures, not a
+    physically connected or automatically recognized railway junction.
+    """
+    if scenario == "straight":
+        scene = bidirectional_scene()
+        return SyntheticPipelineScene(scene.cloud, scene.seed, scene.config, True,
+                                      notes=("Raw corridor with an interior seed; no supplied state.",))
+    if scenario == "turnout":
+        scene = tracking_scene(length=11, side_rails=True)
+        angle = np.deg2rad(scene.seed.angle)
+        along = np.array([np.cos(angle), np.sin(angle)])
+        delta = scene.cloud.xyz[:, :2] - scene.seed.point.as_array()[:2]
+        position = delta @ along
+        lateral = delta @ np.array([-along[1], along[0]])
+        distance = np.minimum(abs(lateral), abs(lateral - scene.config.track_gauge))
+        keep = (distance < 0.06) | ((position > 1) & (position < 7))
+        return SyntheticPipelineScene(PointCloud(scene.cloud.xyz[keep]), scene.seed, scene.config, False,
+                                      notes=("Raw close side rails end before the main corridor.",
+                                             "Recognition may be ambiguous; no desired type is injected."))
+    if scenario not in ("components", "missing-references"):
+        raise ValueError(f"unknown synthetic pipeline scenario: {scenario}")
+    branch = branch_scene()
+    boxes = switch_box_scene(angle=branch.toe.angle, config=branch.config)
+    toe = toe_scene(6, config=branch.config, initialized_references=scenario == "components")
+    box_shift = branch.toe.right - boxes.toes[0].right
+    toe_shift = Point3D(100, 100, 0)
+    banks = (branch.cloud, boxes.cloud, toe.cloud)
+    cloud = PointCloud(np.vstack((branch.cloud.xyz, boxes.cloud.xyz + box_shift.as_array(),
+                                 toe.cloud.xyz + toe_shift.as_array())),
+                       intensity=np.concatenate([bank.intensity for bank in banks]),
+                       class_codes=np.concatenate([bank.class_codes for bank in banks]),
+                       segment_ids=np.concatenate([bank.segment_ids for bank in banks]))
+    offset = len(branch.cloud) + len(boxes.cloud)
+    for segment in toe.stack.track_segments:
+        for window in (segment.track1, segment.track2):
+            window.center = window.center + toe_shift
+            for attribute in ("members", "left_members", "right_members"):
+                selection = getattr(window, attribute)
+                setattr(window, attribute, cloud.select(selection.indices + offset)
+                        if selection is not None else None)
+            if window.member_line is not None:
+                line = window.member_line
+                window.member_line = Line3D(line.begin + toe_shift, line.end + toe_shift)
+                window.member_line.update_center()
+    return SyntheticPipelineScene(
+        cloud, branch.seed, branch.config, False, (branch.toe,), (toe.stack,),
+        ("Supplied branch toe, supplied six-segment side-membership stack, dense box patches.",
+         "Stack references are initialized fixture geometry." if scenario == "components" else
+         "Stack references are absent, preserving the undefined-source toe path.",
+         "Separated corridors and side points are component fixtures, not an automatic junction."))
+
+
 def grade_scene() -> TrackLayer:
     """A curved center vector with three elevation regimes and two switch tags.
 

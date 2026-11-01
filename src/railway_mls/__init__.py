@@ -93,10 +93,19 @@ from .grades import (
     GWADExport, GWADRow, build_gwad_rows, compute_grade, compute_grade_parameters,
     compute_layer_grades, determine_grade_sections, douglas_peucker_vertical, format_gwad,
 )
+from .pipeline import (
+    PipelineFinding, PipelineOptions, PipelineResult, PipelineStage,
+    initial_location_from_picks, run_pipeline,
+)
+from .artifacts import pipeline_summary, write_pipeline_outputs
+from .coverage import check_source_coverage, coverage_summary, source_coverage
 
 __version__ = "0.1.0"
 
 __all__ = [
+    "PipelineFinding", "PipelineOptions", "PipelineResult", "PipelineStage",
+    "initial_location_from_picks", "run_pipeline", "pipeline_summary", "write_pipeline_outputs",
+    "check_source_coverage", "coverage_summary", "source_coverage",
     "GradeSection", "GradeAnalysis", "GradeDivision", "GradeParameters", "GradeReportRow",
     "GradeSplit", "GWADExport", "GWADRow", "build_gwad_rows", "compute_grade",
     "compute_grade_parameters", "compute_layer_grades", "determine_grade_sections",

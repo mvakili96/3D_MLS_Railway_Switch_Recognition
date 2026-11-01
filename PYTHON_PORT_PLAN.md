@@ -1,6 +1,9 @@
 # Python reproduction: repository review and implementation brief
 
-Reviewed on 2026-10-30. This is a source and paper review, not a running implementation or a claim of numerical equivalence. No legacy source was changed, and the Windows application was not built or executed.
+Originally reviewed on 2026-10-30; implementation progress updated 2026-11-01.
+The review is followed by an independently runnable Python implementation below;
+it is not a claim of whole-application numerical equivalence. No legacy source
+was changed, and the Windows application was not built or executed.
 
 ## Recommendation
 
@@ -91,11 +94,26 @@ reversal now matches native XYZ-only point assignment; mixed-tag insertion remai
 explicitly non-comparable where native capacity can change tag transport. See
 [docs/PYTHON_GRADES.md](docs/PYTHON_GRADES.md) and LIM-028–LIM-031.
 
-Verification passed 324 test methods, including 108 methods comparing against
+An integrated in-memory pipeline now composes the engine with one owning cloud
+and continuous random stream, opt-in grade/GWAD actions, deterministic raw and
+explicit-component synthetic scenarios, versioned diagnostic JSON/CSV output,
+input/state fingerprints and optional detailed/draw traces. The picked-seed
+midpoint/float32-angle/mode prefix is source-tested. See
+[docs/PYTHON_PIPELINE.md](docs/PYTHON_PIPELINE.md).
+
+The packaged source audit inventories 124 definitions in RailwayExtraction.cpp
+and MainForm.cpp, plus file-level dispositions for 41 project files and hashes
+for 51 bundled dependency files. Definitions retain explicit ported, partially
+mapped, pending, inactive, stub and presentation dispositions. It is not an
+exhaustive header/call-graph audit or a numerical coverage percentage. Exact
+standalone unused helpers, partial utility contracts, inactive loop/cross workflow
+and legacy I/O/conversion/export scope remain visible; complete reconstruction
+is not declared. Keep all limitation IDs open for the agreed later review.
+
+Verification passed 343 test methods, including 109 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. Remaining computational inventory, data interfaces and complete
-pipeline delivery/audit are pending. Their contracts and checks will accompany
-each stage.
+been built. Remaining data/helper contracts and full-reference/real-data checks
+will accompany later increments.
 
 ## Specification checklist
 
@@ -143,6 +161,8 @@ The unpacked version adds second seed coordinates, bidirectional tracking orches
 | Bidirectional orchestration | `MainForm.cpp:101–137`; `RailwayExtraction.cpp:5272` | Implemented: reverse-direction run, asymmetric reversal/rail swapping, then original-direction run |
 | Switch-box detection | `RailwayExtraction.cpp:2494,3912,4104,4133,4204,4242`; `LIDARPT.h:1056` | Implemented: toe-adjacent candidates, pnpoly2, plane fits/JAMA refit, grouping/gates, labels and engine/layer appends |
 | Grade analysis and GWAD | `RailwayExtraction.cpp:5035–5189`; `LIDARPT.h:1254`; `MainForm.cpp:724–800,824–836` | Implemented: grade struct/division/parameters/reports, all-layer menu action, GWAD row computation and finite TSV formatting |
+| Integrated runner and audit | Existing engine/UI stages; `MainForm.cpp:349–439` seed picks | Implemented: unified API, 4 synthetic scenarios, supplied-state provenance, JSON/CSV artifacts, deterministic RNG metadata, picked seed and explicit source dispositions |
+| Standalone/partial utilities | `RailwayExtraction.cpp:1172,1208,3574,3585,3641,3860,4296` | Pending exact unused GMM/height-filter/angle/3D-distance APIs and standalone contracts for bounds/wrap/boundary helpers; reached behavior is mapped explicitly |
 | Loop/cross-region routines | `RailwayExtraction.cpp:2342,2404` | Present in source, but initialization/tracking/validation calls are commented out at approximately lines 512, 827 and 1016 |
 | File adapters and coordinate conversion | `LASFileReader.cpp`; `TXTFileReader.cpp`; `DataConvertor.cpp`; `UTM.cpp` | Input density, precision, output schemas and explicit coordinate metadata |
 

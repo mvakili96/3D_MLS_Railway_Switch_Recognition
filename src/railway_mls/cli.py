@@ -39,6 +39,10 @@ from .synthetic import (
 )
 from .tracking import track_railway
 from .toes import SUPPORTED_TOE_TYPES, detect_toe_points
+from .pipeline import PipelineOptions, run_pipeline
+from .artifacts import pipeline_summary, write_pipeline_outputs
+from .coverage import check_source_coverage, coverage_summary
+from .synthetic import pipeline_scene
 
 
 def _toe_json(toe):
@@ -577,6 +581,20 @@ def _observation_demo(seed: int) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="3D MLS railway Python foundation")
     commands = parser.add_subparsers(dest="command", required=True)
+    audit_parser = commands.add_parser("source-audit", help="check frozen native source and explicit coverage dispositions")
+    audit_parser.add_argument("--repo", default=".", help="original source repository root (default: current directory)")
+    pipeline_parser = commands.add_parser("pipeline-demo", help="run the integrated synthetic workflow and report limitations")
+    pipeline_parser.add_argument("--scenario", choices=("straight", "turnout", "components", "missing-references"), default="straight")
+    pipeline_parser.add_argument("--seed", type=int, default=1)
+    pipeline_parser.add_argument("--max-steps", type=int, help="diagnostic limit per invocation; later stages defer")
+    directions = pipeline_parser.add_mutually_exclusive_group()
+    directions.add_argument("--bidirectional", dest="bidirectional", action="store_true")
+    directions.add_argument("--single-direction", dest="bidirectional", action="store_false")
+    pipeline_parser.set_defaults(bidirectional=None)
+    pipeline_parser.add_argument("--skip-grades", action="store_true", help="skip both grade and GWAD actions")
+    pipeline_parser.add_argument("--record-random", action="store_true", help="include the raw random stream")
+    pipeline_parser.add_argument("--steps", action="store_true", help="include detailed steps, memberships and filter state")
+    pipeline_parser.add_argument("--output", help="create a new diagnostic output directory")
     commands.add_parser("grade-demo", help="analyze source grades/curves and build legacy GWAD rows")
     commands.add_parser(
         "recognition-demo", help="classify controlled stack signatures with all 20 source templates"
@@ -651,6 +669,32 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command == "source-audit":
+        errors = check_source_coverage(arguments.repo)
+        print(json.dumps({"status": "ok" if not errors else "drift", "errors": errors,
+                          **coverage_summary()}, indent=2, allow_nan=False))
+        return 1 if errors else 0
+    if arguments.command == "pipeline-demo":
+        if arguments.max_steps is not None and arguments.max_steps < 0:
+            parser.error("--max-steps must be nonnegative")
+        scene = pipeline_scene(arguments.scenario)
+        options = PipelineOptions(
+            bidirectional=scene.bidirectional if arguments.bidirectional is None else arguments.bidirectional,
+            grades=not arguments.skip_grades, gwad=not arguments.skip_grades,
+            max_steps=arguments.max_steps, random_seed=arguments.seed,
+            record_random=arguments.record_random, coordinate_units="m", crs="synthetic local coordinates")
+        result = run_pipeline(scene.cloud, scene.seed, config=scene.config, options=options,
+                              supplied_toes=scene.supplied_toes, supplied_stacks=scene.supplied_stacks)
+        context = {"synthetic_scenario": {"name": arguments.scenario, "notes": scene.notes}}
+        output = pipeline_summary(result, include_steps=arguments.steps, context=context)
+        if arguments.output is not None:
+            try:
+                output["manifest"] = str(write_pipeline_outputs(result, arguments.output,
+                                                                 include_steps=arguments.steps, context=context))
+            except OSError as error:
+                parser.error(str(error))
+        print(json.dumps(output, indent=2, allow_nan=False))
+        return 0 if result.completed else 2 if result.status == "step_limit" else 1
     if arguments.command == "grade-demo":
         result = _grade_demo()
         print(json.dumps(result, indent=2, allow_nan=False))
