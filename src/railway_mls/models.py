@@ -149,6 +149,30 @@ class SwitchBox:
 
 
 @dataclass
+class GradeSection:
+    """GradeSect defaults/reset; membership contains value points, not cloud IDs."""
+
+    begin: Point3D = field(default_factory=lambda: Point3D(0, 0, 0))
+    end: Point3D = field(default_factory=lambda: Point3D(0, 0, 0))
+    member_vertices: list[Point3D] = field(default_factory=list)
+    arc: float = 0.0
+    chord: float = 0.0
+    height: float = 0.0
+    grade: float = 0.0
+    radius: float = 0.0
+    degree_of_curve: float = 0.0
+    grade_with_curve: float = 0.0
+
+    def reset(self) -> None:
+        # Native SetPoint3D resets both XYZ and PtType.
+        self.begin = Point3D(0, 0, 0)
+        self.end = Point3D(0, 0, 0)
+        self.member_vertices.clear()
+        self.arc = self.chord = self.height = self.grade = 0.0
+        self.radius = self.degree_of_curve = self.grade_with_curve = 0.0
+
+
+@dataclass
 class ToePoint:
     """ToePt defaults; native uninitialized geometry/angle/mode are explicit None."""
 

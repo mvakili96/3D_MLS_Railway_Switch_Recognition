@@ -84,10 +84,18 @@ and grouping, bundled symmetric JAMA eigen behavior, source output reuse, class-
 labels, appends and main-tracking integration. Sparse undefined plane reads remain
 explicit. See [docs/PYTHON_SWITCH_BOXES.md](docs/PYTHON_SWITCH_BOXES.md).
 
-Verification passed 294 test methods, including 96 methods comparing against
+Grade/curve analysis and both computational UI paths are implemented, including
+X/Z division, source marker reuse, membership/report calculations, literal curve
+algebra, IEEE results and GWAD 3D chainage/variable-field formatting. Marked-vector
+reversal now matches native XYZ-only point assignment; mixed-tag insertion remains
+explicitly non-comparable where native capacity can change tag transport. See
+[docs/PYTHON_GRADES.md](docs/PYTHON_GRADES.md) and LIM-028–LIM-031.
+
+Verification passed 324 test methods, including 108 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. Grade/curve analysis and the remaining source features are pending. Their behavioral contracts
-and checks will accompany each stage.
+been built. Remaining computational inventory, data interfaces and complete
+pipeline delivery/audit are pending. Their contracts and checks will accompany
+each stage.
 
 ## Specification checklist
 
@@ -134,7 +142,7 @@ The unpacked version adds second seed coordinates, bidirectional tracking orches
 | Toes and branch tracks | `RailwayExtraction.cpp:251,2617` | Implemented: toe estimation, additional path seeds, branch direction, layer identity and local/global toe state |
 | Bidirectional orchestration | `MainForm.cpp:101–137`; `RailwayExtraction.cpp:5272` | Implemented: reverse-direction run, asymmetric reversal/rail swapping, then original-direction run |
 | Switch-box detection | `RailwayExtraction.cpp:2494,3912,4104,4133,4204,4242`; `LIDARPT.h:1056` | Implemented: toe-adjacent candidates, pnpoly2, plane fits/JAMA refit, grouping/gates, labels and engine/layer appends |
-| Grade analysis | `RailwayExtraction.cpp:5035–5245`; `MainForm.cpp:749,824` | Additional application functionality: vertical simplification, grade and curve calculations |
+| Grade analysis and GWAD | `RailwayExtraction.cpp:5035–5189`; `LIDARPT.h:1254`; `MainForm.cpp:724–800,824–836` | Implemented: grade struct/division/parameters/reports, all-layer menu action, GWAD row computation and finite TSV formatting |
 | Loop/cross-region routines | `RailwayExtraction.cpp:2342,2404` | Present in source, but initialization/tracking/validation calls are commented out at approximately lines 512, 827 and 1016 |
 | File adapters and coordinate conversion | `LASFileReader.cpp`; `TXTFileReader.cpp`; `DataConvertor.cpp`; `UTM.cpp` | Input density, precision, output schemas and explicit coordinate metadata |
 

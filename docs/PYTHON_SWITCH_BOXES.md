@@ -155,7 +155,7 @@ the review after reconstruction.
 
 ## Verification and next stage
 
-The full suite passes **294 test methods**, including **96** using original C++
+At completion of this increment, the suite passed **294 test methods**, including **96** using original C++
 extracts. This increment adds 35 methods, including 13 native comparison methods.
 They exercise coefficients/bases, repeated draws, retained outputs, candidate
 geometry, polygon semantics, height endpoints, exact 999/1,000 group thresholds,
@@ -166,5 +166,6 @@ outputs are never printed by the separate native fitting oracle.
 Raw integration checks execute the actual postpass before branch scheduling,
 verify engine/layer persistence and repeated appends, and check limit/branch gates.
 The new demo works without the database. Original Windows-binary, real-data
-accuracy and performance validation remain pending. Next implement grade/curve
-analysis and finish the remaining computational inventory and pipeline audit.
+accuracy and performance validation remain pending. Grade/curve analysis is now
+available in [the grade increment](PYTHON_GRADES.md). Next finish the remaining
+computational inventory and pipeline/interfaces audit.

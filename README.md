@@ -8,7 +8,8 @@ source point grouping, MDL model selection, observation selection and paired-lin
 gauge adjustment, full seed initialization, Kalman components and sequential
 tracking with window retries, stopping rules, turnout stacks and source template
 recognition, toe detection and endpoint refinement, branch scheduling and
-bidirectional orchestration, plane fitting and switch-box detection. The current
+bidirectional orchestration, plane fitting, switch-box detection, grade/curve
+analysis and source GWAD row/text generation. The current
 unpacked C++ code is the source of truth: preserve its computational behavior and
 document proposed corrections separately.
 
@@ -48,6 +49,8 @@ document proposed corrections separately.
   branch seeds/filters, center tags and source bidirectional vector assembly.
 - [docs/PYTHON_SWITCH_BOXES.md](docs/PYTHON_SWITCH_BOXES.md): candidate regions,
   source JAMA plane fits, grouping/gates, class-5 labels and tracking integration.
+- [docs/PYTHON_GRADES.md](docs/PYTHON_GRADES.md): vertical division, source curve
+  formulas, point-tag behavior, grade reports and GWAD output structure.
 
 The original application uses Windows Forms/C++/CLI, PCL, VTK, Boost and LAS
 libraries. Project files contain machine-specific paths. Retaining them documents
@@ -73,6 +76,7 @@ python -m railway_mls toe-demo
 python -m railway_mls branch-demo
 python -m railway_mls bidirectional-demo
 python -m railway_mls switch-box-demo
+python -m railway_mls grade-demo
 python -m unittest discover -s tests -v
 ```
 
@@ -110,9 +114,12 @@ claims automatic recovery of undefined toe geometry. `switch-box-demo` evaluates
 two planar patches beside a supplied toe, detects two boxes, labels 2,312 points
 with class code 5 and consumes 1,200 random draws. Main tracking invokes this
 postpass after toe detection. Sparse undefined plane outputs are reported explicitly.
-Grade/curve analysis and remaining source features are pending.
+`grade-demo` analyzes a supplied 17-point center vector into three sections and
+six GWAD rows, preserving the source's curve formula, tag mutations and variable
+parameter columns. Grade analysis is an explicit post-tracking action. Remaining
+inventory, data interfaces and complete pipeline delivery are pending.
 
-The installed `railway-mls` command supports the same eleven demos.
+The installed `railway-mls` command supports the same twelve demos.
 Tests use `unittest`; when a C++ compiler is available they also compile temporary
 extracts of the original
 source for direct behavior comparisons. The stage guides linked above document
@@ -138,8 +145,9 @@ repository refer to its separate history.
 
 ## Development direction
 
-Continue from the implemented tracking, recognition, orchestration and switch-box
-stages to grade/curve analysis and remaining source features.
+Continue from the implemented tracking, recognition, orchestration, switch-box
+and grade stages to the remaining source inventory, integrated synthetic pipeline
+and input/diagnostic/export interfaces.
 Include computational orchestration that currently lives in the GUI. Keep inactive source paths inactive
 and preserve defaults, templates, ordering, precision and reproducible quirks.
 

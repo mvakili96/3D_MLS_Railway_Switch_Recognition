@@ -157,7 +157,7 @@ The custom height EM-GMM and rail-head extraction are now implemented in the
 adds the other fitting variants, source grouping and MDL selection. The
 [observation/gauge increment](PYTHON_OBSERVATION_GAUGE.md) adds observation/side
 selection, support state vectors and both gauge routines. The complete suite
-currently passes 294 test methods. Full initialization and the filter components
+currently passes 324 test methods. Full initialization and the filter components
 are available in the [Kalman/initialization increment](PYTHON_KALMAN_INITIALIZATION.md).
 The [sequential tracking increment](PYTHON_TRACKING.md) now provides the tracking
 loop, retries, stops and turnout-stack transitions. The
@@ -166,7 +166,9 @@ and classification. The [toe increment](PYTHON_TOES.md) adds detection/refinemen
 and explicit missing-reference diagnostics. The [orchestration increment](PYTHON_ORCHESTRATION.md)
 adds shared engine state, branch scheduling, toe tags and bidirectional assembly.
 The [switch-box increment](PYTHON_SWITCH_BOXES.md) adds candidate detection and
-plane fitting. The next work is grade/curve analysis and remaining source features.
+plane fitting. The [grade increment](PYTHON_GRADES.md) adds section/curve/report
+and GWAD computation, including XYZ-only assignment semantics for marked reversal.
+Remaining work includes the inventory audit and complete pipeline/interfaces.
 
 Packaging and array interfaces follow the official
 [setuptools pyproject guidance](https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html)

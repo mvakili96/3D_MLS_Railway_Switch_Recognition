@@ -402,6 +402,24 @@ class CppOrchestrationTests(unittest.TestCase):
                 expected.extend(typed_vector(vector))
         assert_array_equal(expected, native)
 
+    def test_reversal_moves_xyz_while_preserving_destination_tag_slots(self):
+        layers = [layer_fixture(), layer_fixture()]
+        for layer in layers:
+            for vector in (layer.rail1_vector, layer.rail2_vector, layer.center_vector):
+                vector[:] = [replace(p, point_type=10 + i) for i, p in enumerate(vector)]
+        values = [len(layers)]
+        for layer in layers:
+            for vector in (layer.rail1_vector, layer.rail2_vector, layer.center_vector):
+                values.extend(typed_vector(vector))
+        native = self.reference.run("reverse_vectors", *values)
+        reverse_layer_vectors(layers)
+        expected = [0, len(layers)]
+        for layer in layers:
+            for vector in (layer.rail1_vector, layer.rail2_vector, layer.center_vector):
+                expected.extend(typed_vector(vector))
+        assert_array_equal(expected, native)
+        self.assertEqual([p.point_type for p in layers[1].center_vector], [10, 11, 12])
+
     def compare_schedule(self, toes, successes, new_toes=(), location=None):
         # Controlled callbacks isolate the ORIGINAL wrappers' ordering and state
         # mutations; actual numerical tracking is covered by separate integrations.
