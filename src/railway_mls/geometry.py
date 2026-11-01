@@ -93,6 +93,22 @@ class Line3D:
         self._center = (self.begin + self.end) / 2
         return self._center
 
+    def set_ending_points(self, min_x: float, max_x: float, min_y: float, max_y: float) -> None:
+        """SetEndingPnts: retain endpoint Z, coefficients, angle and cached center."""
+        a, b, c = self.a, self.b, self.c
+        if a == 0 and b == 0:
+            return
+        if a == 0:
+            bx, by, ex, ey = min_x, -c / b, max_x, -c / b
+        elif b == 0:
+            bx, by, ex, ey = -c / a, min_y, -c / a, max_y
+        elif -a / b < 1:  # Signed slope, as in the source.
+            bx, by, ex, ey = min_x, -a / b * min_x - c / b, max_x, -a / b * max_x - c / b
+        else:
+            bx, by, ex, ey = -b / a * min_y - c / a, min_y, -b / a * max_y - c / a, max_y
+        self.begin = Point3D(bx, by, self.begin.z, self.begin.point_type)
+        self.end = Point3D(ex, ey, self.end.z, self.end.point_type)
+
     @property
     def unit_vector(self) -> Point3D:
         return (self.end - self.begin).normalized()
@@ -205,13 +221,14 @@ def distance_to_line_2d(point: Point3D, line: Line3D) -> float:
 
 
 def perpendicular_foot(point: Point3D, line: Line3D) -> Point3D:
-    if line.a != 0 and line.b != 0:
-        perpendicular_a = -1 / line.a
-        perpendicular_c = point.y - perpendicular_a * point.x
-        x = (perpendicular_c - line.c) / (line.a - perpendicular_a)
-        y = line.a * x + line.c
-    elif line.a == 0:
-        x, y = point.x, -line.c / line.b
-    else:
-        x, y = -line.c / line.a, point.y
+    with np.errstate(divide="ignore", invalid="ignore", over="ignore"):
+        if line.a != 0 and line.b != 0:
+            perpendicular_a = float(np.divide(-1.0, line.a))
+            perpendicular_c = point.y - perpendicular_a * point.x
+            x = float(np.divide(perpendicular_c - line.c, line.a - perpendicular_a))
+            y = line.a * x + line.c
+        elif line.a == 0:
+            x, y = point.x, float(np.divide(-line.c, line.b))
+        else:
+            x, y = float(np.divide(-line.c, line.a)), point.y
     return Point3D(x, y, (line.begin.z + line.end.z) / 2)

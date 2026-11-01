@@ -7,7 +7,7 @@ spatial lookup, the custom height GMM, paired rail-head extraction, line fitting
 source point grouping, MDL model selection, observation selection and paired-line
 gauge adjustment, full seed initialization, Kalman components and sequential
 tracking with window retries, stopping rules, turnout stacks and source template
-recognition. The current
+recognition, toe detection and endpoint refinement. The current
 unpacked C++ code is the source of truth: preserve its computational behavior and
 document proposed corrections separately.
 
@@ -23,6 +23,8 @@ document proposed corrections separately.
   reference paper.
 - [PYTHON_PORT_PLAN.md](PYTHON_PORT_PLAN.md): source audit, behavior differences,
   and staged implementation plan.
+- [docs/LIMITATIONS.md](docs/LIMITATIONS.md): persistent limitations register and
+  required review after full reconstruction, including the toe-reference issue.
 - `src/railway_mls/`: installable Python foundation, configuration and synthetic CLI.
 - `tests/`: component/integration checks and comparisons with original C++ extracts.
 - [docs/PYTHON_FOUNDATION.md](docs/PYTHON_FOUNDATION.md): implemented behavior,
@@ -39,6 +41,8 @@ document proposed corrections separately.
   accepted/rejected candidates, stack snapshots and native-comparison scope.
 - [docs/PYTHON_RECOGNITION.md](docs/PYTHON_RECOGNITION.md): all 20 templates, stack
   signatures, labels, ambiguity, disabled context and tracking postpass integration.
+- [docs/PYTHON_TOES.md](docs/PYTHON_TOES.md): toe grouping, fitting, refinement,
+  projection and the source's uninitialized stack-reference limitation.
 
 The original application uses Windows Forms/C++/CLI, PCL, VTK, Boost and LAS
 libraries. Project files contain machine-specific paths. Retaining them documents
@@ -60,6 +64,7 @@ python -m railway_mls observation-demo
 python -m railway_mls initialization-demo
 python -m railway_mls tracking-demo
 python -m railway_mls recognition-demo
+python -m railway_mls toe-demo
 python -m unittest discover -s tests -v
 ```
 
@@ -85,20 +90,18 @@ reports the known single-rail MDL undefined-intermediate policy explicitly.
 an active turnout stack. On natural completion the tracker recognizes eligible
 completed stacks. `recognition-demo` exercises all 20 source patterns: 16 are unique
 matches and four return ambiguity code 999 because the catalogue contains duplicate
-patterns. Toe detection, branches and bidirectional orchestration remain future stages.
+patterns. `toe-demo` exercises the twelve supported toe types using initialized
+reference fixtures and reports the legacy missing-reference case explicitly.
+Tracking invokes toe detection after recognition; tracker-created stack snapshots
+have uninitialized member-line references, which the port reports as undefined
+instead of producing a fabricated toe. Branches, switch boxes and bidirectional
+orchestration remain future stages.
 
-The installed `railway-mls` command supports the same seven demos.
+The installed `railway-mls` command supports the same eight demos.
 Tests use `unittest`; when a C++ compiler is available they also compile temporary
 extracts of the original
-source for direct behavior comparisons. Full implementation details and API
-contracts are in the [foundation guide](docs/PYTHON_FOUNDATION.md) and the
-[GMM/head extraction guide](docs/PYTHON_GMM_HEADS.md),
-[fitting/MDL guide](docs/PYTHON_FITTING_MDL.md) and
-[observation/gauge guide](docs/PYTHON_OBSERVATION_GAUGE.md), and
-[Kalman/initialization guide](docs/PYTHON_KALMAN_INITIALIZATION.md), and
-[tracking guide](docs/PYTHON_TRACKING.md), and
-[recognition guide](docs/PYTHON_RECOGNITION.md). These document source
-uninitialized-candidate cases and nonfinite arithmetic explicitly.
+source for direct behavior comparisons. The stage guides linked above document
+API contracts, preserved source quirks, undefined accesses and nonfinite arithmetic.
 
 ## What stays local
 
@@ -120,8 +123,8 @@ repository refer to its separate history.
 
 ## Development direction
 
-Continue from the implemented tracker and stack-template recognition to toes,
-branch seeds, bidirectional orchestration and remaining source features.
+Continue from the implemented tracker, recognition and toe components to branch
+seeds, bidirectional orchestration and remaining source features.
 Include computational orchestration that currently lives in the GUI. Keep inactive source paths inactive
 and preserve defaults, templates, ordering, precision and reproducible quirks.
 

@@ -186,4 +186,5 @@ Full initialization and filter components are available in the
 [Kalman/initialization increment](PYTHON_KALMAN_INITIALIZATION.md).
 The [sequential tracking increment](PYTHON_TRACKING.md) integrates these components.
 The [recognition increment](PYTHON_RECOGNITION.md) adds stack classification.
-The full suite currently passes 198 test methods. The next work is toe and branch integration.
+The [toe increment](PYTHON_TOES.md) adds detection/refinement and its source limitations.
+The full suite currently passes 222 test methods. The next work is branch integration.

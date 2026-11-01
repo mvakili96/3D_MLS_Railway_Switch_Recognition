@@ -3,7 +3,8 @@
 This increment implements the source's 16-integer stack signature, all 20 active
 templates, label assignment, `RecognitionTurnoutType`, and its tracking postpass.
 It also exposes the inactive `TemplateMatching` helper separately, without enabling
-that alternative in tracking. Toe detection, branch seeds, switch boxes and
+that alternative in tracking. Toe detection/refinement is available in the
+[toe increment](PYTHON_TOES.md). Branch seeds, switch boxes and
 bidirectional orchestration remain later work. The current C++ remains authoritative.
 
 ## Run and use
@@ -162,9 +163,11 @@ recognition postpass once on its completed stacks. Main-track gating is preserve
 snapshots retain their binary metadata. A diagnostic step limit defers the postpass
 until continuation reaches a natural stop. Undefined/nonfinite paths stop before
 unsafe source operations and do not trigger automatic recognition. Empty-layer
-invocations return immediately. Toe and branch work is not activated by this stage.
+invocations return immediately. The [toe increment](PYTHON_TOES.md) now follows
+recognition with its own source gates and missing-reference diagnostics. Branch
+work remains pending.
 
-The full suite passes **198 test methods**, including **64** comparing original
+At completion of this increment, the suite passed **198 test methods**, including **64** comparing original
 C++ extracts. Nine new native comparison methods check every catalogue field and
 subset, all source label mappings, all 20 exact patterns and all 320 single-bit
 flips, random/noisy/nonbinary inputs, context diagnostics, the raw helper, empty
@@ -178,6 +181,7 @@ scores. Integration tests verify completion, deferred recognition, value snapsho
 and non-main gating. Original source files remain unchanged and the full Windows
 application is not built.
 
-Next implement toe detection/refinement and toe-to-branch integration, followed by
-bidirectional orchestration and remaining source features. Real-data accuracy,
+Toe detection/refinement is now implemented in the [toe increment](PYTHON_TOES.md).
+Next implement branch integration, followed by bidirectional orchestration and
+remaining source features. Real-data accuracy,
 performance and reproduction of the paper's evaluation remain unverified.

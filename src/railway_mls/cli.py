@@ -28,8 +28,67 @@ from .synthetic import (
     straight_scene,
     tracking_scene,
     signature_stack,
+    toe_scene,
 )
 from .tracking import track_railway
+from .toes import SUPPORTED_TOE_TYPES, detect_toe_points
+
+
+def _toe_json(toe):
+    return {
+        "track_type": toe.track_type,
+        "used": toe.used,
+        "center": toe.center.as_array().tolist() if toe.center is not None else None,
+        "left": toe.left.as_array().tolist() if toe.left is not None else None,
+        "right": toe.right.as_array().tolist() if toe.right is not None else None,
+        "angle": toe.angle,
+        "mode": toe.mode,
+    }
+
+
+def _toe_demo(seed: int, type_id: int | None = None) -> dict:
+    random = MsvcRand(seed)
+    cases = []
+    for current_type in SUPPORTED_TOE_TYPES if type_id is None else (type_id,):
+        scene = toe_scene(current_type)
+        result = detect_toe_points(
+            current_type, scene.stack.track_segments, config=scene.config, rng=random
+        )
+        cases.append(
+            {
+                "status": result.status,
+                "source_return": result.source_return,
+                "source_segments": result.source_segments,
+                "side": result.side,
+                "reference_segment": result.reference_segment,
+                "selected_endpoint": result.selected_endpoint,
+                "candidate_count": len(result.candidates) if result.candidates is not None else 0,
+                "group_count": len(result.grouping.selected) if result.grouping is not None else 0,
+                "support_count": len(result.fit.support) if result.fit is not None else 0,
+                "toe": _toe_json(result.toe),
+            }
+        )
+    missing = toe_scene(initialized_references=False)
+    missing_random = MsvcRand(seed)
+    missing_result = detect_toe_points(0, missing.stack.track_segments, rng=missing_random)
+    return _finite_json(
+        {
+            "stage": "source toe detection and endpoint refinement with initialized references",
+            "status": "ok" if all(case["status"] == "ok" for case in cases) else "failed",
+            "detected_count": sum(case["source_return"] is True for case in cases),
+            "random_seed": seed,
+            "random_draws": random.draw_count,
+            "cases": cases,
+            "uninitialized_reference_example": {
+                "status": missing_result.status,
+                "source_return": missing_result.source_return,
+                "random_draws": missing_random.draw_count,
+            },
+            "toe_detection_implemented": True,
+            "branch_orchestration_implemented": False,
+            "switch_box_detection_implemented": False,
+        }
+    )
 
 
 def _finite_json(value):
@@ -79,7 +138,8 @@ def _recognition_demo() -> dict:
             "status": noise_result.status,
         },
         "recognition_implemented": True,
-        "toe_detection_implemented": False,
+        "toe_detection_implemented": True,
+        "toe_detection_run": False,
         "branch_orchestration_implemented": False,
     }
 
@@ -96,7 +156,7 @@ def _tracking_demo(seed: int, max_steps: int | None, direction: int, side_rails:
         "random_seed": seed,
         "tracking_implemented": True,
         "recognition_implemented": True,
-        "toe_detection_implemented": False,
+        "toe_detection_implemented": True,
         "branch_orchestration_implemented": False,
     }
     if not initialized.success:
@@ -130,6 +190,22 @@ def _tracking_demo(seed: int, max_steps: int | None, direction: int, side_rails:
             for entry in result.recognition.entries
         ]
         if result.recognition is not None
+        else [],
+        toe_detection_postpass_ran=result.toe_detection is not None,
+        toes=[_toe_json(toe) for toe in result.toe_detection.toes]
+        if result.toe_detection is not None
+        else [],
+        toe_diagnostics=[
+            {
+                "index": entry.index,
+                "status": entry.status,
+                "source_return": entry.detection.source_return
+                if entry.detection is not None
+                else None,
+            }
+            for entry in result.toe_detection.entries
+        ]
+        if result.toe_detection is not None
         else [],
         steps=[
             {
@@ -315,6 +391,16 @@ def main(argv: list[str] | None = None) -> int:
     commands.add_parser(
         "recognition-demo", help="classify controlled stack signatures with all 20 source templates"
     )
+    toe_parser = commands.add_parser(
+        "toe-demo", help="detect and refine toe points for the twelve supported source types"
+    )
+    toe_parser.add_argument("--seed", type=int, default=1, help="Microsoft CRT seed (default: 1)")
+    toe_parser.add_argument(
+        "--type",
+        type=int,
+        choices=SUPPORTED_TOE_TYPES,
+        help="supported source type; default runs all twelve",
+    )
     commands.add_parser("demo", help="construct paired windows and select synthetic points")
     heads_parser = commands.add_parser(
         "heads-demo", help="run height GMM and paired rail-head extraction"
@@ -364,6 +450,10 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command == "toe-demo":
+        result = _toe_demo(arguments.seed, arguments.type)
+        print(json.dumps(result, indent=2, allow_nan=False))
+        return 0 if result["status"] == "ok" else 1
     if arguments.command == "recognition-demo":
         print(json.dumps(_recognition_demo(), indent=2, allow_nan=False))
         return 0

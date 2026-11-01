@@ -406,7 +406,8 @@ class RecognitionIntegrationTests(unittest.TestCase):
         self.assertEqual(result["template_count"], 20)
         self.assertEqual(result["ambiguous_count"], 4)
         self.assertEqual(result["matched_count"], 16)
-        self.assertFalse(result["toe_detection_implemented"])
+        self.assertTrue(result["toe_detection_implemented"])
+        self.assertFalse(result["toe_detection_run"])
 
 
 if __name__ == "__main__":

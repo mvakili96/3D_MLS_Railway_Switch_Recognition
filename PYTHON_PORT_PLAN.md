@@ -10,6 +10,16 @@ The user has explicitly designated the current unpacked code, as it stands, as t
 
 Real input data is not needed to start the specification or implementation. Synthetic fixtures can test equations, geometry, model selection, tracking, and switch logic. Real clouds, initial conditions, and trusted outputs or annotations are needed later to establish empirical accuracy or legacy agreement.
 
+## Persistent limitations and later review
+
+Maintain [docs/LIMITATIONS.md](docs/LIMITATIONS.md) during every remaining increment.
+It consolidates known source limitations, undefined/numerical paths, portability
+choices and validation gaps under stable IDs. The user has requested a review of
+all entries after full reconstruction. Explicit failure handling and passing tests
+do not close an entry. Keep baseline behavior through implementation; record any
+later behavior-changing correction as a separate agreed change. Completion review
+must revisit every open ID, including LIM-001 (uninitialized toe reference lines).
+
 ## Implementation progress
 
 The first Python foundation is implemented in `src/railway_mls/`. It includes the
@@ -54,9 +64,17 @@ short-stack/branch gates and natural-completion tracking integration. The inacti
 raw-count matching helper remains standalone. See
 [docs/PYTHON_RECOGNITION.md](docs/PYTHON_RECOGNITION.md).
 
-Verification passed 198 test methods, including 64 methods comparing against
+Toe detection and endpoint refinement are implemented for all twelve supported
+source types, with the score/length/main-track postpass gates, shared grouping
+labels, support-bound cropping and source projections. The source saves turnout
+stack snapshots before assigning member lines, so their later toe-reference reads
+are undefined. Python reports that path after preceding grouping/fitting effects;
+initialized-reference component fixtures are checked against C++. See
+[docs/PYTHON_TOES.md](docs/PYTHON_TOES.md).
+
+Verification passed 222 test methods, including 73 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. Toes, branch/bidirectional orchestration and
+been built. Branch/bidirectional orchestration, switch boxes and
 the remaining source features are pending. Their behavioral contracts
 and checks will accompany each stage.
 
