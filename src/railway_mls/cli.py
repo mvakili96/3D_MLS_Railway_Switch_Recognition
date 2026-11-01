@@ -16,6 +16,7 @@ from .initialization import initial_kalman_states, initialize_tracks
 from .kalman import kalman_predict, kalman_update
 from .mdl import segment_track_points_mdl
 from .models import BinaryString, seed_windows
+from .orchestration import TrackingEngine
 from .observations import determine_observation, observation_from_support
 from .points import Point3D
 from .sampling import MsvcRand
@@ -29,6 +30,8 @@ from .synthetic import (
     tracking_scene,
     signature_stack,
     toe_scene,
+    branch_scene,
+    bidirectional_scene,
 )
 from .tracking import track_railway
 from .toes import SUPPORTED_TOE_TYPES, detect_toe_points
@@ -85,7 +88,8 @@ def _toe_demo(seed: int, type_id: int | None = None) -> dict:
                 "random_draws": missing_random.draw_count,
             },
             "toe_detection_implemented": True,
-            "branch_orchestration_implemented": False,
+            "branch_orchestration_implemented": True,
+            "branch_orchestration_run": False,
             "switch_box_detection_implemented": False,
         }
     )
@@ -99,6 +103,99 @@ def _finite_json(value):
     if isinstance(value, (tuple, list)):
         return [_finite_json(item) for item in value]
     return value
+
+
+def _pass_json(result):
+    def invocation(item):
+        return {
+            "status": item.status,
+            "layer_index": item.layer_index,
+            "direction": item.direction,
+            "main_track": item.main_track,
+            "accepted_steps": item.result.accepted_steps if item.result is not None else 0,
+        }
+
+    return {
+        "status": result.status,
+        "reference_comparable": result.reference_comparable,
+        "main": invocation(result.main),
+        "branches": [
+            {
+                "toe_index": branch.toe_index,
+                "track_type": branch.toe.track_type,
+                "status": branch.status,
+                "layer_index": branch.layer_index,
+                "local_used": branch.toe.used,
+                "seed": {
+                    "point": branch.seed.point.as_array().tolist(),
+                    "angle": branch.seed.angle,
+                    "mode": branch.seed.mode,
+                } if branch.seed is not None else None,
+                "initialization_status": (
+                    branch.initialization.status if branch.initialization is not None else None
+                ),
+                "tracking": invocation(branch.tracking) if branch.tracking is not None else None,
+            }
+            for branch in result.branches
+        ],
+        "center_tags": [asdict(tag) for tag in result.tags],
+    }
+
+
+def _orchestration_demo(seed: int, bidirectional: bool, max_steps: int | None) -> dict:
+    scene = bidirectional_scene() if bidirectional else branch_scene()
+    engine = TrackingEngine(GridIndex(scene.cloud), config=scene.config, rng=MsvcRand(seed))
+    initialized = engine.initialize(scene.seed)
+    payload = {
+        "stage": "source bidirectional orchestration" if bidirectional else "source branch scheduling",
+        "status": initialized.status,
+        "input_points": len(scene.cloud),
+        "random_seed": seed,
+        "toe_input": "automatic postpass only" if bidirectional else "supplied toe geometry fixture",
+        "branch_orchestration_implemented": True,
+        "bidirectional_orchestration_implemented": True,
+        "switch_box_detection_implemented": False,
+    }
+    if initialized.success:
+        if bidirectional:
+            result = engine.run_bidirectional(max_steps=max_steps)
+            payload.update(
+                status=result.status,
+                reverse_seed={
+                    "point": result.reverse_location.point.as_array().tolist(),
+                    "angle": result.reverse_location.angle,
+                    "mode": result.reverse_location.mode,
+                },
+                reverse_pass=_pass_json(result.reverse_pass) if result.reverse_pass else None,
+                reversal_status=result.reversal.status if result.reversal else None,
+                forward_pass=_pass_json(result.forward_pass) if result.forward_pass else None,
+                reference_comparable=result.reference_comparable,
+            )
+        else:
+            engine.toe_points.append(scene.toe)
+            result = engine.run_pass(max_steps=max_steps)
+            payload.update(
+                status=result.status, tracking_pass=_pass_json(result),
+                reference_comparable=result.reference_comparable,
+            )
+    payload.update(
+        random_draws=engine.rng.draw_count,
+        layer_count=len(engine.layers),
+        current_layer_index=engine.current_layer_index,
+        global_toe_used=[toe.used for toe in engine.toe_points],
+        layers=[
+            {
+                "saved_segments": len(layer.track_segments),
+                "rail1_vector": [point.as_array().tolist() for point in layer.rail1_vector],
+                "rail2_vector": [point.as_array().tolist() for point in layer.rail2_vector],
+                "center_vector": [point.as_array().tolist() for point in layer.center_vector],
+                "center_point_types": [point.point_type for point in layer.center_vector],
+                "toe_count": len(layer.toe_points),
+            }
+            for layer in engine.layers
+        ],
+    )
+    return _finite_json(payload)
 
 
 def _recognition_demo() -> dict:
@@ -140,7 +237,8 @@ def _recognition_demo() -> dict:
         "recognition_implemented": True,
         "toe_detection_implemented": True,
         "toe_detection_run": False,
-        "branch_orchestration_implemented": False,
+        "branch_orchestration_implemented": True,
+        "branch_orchestration_run": False,
     }
 
 
@@ -157,7 +255,8 @@ def _tracking_demo(seed: int, max_steps: int | None, direction: int, side_rails:
         "tracking_implemented": True,
         "recognition_implemented": True,
         "toe_detection_implemented": True,
-        "branch_orchestration_implemented": False,
+        "branch_orchestration_implemented": True,
+        "branch_orchestration_run": False,
     }
     if not initialized.success:
         return payload
@@ -401,6 +500,13 @@ def main(argv: list[str] | None = None) -> int:
         choices=SUPPORTED_TOE_TYPES,
         help="supported source type; default runs all twelve",
     )
+    for name, help_text in (
+        ("branch-demo", "run main and branch tracking on raw corridors with a supplied toe fixture"),
+        ("bidirectional-demo", "run the source UI's two-direction tracking and vector assembly"),
+    ):
+        orchestration_parser = commands.add_parser(name, help=help_text)
+        orchestration_parser.add_argument("--seed", type=int, default=1)
+        orchestration_parser.add_argument("--max-steps", type=int, help="limit each tracking invocation")
     commands.add_parser("demo", help="construct paired windows and select synthetic points")
     heads_parser = commands.add_parser(
         "heads-demo", help="run height GMM and paired rail-head extraction"
@@ -450,6 +556,14 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command in ("branch-demo", "bidirectional-demo"):
+        if arguments.max_steps is not None and arguments.max_steps < 0:
+            parser.error("--max-steps must be nonnegative")
+        result = _orchestration_demo(
+            arguments.seed, arguments.command == "bidirectional-demo", arguments.max_steps
+        )
+        print(json.dumps(result, indent=2, allow_nan=False))
+        return 0 if result["status"] in {"completed", "step_limit"} else 1
     if arguments.command == "toe-demo":
         result = _toe_demo(arguments.seed, arguments.type)
         print(json.dumps(result, indent=2, allow_nan=False))

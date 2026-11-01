@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from .config import ExtractionConfig
-from .models import BinaryString, InitialLocation, TrackSegment, TrackStack, TrackWindow
+from .models import BinaryString, InitialLocation, ToePoint, TrackSegment, TrackStack, TrackWindow
 from .geometry import Line3D
 from .points import Point3D, PointCloud
 
@@ -22,6 +22,45 @@ class SyntheticToeScene:
     cloud: PointCloud
     stack: TrackStack
     config: ExtractionConfig
+
+
+@dataclass(frozen=True)
+class SyntheticBranchScene:
+    cloud: PointCloud
+    seed: InitialLocation
+    config: ExtractionConfig
+    toe: ToePoint
+
+
+def branch_scene(config: ExtractionConfig | None = None) -> SyntheticBranchScene:
+    """Two raw rail corridors and one supplied toe fixture for scheduling.
+
+    This isolates branch orchestration from undefined automatic toe references;
+    the corridors are separated, not a simulated recognized physical junction.
+    """
+    main = tracking_scene(length=6.0, config=config)
+    branch = tracking_scene(length=5.0, angle=50.0, config=main.config)
+    offset = Point3D(15.0, 10.0, 0.0)
+    first = branch.seed.point + offset
+    radians = branch.seed.angle * np.pi / 180
+    second = first + Point3D(-np.sin(radians), np.cos(radians), 0) * main.config.track_gauge
+    toe = ToePoint(
+        center=(first + second) / 2, left=second, right=first,
+        track_type=0, angle=branch.seed.angle, mode=branch.seed.mode,
+    )
+    cloud = PointCloud(np.vstack((main.cloud.xyz, branch.cloud.xyz + offset.as_array())))
+    return SyntheticBranchScene(cloud, main.seed, main.config, toe)
+
+
+def bidirectional_scene(config: ExtractionConfig | None = None) -> SyntheticScene:
+    """Raw rail corridor with a seed in its interior for both travel directions."""
+    scene = tracking_scene(length=12.0, config=config)
+    radians = scene.seed.angle * np.pi / 180
+    seed = InitialLocation(
+        scene.seed.point + Point3D(np.cos(radians), np.sin(radians), 0) * 6,
+        scene.seed.angle, scene.seed.mode,
+    )
+    return SyntheticScene(scene.cloud, seed, scene.config)
 
 
 def toe_scene(

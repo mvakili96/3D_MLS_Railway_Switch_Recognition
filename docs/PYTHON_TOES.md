@@ -31,7 +31,7 @@ The default component example processes all twelve supported source types, with
 twelve toes and consumes 12,000 raw MSVC random draws. A separate missing-reference
 example reports the undefined path after its own 1,000 draws. These fixtures enter
 at the side-membership stage; they are not automatically tracked raw MLS regions.
-All eight CLI demos remain available.
+All ten CLI demos are available, including branch and bidirectional orchestration.
 
 ```python
 from railway_mls import MsvcRand, TrackLayer, detect_stack_toes, detect_toe_points
@@ -171,7 +171,7 @@ missing source references.
 
 ## Verification and next increment
 
-The suite passes **222 test methods**, including **73** comparing compiled original
+At completion of this increment, the suite passed **222 test methods**, including **73** comparing compiled original
 C++ extracts. Nine new native comparison methods cover all twelve supported types,
 all four geometric modes, horizontal/vertical/steep lines, nearest/farthest rules,
 exact endpoint ties, support cropping/cached state, duplicate identities, component
@@ -188,6 +188,7 @@ fixture from another region, verify actual toe appends after tracking, and check
 the deferred and undefined-reference paths. The original source files remain
 unchanged; full Windows-binary and empirical accuracy claims remain unverified.
 
-Next implement branch seed selection and tracking orchestration, followed by
-bidirectional runs, switch-box detection and remaining source features. Preserve
-the documented missing-reference limitation when consuming source toe results.
+Branch seed selection, tracking orchestration and bidirectional runs are now
+implemented in [the orchestration increment](PYTHON_ORCHESTRATION.md). The
+missing-reference limitation remains open. Next implement switch-box detection
+and remaining source features.

@@ -7,7 +7,8 @@ spatial lookup, the custom height GMM, paired rail-head extraction, line fitting
 source point grouping, MDL model selection, observation selection and paired-line
 gauge adjustment, full seed initialization, Kalman components and sequential
 tracking with window retries, stopping rules, turnout stacks and source template
-recognition, toe detection and endpoint refinement. The current
+recognition, toe detection and endpoint refinement, branch scheduling and
+bidirectional orchestration. The current
 unpacked C++ code is the source of truth: preserve its computational behavior and
 document proposed corrections separately.
 
@@ -43,6 +44,8 @@ document proposed corrections separately.
   signatures, labels, ambiguity, disabled context and tracking postpass integration.
 - [docs/PYTHON_TOES.md](docs/PYTHON_TOES.md): toe grouping, fitting, refinement,
   projection and the source's uninitialized stack-reference limitation.
+- [docs/PYTHON_ORCHESTRATION.md](docs/PYTHON_ORCHESTRATION.md): engine state,
+  branch seeds/filters, center tags and source bidirectional vector assembly.
 
 The original application uses Windows Forms/C++/CLI, PCL, VTK, Boost and LAS
 libraries. Project files contain machine-specific paths. Retaining them documents
@@ -65,6 +68,8 @@ python -m railway_mls initialization-demo
 python -m railway_mls tracking-demo
 python -m railway_mls recognition-demo
 python -m railway_mls toe-demo
+python -m railway_mls branch-demo
+python -m railway_mls bidirectional-demo
 python -m unittest discover -s tests -v
 ```
 
@@ -94,10 +99,14 @@ patterns. `toe-demo` exercises the twelve supported toe types using initialized
 reference fixtures and reports the legacy missing-reference case explicitly.
 Tracking invokes toe detection after recognition; tracker-created stack snapshots
 have uninitialized member-line references, which the port reports as undefined
-instead of producing a fabricated toe. Branches, switch boxes and bidirectional
-orchestration remain future stages.
+instead of producing a fabricated toe. `branch-demo` runs real inference on two
+raw track corridors with a supplied toe fixture, accepting six main and five
+branch steps. `bidirectional-demo` runs both travel directions from an interior
+seed and assembles the vectors using source reversal/swapping rules. Neither demo
+claims automatic recovery of undefined toe geometry. Switch boxes and remaining
+source features are pending.
 
-The installed `railway-mls` command supports the same eight demos.
+The installed `railway-mls` command supports the same ten demos.
 Tests use `unittest`; when a C++ compiler is available they also compile temporary
 extracts of the original
 source for direct behavior comparisons. The stage guides linked above document
@@ -123,8 +132,8 @@ repository refer to its separate history.
 
 ## Development direction
 
-Continue from the implemented tracker, recognition and toe components to branch
-seeds, bidirectional orchestration and remaining source features.
+Continue from the implemented tracking/recognition/toe/orchestration components
+to switch-box detection and remaining source features.
 Include computational orchestration that currently lives in the GUI. Keep inactive source paths inactive
 and preserve defaults, templates, ordering, precision and reproducible quirks.
 

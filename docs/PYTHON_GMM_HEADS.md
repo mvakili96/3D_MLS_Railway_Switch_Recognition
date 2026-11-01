@@ -187,4 +187,6 @@ Full initialization and filter components are available in the
 The [sequential tracking increment](PYTHON_TRACKING.md) integrates these components.
 The [recognition increment](PYTHON_RECOGNITION.md) adds stack classification.
 The [toe increment](PYTHON_TOES.md) adds detection/refinement and its source limitations.
-The full suite currently passes 222 test methods. The next work is branch integration.
+The full suite currently passes 259 test methods. Branch/bidirectional orchestration
+is available in [the orchestration increment](PYTHON_ORCHESTRATION.md); the next
+work is switch-box detection and remaining source features.

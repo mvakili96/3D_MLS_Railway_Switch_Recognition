@@ -56,10 +56,25 @@ from .toes import (
     detect_stack_toes,
     detect_toe_points,
 )
+from .orchestration import (
+    BidirectionalTracking,
+    BranchTracking,
+    LayerToeTag,
+    TrackingEngine,
+    TrackingInvocation,
+    TrackingPass,
+    VectorReversal,
+    VectorTag,
+    reverse_layer_vectors,
+    reverse_seed,
+    tag_rail_vector,
+)
 
 __version__ = "0.1.0"
 
 __all__ = [
+    "BidirectionalTracking",
+    "BranchTracking",
     "BinaryString",
     "Bounds3D",
     "ExtractionConfig",
@@ -73,6 +88,7 @@ __all__ = [
     "KalmanUpdate",
     "Line3D",
     "LineFitResult",
+    "LayerToeTag",
     "MDLResult",
     "MsvcRand",
     "ObservationSelection",
@@ -97,8 +113,13 @@ __all__ = [
     "TrackStack",
     "TrackWindow",
     "TrackingResult",
+    "TrackingEngine",
+    "TrackingInvocation",
+    "TrackingPass",
     "TrackingStep",
     "WindowAttempt",
+    "VectorReversal",
+    "VectorTag",
     "adjust_two_lines",
     "adjust_two_lines_with_observation",
     "classify_segment",
@@ -122,9 +143,12 @@ __all__ = [
     "observation_from_support",
     "recognize_stacks",
     "recognize_turnout",
+    "reverse_layer_vectors",
+    "reverse_seed",
     "segment_track_points_mdl",
     "seed_windows",
     "track_railway",
     "stack_signature",
     "template_matching",
+    "tag_rail_vector",
 ]
