@@ -9,7 +9,9 @@ gauge adjustment, full seed initialization, Kalman components and sequential
 tracking with window retries, stopping rules, turnout stacks and source template
 recognition, toe detection and endpoint refinement, branch scheduling and
 bidirectional orchestration, plane fitting, switch-box detection, grade/curve
-analysis and source GWAD row/text generation. The current
+analysis and source GWAD row/text generation. An integrated in-memory pipeline,
+synthetic workflow, diagnostic outputs and explicit source coverage audit are
+available. The current
 unpacked C++ code is the source of truth: preserve its computational behavior and
 document proposed corrections separately.
 
@@ -51,6 +53,8 @@ document proposed corrections separately.
   source JAMA plane fits, grouping/gates, class-5 labels and tracking integration.
 - [docs/PYTHON_GRADES.md](docs/PYTHON_GRADES.md): vertical division, source curve
   formulas, point-tag behavior, grade reports and GWAD output structure.
+- [docs/PYTHON_PIPELINE.md](docs/PYTHON_PIPELINE.md): unified API/CLI, supplied-state
+  provenance, JSON/CSV artifacts, source audit and explicitly pending scope.
 
 The original application uses Windows Forms/C++/CLI, PCL, VTK, Boost and LAS
 libraries. Project files contain machine-specific paths. Retaining them documents
@@ -77,6 +81,9 @@ python -m railway_mls branch-demo
 python -m railway_mls bidirectional-demo
 python -m railway_mls switch-box-demo
 python -m railway_mls grade-demo
+python -m railway_mls pipeline-demo
+python -m railway_mls pipeline-demo --scenario components --output outputs/components-001
+python -m railway_mls source-audit --repo .
 python -m unittest discover -s tests -v
 ```
 
@@ -116,10 +123,22 @@ with class code 5 and consumes 1,200 random draws. Main tracking invokes this
 postpass after toe detection. Sparse undefined plane outputs are reported explicitly.
 `grade-demo` analyzes a supplied 17-point center vector into three sections and
 six GWAD rows, preserving the source's curve formula, tag mutations and variable
-parameter columns. Grade analysis is an explicit post-tracking action. Remaining
-inventory, data interfaces and complete pipeline delivery are pending.
+parameter columns. Grade analysis is an explicit post-tracking action.
 
-The installed `railway-mls` command supports the same twelve demos.
+`pipeline-demo` runs raw bidirectional extraction with optional grade/GWAD actions
+enabled by the demo. `--scenario turnout` runs raw side rails through stack
+recognition; ambiguity and source gates remain visible. `--scenario components`
+uses explicitly supplied reference/branch fixtures to exercise successful toe,
+branch and box computation. `--scenario missing-references` retains the undefined
+toe-reference result. The JSON reports stages, supplied state, limitations and
+reproducibility metadata. `--output` creates a new diagnostic directory;
+`--steps` and `--record-random` opt into detailed traces. Completed workflows with
+known issues report `completed_with_limitations`, without implying source parity
+or accuracy. Existing limitations stay open.
+
+The installed `railway-mls` command supports the same thirteen demos and source
+audit. The audit inventories 124 definitions, hashes 41 project and 51 bundled
+dependency files, and explicitly lists pending/partially mapped source contracts.
 Tests use `unittest`; when a C++ compiler is available they also compile temporary
 extracts of the original
 source for direct behavior comparisons. The stage guides linked above document
@@ -145,9 +164,9 @@ repository refer to its separate history.
 
 ## Development direction
 
-Continue from the implemented tracking, recognition, orchestration, switch-box
-and grade stages to the remaining source inventory, integrated synthetic pipeline
-and input/diagnostic/export interfaces.
+Continue from the integrated pipeline and coverage audit to the explicitly listed
+standalone/helper contracts and legacy data/conversion/export interfaces. Keep
+those scope gaps separate from the source limitations already reproduced.
 Include computational orchestration that currently lives in the GUI. Keep inactive source paths inactive
 and preserve defaults, templates, ordering, precision and reproducible quirks.
 

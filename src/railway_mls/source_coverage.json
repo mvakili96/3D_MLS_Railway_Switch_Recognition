@@ -1,0 +1,1739 @@
+{
+  "schema_version": 1,
+  "baseline_id": "b04978b12f533a86f2fd24527e5dc4b4779a082461a7050142cb8e372b6c09f0",
+  "definition_scope": [
+    "Every out-of-class definition in RailwayExtraction.cpp and MainForm.cpp",
+    "All top-level project .cpp/.h files have file-level dispositions",
+    "LIDARPT.h state/geometry is mapped by stage guides; header members are not individually counted",
+    "Jama/etc are dependencies: only reached numerical behavior is ported, not whole libraries"
+  ],
+  "files": [
+    {
+      "path": "DataConverstionForm.cpp",
+      "sha256": "454ec1126c4c0d9ab1470a3321d9d17be0630cacde35994cd7db73c0fda38c8e",
+      "disposition": "io_or_conversion_pending"
+    },
+    {
+      "path": "DataConverstionForm.h",
+      "sha256": "924345549c51c8ab2a586fa3ea521d8c21dc4868b0b06d8be68233add93a1ffd",
+      "disposition": "io_or_conversion_pending"
+    },
+    {
+      "path": "DataConvertor.cpp",
+      "sha256": "348dfa0f1224173a3eafdbdf2ff2eec1eb6ffcc4098a1c73f656ead553c6407c",
+      "disposition": "io_or_conversion_pending"
+    },
+    {
+      "path": "DataConvertor.h",
+      "sha256": "773f57268be626302336938c729a01386bf8086aa69ba3da1b98b02261aaf723",
+      "disposition": "io_or_conversion_pending"
+    },
+    {
+      "path": "ExportOptionsForm.cpp",
+      "sha256": "355f647b231ff376f2d360426039e46e628b38efd08273a7f99769f8549c1a00",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "ExportOptionsForm.h",
+      "sha256": "99ca3db05d9b10182912bfd23e507245d86abb00d027a4bcff3e136b03b61c3b",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "ExtractionParameterForm.cpp",
+      "sha256": "9ccdab7a018f194faa58c4b197c0d6c1f26a03d885b2744d6d4789cf848f5c25",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "ExtractionParameterForm.h",
+      "sha256": "0ef2a5b7fb7c7f7bbe71ac42d5ee76ece7d05c5704d49080fc860bd8b484d487",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "HashMap.cpp",
+      "sha256": "721019575306aef8c393cb8cd6955961b77c263ead13655d7aa58ced590ba75f",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "HashMap.h",
+      "sha256": "6a934db674455dd4b4fcd65b828b75eccc0de4c9979f0fd63ee5cb0855362db2",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "InitialLocationForm.cpp",
+      "sha256": "c974597cc92c9f8def174a18a46b397583aea549ec1a36c3c91ab4e83c2f26b8",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "InitialLocationForm.h",
+      "sha256": "a6799fab0d683abd0c2d1091a6ee10675362ab0390169748a23293a96835b4e8",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "LASFileReader.cpp",
+      "sha256": "4c66b2c386262467354cbbd5b5bef7faea3668f6261844075e8582b237dfa874",
+      "disposition": "io_or_conversion_pending"
+    },
+    {
+      "path": "LASFileReader.h",
+      "sha256": "c3aade2bd7c82468c486bdda139d0d8e5b4d6afdc4fd9270215ff9d564cd5c02",
+      "disposition": "io_or_conversion_pending"
+    },
+    {
+      "path": "LIDARPT.cpp",
+      "sha256": "c788dc629f53ac78867b6857a2dadb86738c1d6005f84daf98d14fb6e2151f80",
+      "disposition": "audited_core_or_state"
+    },
+    {
+      "path": "LIDARPT.h",
+      "sha256": "b1567b4a65bbaa38dd405d1d4644a32eeb3268581b2fa1d162a1dd22fb78c1fe",
+      "disposition": "audited_core_or_state"
+    },
+    {
+      "path": "Main.cpp",
+      "sha256": "7628311d4081b33cb9c0abccb0f00bfa84793c4399518098006a5b60cd8576d7",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "MainForm.cpp",
+      "sha256": "8b00f09f8dcda615e7311e1fe9d8984e2bf5f0e380b1a7cdf5e1edc94c7bdf3a",
+      "disposition": "audited_core_or_state"
+    },
+    {
+      "path": "MainForm.h",
+      "sha256": "f7df2c5a9bf466476d86e5626d33ae87e9f7456b32038b9f8d96e67c755717ff",
+      "disposition": "audited_core_or_state"
+    },
+    {
+      "path": "PointXYZDouble.cpp",
+      "sha256": "b5cddb5b024004b73a8aafc216f55f9dbd35d42501e7f4578b6d29802b525f62",
+      "disposition": "audited_core_or_state"
+    },
+    {
+      "path": "PointXYZDouble.h",
+      "sha256": "5b44985a3816968d26eb7e8298f89a8d96a05406c3db3067ad9b008bba8cbd3d",
+      "disposition": "audited_core_or_state"
+    },
+    {
+      "path": "RailwayExtraction.cpp",
+      "sha256": "16e1c350d64482d07e758f2a7849268361954e8de34367352f3d3cb09c6c729a",
+      "disposition": "audited_core_or_state"
+    },
+    {
+      "path": "RailwayExtraction.h",
+      "sha256": "f59bb7884379cd753cc51860b891e521e83195274d219d17215f7ffba5f8f702",
+      "disposition": "audited_core_or_state"
+    },
+    {
+      "path": "SharedData.cpp",
+      "sha256": "8544d92232254e43eff13162abf889df7dee2feb99e0fe385aede393190e2fbb",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "SharedData.h",
+      "sha256": "562d8a619304e1f512f5c14cab8a22f4d78b6b62d8d64423895e832ddcfdf473",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "SharedResources.cpp",
+      "sha256": "295b071fadf13051392e8ebdfd975119336bb694da723b4f9d14a9c9b14f042a",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "SharedResources.h",
+      "sha256": "0f9bd7a5ab2f27c2aedd1545f98950c22a3e7846e1c0a0b1b8d914113671e097",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "TXTFileReader.cpp",
+      "sha256": "e40ee9c7ca1074390678fbe46170367fc138c8874eec6067ed1c15908816b8ab",
+      "disposition": "io_or_conversion_pending"
+    },
+    {
+      "path": "TXTFileReader.h",
+      "sha256": "9a0a1f0cd82e0a01657f0e9d9e987f99b03f58fde4dc657fb78eb81215630ae7",
+      "disposition": "io_or_conversion_pending"
+    },
+    {
+      "path": "UTM.cpp",
+      "sha256": "0e89ea765c13eebce54869c010a742a0246a3399d65ee3d9ec93753ec7aa6726",
+      "disposition": "io_or_conversion_pending"
+    },
+    {
+      "path": "UTM.h",
+      "sha256": "f4e3c2cc0b293b3f8b61437d036439c16b02ce35c84a9ba56ab705ea20d64e42",
+      "disposition": "io_or_conversion_pending"
+    },
+    {
+      "path": "VMouseInteractorStyle.cpp",
+      "sha256": "61b1ac6010937a0c31e22472e21303311301907ef29d62776f65f3b5031ad61d",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "VMouseInteractorStyle.h",
+      "sha256": "54f1c8b9ca8027abcf8943639785725c700e49592e564e07c5fcd5d35ed6a1fd",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "VTKWindowControl.cpp",
+      "sha256": "134183bcf74127aa5d59da67a333da663926737f24c06557bc5a509d0d600e27",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "VTKWindowControl.h",
+      "sha256": "d5c095ba448f316c85f8629f83f14603e95fc6f3cfe844dc8dbd0d6620b7ba65",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "VTKWindowController.cpp",
+      "sha256": "02796a95aeaf5b82fb5eba7cd1f8a44029eb8ab5dd59a34529bc20f5f779e3d4",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "VTKWindowController.h",
+      "sha256": "b1e0ce64644cc2a8538e9e86b1554af5d6996cdeab136358c020fe2d7aebc4c7",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "Viewer.cpp",
+      "sha256": "55e540be050c20fe52afaf57e732b559ffdf4accf7299cf025b773e34cfd6f73",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "Viewer.h",
+      "sha256": "656cca9eea517ce03774837552eb94733d6b732b2a6cb107b406f90463456d23",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "typedef1.cpp",
+      "sha256": "0ff28b4190baaee823e8bd1026800f66bd88776b889f75e1b179a7960e0dbd5b",
+      "disposition": "presentation_or_infrastructure"
+    },
+    {
+      "path": "typedef1.h",
+      "sha256": "c407cb5068b502ea4300e58bb0d6f7b1111ed4b928f8c888858992f3583879ae",
+      "disposition": "presentation_or_infrastructure"
+    }
+  ],
+  "bundled_dependencies": [
+    {
+      "path": "Jama/jama_cholesky.cpp",
+      "sha256": "06ee9a0e37657783dc154c43233230f735390691f732a03b21f89e87f4bf4512",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/jama_cholesky.h",
+      "sha256": "1c48e407f7903863e3bb5d6dab560f790f62bd86e40471ca2516a4888f614b71",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/jama_eig.cpp",
+      "sha256": "2c4b93804138fd00291c4b1a6552cbc8cd644d006d592deb5bf54af05165f2fd",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/jama_eig.h",
+      "sha256": "b9c341f68d67706de88e813b901e9803f2596d040ffcbab976bd6773058f7ff5",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/jama_lu.cpp",
+      "sha256": "61ba64563c9f674f230042026bf712e66d98ce2ae44ab882981ca6fed1916746",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/jama_lu.h",
+      "sha256": "0ade33f6d05f9a08e249f7bd76f629eaa9ee4822f0f5c16c4b0e70e57b9cc46b",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/jama_qr.cpp",
+      "sha256": "b1e3efe005ad6b5ffcae343e002fe36dc8f2a7ad0cb1018b9789fbed5ec1ec73",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/jama_qr.h",
+      "sha256": "1b2ff932eeb8488ba33b26a56c3e61b265c7f4dc88be9113ab2a201de2a745f2",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/jama_svd.cpp",
+      "sha256": "4994f1b045b8a1880ced3f1d7639bddca8181457d18efa56a18e0ab32357db9b",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/jama_svd.h",
+      "sha256": "6a39c1c88236176af120b3a9bf25d7d7b85174112baaeae718c5000a4f6f8e12",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt.h",
+      "sha256": "ddbfca48153959aff7cbae1d09050e3dbc96cf2453011669c5eaa0d7f8c391f1",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_array1d.cpp",
+      "sha256": "ea02141058f37342f8ec925ac0bb9971abfc6cf8cd90c5bce718a10ecf27e00f",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_array1d.h",
+      "sha256": "4e4e1044709b977b0f2de6feefe69b963a0bd551d18a70f66f71e1b5e9651d87",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_array1d_utils.h",
+      "sha256": "8ac175c588a44c5ac54726947caa744169f282c572b8041a2dd64f65e4761edf",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_array2d.cpp",
+      "sha256": "65d79e94ce6e9c8fd9295e7072e21db6b6c89fdecefe8a31a68449c2e30916b9",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_array2d.h",
+      "sha256": "90a6bde6aabbb9e3d57c35bd70190576feace1e734a349eeaf93d6405a5ea30a",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_array2d_utils.h",
+      "sha256": "414eaf4834cf433f194d352b51d92e749f3fcf7c08ce2d63438b4d918b5523eb",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_array3d.cpp",
+      "sha256": "d842ff379484713614f2a73ee2254702f1955a9af0384c7d2aa743ebd05999bc",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_array3d.h",
+      "sha256": "825b49b4ce565699044672c03fa0ecf1d6a30f609ccd9f0e2b9fb2f29c7c92e2",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_array3d_utils.h",
+      "sha256": "67684920dac14e6d66fa6eb33f7329d0011332c41f7c6a90d460c2c1de34a7ac",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_cmat.cpp",
+      "sha256": "7dfc8b7d2dc2cc4f93af9af1e75a1b2eff94e2a729a08ad83a746259989fabd8",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_cmat.h",
+      "sha256": "95bb0c127c00754099abdb66a5b17b648b7686a0d00e018caebe517d0006efcf",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_fortran_array1d.cpp",
+      "sha256": "a7ef2fa97fd1439d78cd998e7a491229e3d91fdeb1124bf633f0ff1eb42bfdba",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_fortran_array1d.h",
+      "sha256": "448dfc1c1b2dc4040f352625d8fc6c56d2d96fc91118660a390ec720caf9f735",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_fortran_array1d_utils.h",
+      "sha256": "71599c37833e63593cca009eb82069bc1c67bf430d2f36277a559b97281b6ac3",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_fortran_array2d.cpp",
+      "sha256": "8c7931d4e29c9e938f8494ad49371e689663bbd2c7dfb8116a5cfadf4d4fc339",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_fortran_array2d.h",
+      "sha256": "cb3f32b8eb6016f7410f71d5242581aa6e140ed56400f281d69a410ea3dceead",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_fortran_array2d_utils.h",
+      "sha256": "19cce6082129d04393a39e6fa898b05433892019b998637a33fe103166aa94b1",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_fortran_array3d.cpp",
+      "sha256": "7c3125849d3f2b2267553d9dc032ccfb223e3cd23e1a117a39df487e6ecf7442",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_fortran_array3d.h",
+      "sha256": "803a572d8e1b035bc07f25377849e9d1bfd7cb0974ef23e57259fe97b75c43ef",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_fortran_array3d_utils.h",
+      "sha256": "dd3a5f24a418360f4a876641d661e8d42ecc98e457436153fe78702628bc8f24",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_i_refvec.cpp",
+      "sha256": "668c6f7dadb4a1020205ef194374c40198c53d7acec683884fc06e2d53c7b925",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_i_refvec.h",
+      "sha256": "9cba6ed5288e4af478a5b44d908b7b33aa55b2c716f8e3bd6614ede8065981f6",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_math_utils.h",
+      "sha256": "3948e710d6c534ee57876ad604e8950c424adf12f2654d8c727fc862c516d24a",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_sparse_matrix_csr.cpp",
+      "sha256": "6744a4527a54b30c782125feb89a5d3dfb4cf4debf21652f8ec1e7f800eaace8",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_sparse_matrix_csr.h",
+      "sha256": "e50029cb2a3ee3ccc16edc68c18d28f9c2b9fa6bc60b673c845ac6c00b062f42",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_stopwatch.cpp",
+      "sha256": "307fb30da89d81acd3477bf31e1fda374ea49565801d4660fccba7d056ffa94f",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_stopwatch.h",
+      "sha256": "352886b174de0a8845cc265b5ec8ee715fb398fff2b95ba7e7902114c5d24617",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_subscript.cpp",
+      "sha256": "82fc832fd216c83d3c35b3c14b1403d2defa9ad4eb89b38d115b9dfa1469808e",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_subscript.h",
+      "sha256": "024edc2c0128d84c409ade3142d4ccf867ae3b7884705b1a890d030fcb3201da",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_vec.cpp",
+      "sha256": "4da453360e824e28f42e376694880b4c06df4416bb71f57e41d90eabb6349ab0",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_vec.h",
+      "sha256": "56669291aaf528b4500fda3d94c11996502efdaa51aabaad62ef408b2fb10e53",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "Jama/tnt_version.h",
+      "sha256": "e41edfa7367347b7db7e3b0429381fcd064dcf6f1699ad5a0c7c1284d6cda1a9",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "etc/2dvector.cpp",
+      "sha256": "1d8b998d5872a389900474704a0262d26f501e053fb3755b376a406cb22e415c",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "etc/2dvector.h",
+      "sha256": "ce945b72d4b2d309d255497f486d77ad882b6d1826227819315ca794f8292e08",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "etc/matrix.cpp",
+      "sha256": "40167e7b3f61fc1be6601b07589653b1c3053734171e5250758fadc92d034c25",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "etc/matrix.h",
+      "sha256": "bcf6afeee0a42accc5271c358640c91f676d2d9805f793eaeef078dfa6fc7a0f",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "etc/matrix.inl",
+      "sha256": "0b4b378d18622bd2ee0c9fb7c401c5a6d55539d8f7fa089502262855628b6a6e",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "etc/vector.cpp",
+      "sha256": "543af01c1190ceb001d0ab9aa2ba7e22cdc800a2b0072b7f271b1246fe13239d",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "etc/vector.h",
+      "sha256": "382b4593c752628c2307392fbba4291fd5398cd05f6f89eea0fa5263be9430c8",
+      "disposition": "dependency_only_reached_math_ported"
+    },
+    {
+      "path": "etc/vector.inl",
+      "sha256": "9ca8614c8cc0ce4184140eaf731f55f069bd85a3636edae542b23a28b9548640",
+      "disposition": "dependency_only_reached_math_ported"
+    }
+  ],
+  "definition_files": [
+    {
+      "path": "RailwayExtraction.cpp",
+      "owner": "RailwayExtraction",
+      "definitions": [
+        {
+          "id": "RailwayExtraction::RailwayExtraction#1",
+          "name": "RailwayExtraction",
+          "line": 11,
+          "signature": "RailwayExtraction::RailwayExtraction(pcl::PointCloud<PointXYZDouble>::Ptr point_cloud)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.config:ExtractionConfig"
+          ],
+          "note": "Source defaults plus explicit Python engine ownership; native rendering/lifetimes are excluded."
+        },
+        {
+          "id": "RailwayExtraction::updateExtractionParameters#1",
+          "name": "updateExtractionParameters",
+          "line": 47,
+          "signature": "void RailwayExtraction::updateExtractionParameters(ExtractionParameters parameters)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.config:ExtractionConfig"
+          ],
+          "note": "Immutable configuration replaces the native parameter getter/setter interface."
+        },
+        {
+          "id": "RailwayExtraction::getExtractionParameters#1",
+          "name": "getExtractionParameters",
+          "line": 65,
+          "signature": "ExtractionParameters RailwayExtraction::getExtractionParameters()",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.config:ExtractionConfig"
+          ],
+          "note": "Immutable configuration replaces the native parameter getter/setter interface."
+        },
+        {
+          "id": "RailwayExtraction::~RailwayExtraction#1",
+          "name": "~RailwayExtraction",
+          "line": 88,
+          "signature": "RailwayExtraction::~RailwayExtraction()",
+          "disposition": "presentation_or_lifetime",
+          "python": [],
+          "note": "Console/rendering or native lifetime infrastructure; numerical diagnostics/geometry are exposed by Python without recreating Windows/PCL/VTK UI."
+        },
+        {
+          "id": "RailwayExtraction::setInitialLocation#1",
+          "name": "setInitialLocation",
+          "line": 93,
+          "signature": "void RailwayExtraction::setInitialLocation()",
+          "disposition": "source_stub",
+          "python": [],
+          "note": "Empty source method; not an implementation gap in the active explicit-seed API."
+        },
+        {
+          "id": "RailwayExtraction::updateMaxMin#1",
+          "name": "updateMaxMin",
+          "line": 97,
+          "signature": "void RailwayExtraction::updateMaxMin(PointXYZDouble maxPoint, PointXYZDouble minPoint)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.spatial:Bounds3D"
+          ],
+          "note": "Explicit bounds replace the two overloads; the zero-argument source stub remains a stub."
+        },
+        {
+          "id": "RailwayExtraction::updateMaxMin#2",
+          "name": "updateMaxMin",
+          "line": 108,
+          "signature": "void RailwayExtraction::updateMaxMin(double *maxPoint, double *minPoint)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.spatial:Bounds3D"
+          ],
+          "note": "Explicit bounds replace the two overloads; the zero-argument source stub remains a stub."
+        },
+        {
+          "id": "RailwayExtraction::updateMaxMin#3",
+          "name": "updateMaxMin",
+          "line": 119,
+          "signature": "void RailwayExtraction::updateMaxMin()",
+          "disposition": "source_stub",
+          "python": [],
+          "note": "Zero-argument bounds method is empty in source."
+        },
+        {
+          "id": "RailwayExtraction::updateMaxMinFromReader#1",
+          "name": "updateMaxMinFromReader",
+          "line": 124,
+          "signature": "void RailwayExtraction::updateMaxMinFromReader(LASFileReader *reader, const char *filename)",
+          "disposition": "io_pending",
+          "python": [],
+          "note": "Legacy reader bounds/data adapters remain pending. Explicit GridIndex bounds are available without those adapters."
+        },
+        {
+          "id": "RailwayExtraction::readMaxMinFromReader#1",
+          "name": "readMaxMinFromReader",
+          "line": 129,
+          "signature": "void RailwayExtraction::readMaxMinFromReader(LASFileReader *reader, const char *filename)",
+          "disposition": "io_pending",
+          "python": [],
+          "note": "Legacy reader bounds/data adapters remain pending. Explicit GridIndex bounds are available without those adapters."
+        },
+        {
+          "id": "RailwayExtraction::readMaxMinFromTXTReader#1",
+          "name": "readMaxMinFromTXTReader",
+          "line": 137,
+          "signature": "void RailwayExtraction::readMaxMinFromTXTReader(TXTFileReader *txtReader)",
+          "disposition": "io_pending",
+          "python": [],
+          "note": "Legacy reader bounds/data adapters remain pending. Explicit GridIndex bounds are available without those adapters."
+        },
+        {
+          "id": "RailwayExtraction::generateGrid#1",
+          "name": "generateGrid",
+          "line": 154,
+          "signature": "void RailwayExtraction::generateGrid()",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.spatial:GridIndex"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::OnRailextractionSetinit#1",
+          "name": "OnRailextractionSetinit",
+          "line": 207,
+          "signature": "void RailwayExtraction::OnRailextractionSetinit()",
+          "disposition": "unsafe_inactive_sample",
+          "python": [],
+          "note": "No-argument sample uses an uninitialized point and is not the active form action. No fabricated seed is supplied."
+        },
+        {
+          "id": "RailwayExtraction::OnRailextractionSetinit#2",
+          "name": "OnRailextractionSetinit",
+          "line": 234,
+          "signature": "void RailwayExtraction::OnRailextractionSetinit(int mode, POINT3D pt, float angle)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.orchestration:TrackingEngine.initialize"
+          ],
+          "note": "Explicit-seed overload only; no-argument uninitialized sample is not enabled."
+        },
+        {
+          "id": "RailwayExtraction::OnRailextractionTrackingRailway#1",
+          "name": "OnRailextractionTrackingRailway",
+          "line": 251,
+          "signature": "void RailwayExtraction::OnRailextractionTrackingRailway()",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.orchestration:TrackingEngine"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::Setinitiallocation#1",
+          "name": "Setinitiallocation",
+          "line": 351,
+          "signature": "bool RailwayExtraction::Setinitiallocation(int inMode, POINT3D inPt, double inAng)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.initialization:initialize_tracks"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::Trackingrailway#1",
+          "name": "Trackingrailway",
+          "line": 530,
+          "signature": "void RailwayExtraction::Trackingrailway(int TrackDirection, bool mainTrkflg)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.tracking:SequentialTracker"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::ExtractTrkPts#1",
+          "name": "ExtractTrkPts",
+          "line": 1042,
+          "signature": "void RailwayExtraction::ExtractTrkPts(TrackSegment nSeg, double curTrkHgt1, double curTrkHgt2, vector<PointXYZDouble*> &HeadPts1, vector<PointXYZDouble*> &HeadPts2, double &nextTrkHgt1, double &nextTrkHgt2)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.heads:extract_track_points"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::ComputeGMMParaAndCluster#1",
+          "name": "ComputeGMMParaAndCluster",
+          "line": 1172,
+          "signature": "void RailwayExtraction::ComputeGMMParaAndCluster(TrackSegment nextSeg, vector<GMMPara> &nextParas1, vector<GMMPara> &nextParas2, vector<PointXYZDouble*> &HeadPts1, vector<PointXYZDouble*> &HeadPts2)",
+          "disposition": "unused_helper_pending",
+          "python": [],
+          "note": "No active project-owned caller found in this snapshot. Standalone exact API remains unported; related primitives do not close this gap."
+        },
+        {
+          "id": "RailwayExtraction::DeleteSegPntsCmpWithPreHgt#1",
+          "name": "DeleteSegPntsCmpWithPreHgt",
+          "line": 1208,
+          "signature": "void RailwayExtraction::DeleteSegPntsCmpWithPreHgt(TrackSegment &nextSeg, double aveHgtOfTrack1, double aveHgtOfTrack2, double aveHgtOfGround1, double aveHgtOfGround2, double ThHgtOfTrack, double ThHgtOfGround)",
+          "disposition": "unused_helper_pending",
+          "python": [],
+          "note": "No active project-owned caller found in this snapshot. Standalone exact API remains unported; related primitives do not close this gap."
+        },
+        {
+          "id": "RailwayExtraction::GenerateTrkSegAssignMemPts#1",
+          "name": "GenerateTrkSegAssignMemPts",
+          "line": 1255,
+          "signature": "void RailwayExtraction::GenerateTrkSegAssignMemPts(TrackSegment &nextSeg, TrackSegment curSeg, Matrix<double> predPt1, Matrix<double> predPt2, double Length, double Width, int mode)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.tracking:generate_tracking_segment"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::DetermineObservation#1",
+          "name": "DetermineObservation",
+          "line": 1302,
+          "signature": "void RailwayExtraction::DetermineObservation(int TrackMode, TrackStack trkStk, Line3D guideln1, Line3D guideln2, vector<Line3D> lnList1, vector<Line3D> lnList2, int lnMode, vector<PointXYZDouble*> &obsPts1, vector<PointXYZDouble*> &obsPts2, vector<PointXYZDouble*> &LeftPts1, vector<PointXYZDouble*> &RightPts1, vector<PointXYZDouble*> &LeftPts2, vector<PointXYZDouble*> &RightPts2)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.observations:determine_observation"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::SegmentTrackPtsByMDL#1",
+          "name": "SegmentTrackPtsByMDL",
+          "line": 1807,
+          "signature": "void RailwayExtraction::SegmentTrackPtsByMDL(int mode, vector<PointXYZDouble*> Pts, vector<Line3D> &lnList, double ang)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.mdl:segment_track_points_mdl"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::ComputeCloseness#1",
+          "name": "ComputeCloseness",
+          "line": 1976,
+          "signature": "double RailwayExtraction::ComputeCloseness(vector<PointXYZDouble*> Pnts, vector<Line3D> lns)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.mdl:segment_track_points_mdl"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::DefineTemplates#1",
+          "name": "DefineTemplates",
+          "line": 2001,
+          "signature": "void RailwayExtraction::DefineTemplates()",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.recognition:recognize_turnout"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::AdjustTwoLines#1",
+          "name": "AdjustTwoLines",
+          "line": 2130,
+          "signature": "void RailwayExtraction::AdjustTwoLines(Line3D &ln1, Line3D &ln2, int m1, int m2, int m, double _dist)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.gauge:adjust_two_lines"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::AdjustTwoLinesWithObservation#1",
+          "name": "AdjustTwoLinesWithObservation",
+          "line": 2210,
+          "signature": "void RailwayExtraction::AdjustTwoLinesWithObservation(POINT3D ref1, POINT3D ref2, Line3D &ln1, Line3D &ln2, vector<PointXYZDouble*> sptPts1, vector<PointXYZDouble*> sptPts2, int m1, int m2, int m, double _dist)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.gauge:adjust_two_lines_with_observation"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::ValidateLoopCross#1",
+          "name": "ValidateLoopCross",
+          "line": 2342,
+          "signature": "void RailwayExtraction::ValidateLoopCross(vector<LoopCross> &loopcross)",
+          "disposition": "inactive_pending",
+          "python": [],
+          "note": "Loop/cross workflow calls are commented out; intersection is reached only by that inactive workflow. Do not enable implicitly."
+        },
+        {
+          "id": "RailwayExtraction::DetectLoopCross#1",
+          "name": "DetectLoopCross",
+          "line": 2404,
+          "signature": "void RailwayExtraction::DetectLoopCross(TrackSegment Seg, vector<PointXYZDouble*> Pts, double HgtOfGround, double HgtOfTrack, Line3D refLn, vector<LoopCross> &LC)",
+          "disposition": "inactive_pending",
+          "python": [],
+          "note": "Loop/cross workflow calls are commented out; intersection is reached only by that inactive workflow. Do not enable implicitly."
+        },
+        {
+          "id": "RailwayExtraction::DetectSwitchBox#1",
+          "name": "DetectSwitchBox",
+          "line": 2494,
+          "signature": "void RailwayExtraction::DetectSwitchBox(vector<ToePt> toes, vector<SwitchBox> &SBs)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.switch_boxes:detect_switch_boxes"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::DetectToePnts#1",
+          "name": "DetectToePnts",
+          "line": 2617,
+          "signature": "bool RailwayExtraction::DetectToePnts(int type, vector<TrackSegment> trkSeg, ToePt &toe)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.toes:detect_toe_points"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::RecognitionTurnoutType#1",
+          "name": "RecognitionTurnoutType",
+          "line": 2789,
+          "signature": "void RailwayExtraction::RecognitionTurnoutType(vector<BinaryString> tmplates, BinaryString preBinary, BinaryString &trkbinary)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.recognition:recognize_turnout"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::TemplateMatching#1",
+          "name": "TemplateMatching",
+          "line": 2884,
+          "signature": "void RailwayExtraction::TemplateMatching(vector<BinaryString> tmplates, BinaryString &trkbinary)",
+          "disposition": "inactive_ported",
+          "python": [
+            "railway_mls.recognition:template_matching"
+          ],
+          "note": "Standalone raw-count matcher exists; active tracking uses RecognitionTurnoutType instead."
+        },
+        {
+          "id": "RailwayExtraction::LineExtractionByRansac#1",
+          "name": "LineExtractionByRansac",
+          "line": 2942,
+          "signature": "bool RailwayExtraction::LineExtractionByRansac(vector<PointXYZDouble*> pnts, double ThDist, Line3D &_line, double &sigma, vector<PointXYZDouble*> &sptPnts)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.fitting:fit_line_ransac"
+          ],
+          "note": "Both overloads are ported: 500-trial fit_line_ransac and 100-trial fit_rail_head_line; do not interchange them."
+        },
+        {
+          "id": "RailwayExtraction::LineExtractionByRansac#2",
+          "name": "LineExtractionByRansac",
+          "line": 3060,
+          "signature": "bool RailwayExtraction::LineExtractionByRansac(vector<PointXYZDouble*> pnts, double ThDist, Line3D &_line)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.fitting:fit_line_ransac"
+          ],
+          "note": "Both overloads are ported: 500-trial fit_line_ransac and 100-trial fit_rail_head_line; do not interchange them."
+        },
+        {
+          "id": "RailwayExtraction::LineExtractionWithFixedAngle#1",
+          "name": "LineExtractionWithFixedAngle",
+          "line": 3158,
+          "signature": "bool RailwayExtraction::LineExtractionWithFixedAngle(vector<PointXYZDouble*> pnts, double ang, double ThDist, Line3D &_ln, vector<PointXYZDouble*> &sptPnts)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.fitting:fit_fixed_angle"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::LineExtractionWithFixedAngleForLoopCross#1",
+          "name": "LineExtractionWithFixedAngleForLoopCross",
+          "line": 3227,
+          "signature": "bool RailwayExtraction::LineExtractionWithFixedAngleForLoopCross(vector<PointXYZDouble*> pnts, double ang, double ThDist, Line3D &_line, vector<PointXYZDouble*> &sptPnts)",
+          "disposition": "inactive_ported",
+          "python": [
+            "railway_mls.fitting:fit_loop_cross_line"
+          ],
+          "note": "Standalone fitter is implemented; loop/cross scheduling remains inactive and pending."
+        },
+        {
+          "id": "RailwayExtraction::ComputeGMMfeature#1",
+          "name": "ComputeGMMfeature",
+          "line": 3323,
+          "signature": "void RailwayExtraction::ComputeGMMfeature(vector<PointXYZDouble*> pnts, vector<GMMPara> &paras, int _nClass)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.gmm:classify_window"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::ClusteringByGMM#1",
+          "name": "ClusteringByGMM",
+          "line": 3459,
+          "signature": "void RailwayExtraction::ClusteringByGMM(vector<PointXYZDouble*> pnts, vector<GMMPara> paras, vector<vector<PointXYZDouble*>> &cPnts)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.gmm:classify_window"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::SegmentPoints#1",
+          "name": "SegmentPoints",
+          "line": 3501,
+          "signature": "void RailwayExtraction::SegmentPoints(vector<PointXYZDouble*> Pnts, vector<PointXYZDouble*> &segPnts, double fDistTh)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.grouping:group_points"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::PointGrowing#1",
+          "name": "PointGrowing",
+          "line": 3558,
+          "signature": "void RailwayExtraction::PointGrowing(PointXYZDouble* pCurVh, vector<PointXYZDouble*> Pnts, PtSegment &Segment, int SegID, double fDistTh)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.grouping:group_points"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::GetMinMaxXY#1",
+          "name": "GetMinMaxXY",
+          "line": 3574,
+          "signature": "void RailwayExtraction::GetMinMaxXY(vector<PointXYZDouble*> pnts, double &minX, double &maxX, double &minY, double &maxY)",
+          "disposition": "ported_reached_behavior",
+          "python": [
+            "railway_mls.fitting:_bounds"
+          ],
+          "note": "Nonempty bounds reached by fitting are ported; the standalone empty-input sentinel API remains pending."
+        },
+        {
+          "id": "RailwayExtraction::ReCount#1",
+          "name": "ReCount",
+          "line": 3585,
+          "signature": "int RailwayExtraction::ReCount(int totnum, int curnum)",
+          "disposition": "ported_reached_behavior",
+          "python": [
+            "railway_mls.initialization:initialize_tracks"
+          ],
+          "note": "Reached next-vertex wrap is composed into boundary construction; no general modulo replacement is claimed."
+        },
+        {
+          "id": "RailwayExtraction::ComputeArea#1",
+          "name": "ComputeArea",
+          "line": 3613,
+          "signature": "double RailwayExtraction::ComputeArea(vector<POINT3D> vtx)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.geometry:polygon_area"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::ComputeInnerAngle#1",
+          "name": "ComputeInnerAngle",
+          "line": 3641,
+          "signature": "double RailwayExtraction::ComputeInnerAngle(POINT3D sp, POINT3D mp, POINT3D ep)",
+          "disposition": "unused_helper_pending",
+          "python": [],
+          "note": "No active project-owned caller found in this snapshot. Standalone exact API remains unported; related primitives do not close this gap."
+        },
+        {
+          "id": "RailwayExtraction::ComputeIntersectionPoint3D#1",
+          "name": "ComputeIntersectionPoint3D",
+          "line": 3692,
+          "signature": "POINT3D RailwayExtraction::ComputeIntersectionPoint3D(double A1, double B1, double C1, double A2, double B2, double C2)",
+          "disposition": "inactive_pending",
+          "python": [],
+          "note": "Loop/cross workflow calls are commented out; intersection is reached only by that inactive workflow. Do not enable implicitly."
+        },
+        {
+          "id": "RailwayExtraction::ComputeFootOfPerpendicular#1",
+          "name": "ComputeFootOfPerpendicular",
+          "line": 3729,
+          "signature": "POINT3D RailwayExtraction::ComputeFootOfPerpendicular(POINT3D p, Line3D ln)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.geometry:perpendicular_foot"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::DistanceBetweenPoints2D#1",
+          "name": "DistanceBetweenPoints2D",
+          "line": 3768,
+          "signature": "double RailwayExtraction::DistanceBetweenPoints2D(POINT3D p1, POINT3D p2)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.geometry:distance_2d"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::DistanceBetweenPoints2D#2",
+          "name": "DistanceBetweenPoints2D",
+          "line": 3788,
+          "signature": "double RailwayExtraction::DistanceBetweenPoints2D(PointXYZDouble* p1, PointXYZDouble* p2)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.geometry:distance_2d"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::DistanceBetweenPoints3D#1",
+          "name": "DistanceBetweenPoints3D",
+          "line": 3794,
+          "signature": "double RailwayExtraction::DistanceBetweenPoints3D(PointXYZDouble* p1, PointXYZDouble* p2)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.geometry:distance_3d"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::DistanceBetweenPoints3D#2",
+          "name": "DistanceBetweenPoints3D",
+          "line": 3800,
+          "signature": "double RailwayExtraction::DistanceBetweenPoints3D(POINT3D p1, POINT3D p2)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.geometry:distance_3d"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::DistanceBetweenPointAndLine2D#1",
+          "name": "DistanceBetweenPointAndLine2D",
+          "line": 3820,
+          "signature": "double RailwayExtraction::DistanceBetweenPointAndLine2D(POINT3D p, Line3D l)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.geometry:distance_to_line_2d"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::DistanceBetweenPointAndLine2D#2",
+          "name": "DistanceBetweenPointAndLine2D",
+          "line": 3840,
+          "signature": "double RailwayExtraction::DistanceBetweenPointAndLine2D(PointXYZDouble* p, Line3D l)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.geometry:distance_to_line_2d"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::DistanceBetweenPointAndLine3D#1",
+          "name": "DistanceBetweenPointAndLine3D",
+          "line": 3860,
+          "signature": "double RailwayExtraction::DistanceBetweenPointAndLine3D(POINT3D _p, Line3D _ls)",
+          "disposition": "unused_helper_pending",
+          "python": [],
+          "note": "No active project-owned caller found in this snapshot. Standalone exact API remains unported; related primitives do not close this gap."
+        },
+        {
+          "id": "RailwayExtraction::DistanceBetweenPointAndLine3DHgt#1",
+          "name": "DistanceBetweenPointAndLine3DHgt",
+          "line": 3886,
+          "signature": "double RailwayExtraction::DistanceBetweenPointAndLine3DHgt(PointXYZDouble* _p, Line3D _ls)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.heads:_refine_candidates"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::DistanceBetweenPointAndPlane#1",
+          "name": "DistanceBetweenPointAndPlane",
+          "line": 3912,
+          "signature": "double RailwayExtraction::DistanceBetweenPointAndPlane(POINT3D p, PlnPara para)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.planes:plane_distances"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::GetNeighborIdx#1",
+          "name": "GetNeighborIdx",
+          "line": 3936,
+          "signature": "vector<int> RailwayExtraction::GetNeighborIdx(double _x, double _y, int _NumX, int _NumY, double _gSize, int _nSize)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.spatial:GridIndex"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::GetDirectionMode#1",
+          "name": "GetDirectionMode",
+          "line": 3977,
+          "signature": "int RailwayExtraction::GetDirectionMode(double nx, double ny, double px, double py)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.geometry:direction_mode"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::KalmanPredict#1",
+          "name": "KalmanPredict",
+          "line": 4010,
+          "signature": "void RailwayExtraction::KalmanPredict(int mode, double ang, double delL, Matrix<double> curPt, Matrix<double> curP, Matrix<double> &nextPt, Matrix<double> &nextP)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.kalman:kalman_update"
+          ],
+          "note": "Prediction and update are separate public functions; bundled inverse semantics and tracker covariance behavior are retained."
+        },
+        {
+          "id": "RailwayExtraction::KalmanUpdate#1",
+          "name": "KalmanUpdate",
+          "line": 4070,
+          "signature": "void RailwayExtraction::KalmanUpdate(Matrix<double> predPt, Matrix<double> predP, Matrix<double> obsPt, double sigma, Matrix<double> &hatPt, Matrix<double> &hatP)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.kalman:kalman_update"
+          ],
+          "note": "Prediction and update are separate public functions; bundled inverse semantics and tracker covariance behavior are retained."
+        },
+        {
+          "id": "RailwayExtraction::GetPntsInsidePolygon#1",
+          "name": "GetPntsInsidePolygon",
+          "line": 4104,
+          "signature": "void RailwayExtraction::GetPntsInsidePolygon(vector<POINT3D> inVtx, vector<PointXYZDouble*> inPts, vector<PointXYZDouble*> &outPts)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.geometry:points_in_convex_polygon"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::ExtractPlaneByRANSAC#1",
+          "name": "ExtractPlaneByRANSAC",
+          "line": 4133,
+          "signature": "void RailwayExtraction::ExtractPlaneByRANSAC(vector<PointXYZDouble*> inPts, PlnPara &para, double ThDist, vector<PointXYZDouble*> &sptPnts)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.planes:fit_plane_ransac"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::GetPlaneParameters3p#1",
+          "name": "GetPlaneParameters3p",
+          "line": 4204,
+          "signature": "PlnPara RailwayExtraction::GetPlaneParameters3p(POINT3D p1, POINT3D p2, POINT3D p3)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.planes:plane_from_three_points"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::GetPlaneParametersEigen#1",
+          "name": "GetPlaneParametersEigen",
+          "line": 4242,
+          "signature": "PlnPara RailwayExtraction::GetPlaneParametersEigen(vector<PointXYZDouble*> pts)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.planes:plane_from_eigen"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::GetLnsFromVtx#1",
+          "name": "GetLnsFromVtx",
+          "line": 4296,
+          "signature": "void RailwayExtraction::GetLnsFromVtx(vector<POINT3D> pts, vector<Line3D> &Lns)",
+          "disposition": "ported_reached_behavior",
+          "python": [
+            "railway_mls.initialization:initialize_tracks"
+          ],
+          "note": "Boundary endpoints are ported; initialized Python caches differ from unused uninitialized native fields (LIM-010)."
+        },
+        {
+          "id": "RailwayExtraction::PrintTurnoutType#1",
+          "name": "PrintTurnoutType",
+          "line": 4319,
+          "signature": "void RailwayExtraction::PrintTurnoutType(int type)",
+          "disposition": "presentation_or_lifetime",
+          "python": [],
+          "note": "Console/rendering or native lifetime infrastructure; numerical diagnostics/geometry are exposed by Python without recreating Windows/PCL/VTK UI."
+        },
+        {
+          "id": "RailwayExtraction::PrintVtx#1",
+          "name": "PrintVtx",
+          "line": 4376,
+          "signature": "void RailwayExtraction::PrintVtx(vector<POINT3D> vtx)",
+          "disposition": "presentation_or_lifetime",
+          "python": [],
+          "note": "Console/rendering or native lifetime infrastructure; numerical diagnostics/geometry are exposed by Python without recreating Windows/PCL/VTK UI."
+        },
+        {
+          "id": "RailwayExtraction::PrintPts#1",
+          "name": "PrintPts",
+          "line": 4398,
+          "signature": "void RailwayExtraction::PrintPts(vector<PointXYZDouble*> pts)",
+          "disposition": "presentation_or_lifetime",
+          "python": [],
+          "note": "Console/rendering or native lifetime infrastructure; numerical diagnostics/geometry are exposed by Python without recreating Windows/PCL/VTK UI."
+        },
+        {
+          "id": "RailwayExtraction::PrintLines#1",
+          "name": "PrintLines",
+          "line": 4416,
+          "signature": "void RailwayExtraction::PrintLines(vector<Line3D> lns)",
+          "disposition": "presentation_or_lifetime",
+          "python": [],
+          "note": "Console/rendering or native lifetime infrastructure; numerical diagnostics/geometry are exposed by Python without recreating Windows/PCL/VTK UI."
+        },
+        {
+          "id": "RailwayExtraction::updateView#1",
+          "name": "updateView",
+          "line": 4436,
+          "signature": "void RailwayExtraction::updateView(int ClassView)",
+          "disposition": "presentation_or_lifetime",
+          "python": [],
+          "note": "Console/rendering or native lifetime infrastructure; numerical diagnostics/geometry are exposed by Python without recreating Windows/PCL/VTK UI."
+        },
+        {
+          "id": "RailwayExtraction::updateView#2",
+          "name": "updateView",
+          "line": 4441,
+          "signature": "void RailwayExtraction::updateView(int ClassView, TreeNodeCollection ^collection)",
+          "disposition": "presentation_or_lifetime",
+          "python": [],
+          "note": "Console/rendering or native lifetime infrastructure; numerical diagnostics/geometry are exposed by Python without recreating Windows/PCL/VTK UI."
+        },
+        {
+          "id": "RailwayExtraction::GetLayers#1",
+          "name": "GetLayers",
+          "line": 5030,
+          "signature": "std::vector<TrackLayer *> RailwayExtraction::GetLayers()",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.orchestration:TrackingEngine"
+          ],
+          "note": "Ordered live layer references are exposed as engine.layers."
+        },
+        {
+          "id": "RailwayExtraction::ComputeGrade#1",
+          "name": "ComputeGrade",
+          "line": 5035,
+          "signature": "vector<GradeSect> RailwayExtraction::ComputeGrade(TrackLayer *layer)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.grades:compute_grade"
+          ],
+          "note": "Each native routine has its own public counterpart in grades; XYZ-only endpoint assignment and source curve algebra are retained."
+        },
+        {
+          "id": "RailwayExtraction::DetermineGradeSection#1",
+          "name": "DetermineGradeSection",
+          "line": 5075,
+          "signature": "void RailwayExtraction::DetermineGradeSection(vector<POINT3D> &railVtx, double thDPv)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.grades:compute_grade"
+          ],
+          "note": "Each native routine has its own public counterpart in grades; XYZ-only endpoint assignment and source curve algebra are retained."
+        },
+        {
+          "id": "RailwayExtraction::DouglasPeuckerVertical#1",
+          "name": "DouglasPeuckerVertical",
+          "line": 5087,
+          "signature": "void RailwayExtraction::DouglasPeuckerVertical(vector<POINT3D> &railVtx, int _sIdx, int _eIdx, double thDP)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.grades:compute_grade"
+          ],
+          "note": "Each native routine has its own public counterpart in grades; XYZ-only endpoint assignment and source curve algebra are retained."
+        },
+        {
+          "id": "RailwayExtraction::ComputeGradeParameters#1",
+          "name": "ComputeGradeParameters",
+          "line": 5128,
+          "signature": "void RailwayExtraction::ComputeGradeParameters(vector<POINT3D> railVtx, vector<GradeSect> &grdsects)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.grades:compute_grade"
+          ],
+          "note": "Each native routine has its own public counterpart in grades; XYZ-only endpoint assignment and source curve algebra are retained."
+        },
+        {
+          "id": "RailwayExtraction::AddPointTofootOfPependicularOnRailVtx#1",
+          "name": "AddPointTofootOfPependicularOnRailVtx",
+          "line": 5192,
+          "signature": "void RailwayExtraction::AddPointTofootOfPependicularOnRailVtx(vector<POINT3D> &Railvtx, POINT3D pt, int ptType)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.orchestration:tag_rail_vector"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::GetAngle#1",
+          "name": "GetAngle",
+          "line": 5247,
+          "signature": "double RailwayExtraction::GetAngle(double x1, double y1, double x2, double y2)",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.geometry:source_angle"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        },
+        {
+          "id": "RailwayExtraction::ReserverVectors#1",
+          "name": "ReserverVectors",
+          "line": 5272,
+          "signature": "void RailwayExtraction::ReserverVectors()",
+          "disposition": "ported",
+          "python": [
+            "railway_mls.orchestration:TrackingEngine"
+          ],
+          "note": "Computational behavior is implemented; stage guides define parity limits."
+        }
+      ]
+    },
+    {
+      "path": "MainForm.cpp",
+      "owner": "PCLProject::MainForm",
+      "definitions": [
+        {
+          "id": "PCLProject::MainForm::openToolStripMenuItem_Click#1",
+          "name": "openToolStripMenuItem_Click",
+          "line": 46,
+          "signature": "System::Void PCLProject::MainForm::openToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "io_or_conversion_pending",
+          "python": [],
+          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+        },
+        {
+          "id": "PCLProject::MainForm::setInitalLocationToolStripMenuItem_Click#1",
+          "name": "setInitalLocationToolStripMenuItem_Click",
+          "line": 65,
+          "signature": "System::Void PCLProject::MainForm::setInitalLocationToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)",
+          "disposition": "ported_computation",
+          "python": [
+            "railway_mls.orchestration:TrackingEngine.initialize"
+          ],
+          "note": "Computational action is ported; dialogs, callbacks and editable form controls are presentation. GWAD text uses format_gwad; file-dialog I/O is excluded."
+        },
+        {
+          "id": "PCLProject::MainForm::railwayTrackingToolStripMenuItem_Click#1",
+          "name": "railwayTrackingToolStripMenuItem_Click",
+          "line": 101,
+          "signature": "System::Void PCLProject::MainForm::railwayTrackingToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)",
+          "disposition": "ported_computation",
+          "python": [
+            "railway_mls.orchestration:TrackingEngine.run_bidirectional"
+          ],
+          "note": "Computational action is ported; dialogs, callbacks and editable form controls are presentation. GWAD text uses format_gwad; file-dialog I/O is excluded."
+        },
+        {
+          "id": "PCLProject::MainForm::saveRailVectorToolStripMenuItem_Click#1",
+          "name": "saveRailVectorToolStripMenuItem_Click",
+          "line": 144,
+          "signature": "System::Void PCLProject::MainForm::saveRailVectorToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)",
+          "disposition": "io_or_conversion_pending",
+          "python": [],
+          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+        },
+        {
+          "id": "PCLProject::MainForm::saveRailVectorAtIndex#1",
+          "name": "saveRailVectorAtIndex",
+          "line": 149,
+          "signature": "System::Void PCLProject::MainForm::saveRailVectorAtIndex(int index)",
+          "disposition": "io_or_conversion_pending",
+          "python": [],
+          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+        },
+        {
+          "id": "PCLProject::MainForm::saveRailVectorWithIndexAtIndex#1",
+          "name": "saveRailVectorWithIndexAtIndex",
+          "line": 172,
+          "signature": "System::Void PCLProject::MainForm::saveRailVectorWithIndexAtIndex(int index)",
+          "disposition": "io_or_conversion_pending",
+          "python": [],
+          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+        },
+        {
+          "id": "PCLProject::MainForm::savePointsToolStripMenuItem_Click#1",
+          "name": "savePointsToolStripMenuItem_Click",
+          "line": 194,
+          "signature": "System::Void PCLProject::MainForm::savePointsToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)",
+          "disposition": "io_or_conversion_pending",
+          "python": [],
+          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+        },
+        {
+          "id": "PCLProject::MainForm::exitToolStripMenuItem_Click#1",
+          "name": "exitToolStripMenuItem_Click",
+          "line": 199,
+          "signature": "System::Void PCLProject::MainForm::exitToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::showPointCloud#1",
+          "name": "showPointCloud",
+          "line": 204,
+          "signature": "System::Void PCLProject::MainForm::showPointCloud(pcl::PointCloud<PointXYZDouble>::Ptr point_cloud)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::toolStripCameraTop_Click#1",
+          "name": "toolStripCameraTop_Click",
+          "line": 281,
+          "signature": "System::Void PCLProject::MainForm::toolStripCameraTop_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::toolStripCameraDown_Click#1",
+          "name": "toolStripCameraDown_Click",
+          "line": 286,
+          "signature": "System::Void PCLProject::MainForm::toolStripCameraDown_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::toolStripCameraLeft_Click#1",
+          "name": "toolStripCameraLeft_Click",
+          "line": 291,
+          "signature": "System::Void PCLProject::MainForm::toolStripCameraLeft_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::toolStripCameraRight_Click#1",
+          "name": "toolStripCameraRight_Click",
+          "line": 296,
+          "signature": "System::Void PCLProject::MainForm::toolStripCameraRight_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::toolStripCameraFront_Click#1",
+          "name": "toolStripCameraFront_Click",
+          "line": 301,
+          "signature": "System::Void PCLProject::MainForm::toolStripCameraFront_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::toolStripCameraBack_Click#1",
+          "name": "toolStripCameraBack_Click",
+          "line": 306,
+          "signature": "System::Void PCLProject::MainForm::toolStripCameraBack_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::toolStripCameraIsometric_Click#1",
+          "name": "toolStripCameraIsometric_Click",
+          "line": 311,
+          "signature": "System::Void PCLProject::MainForm::toolStripCameraIsometric_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::VTKMouseMove#1",
+          "name": "VTKMouseMove",
+          "line": 317,
+          "signature": "System::Void PCLProject::MainForm::VTKMouseMove(int x, int y, int z)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::GenerateGrid#1",
+          "name": "GenerateGrid",
+          "line": 322,
+          "signature": "System::Void PCLProject::MainForm::GenerateGrid()",
+          "disposition": "ported_computation",
+          "python": [
+            "railway_mls.spatial:GridIndex"
+          ],
+          "note": "Computational action is ported; dialogs, callbacks and editable form controls are presentation. GWAD text uses format_gwad; file-dialog I/O is excluded."
+        },
+        {
+          "id": "PCLProject::MainForm::LoadPointCloud#1",
+          "name": "LoadPointCloud",
+          "line": 328,
+          "signature": "System::Void PCLProject::MainForm::LoadPointCloud(System::Object ^obj)",
+          "disposition": "io_or_conversion_pending",
+          "python": [],
+          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+        },
+        {
+          "id": "PCLProject::MainForm::InitLocationPick#1",
+          "name": "InitLocationPick",
+          "line": 334,
+          "signature": "System::Void PCLProject::MainForm::InitLocationPick()",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::ReceivedPoints#1",
+          "name": "ReceivedPoints",
+          "line": 349,
+          "signature": "void PCLProject::MainForm::ReceivedPoints(double x1, double y1, double z1, double x2, double y2, double z2)",
+          "disposition": "ported_computation",
+          "python": [
+            "railway_mls.pipeline:initial_location_from_picks"
+          ],
+          "note": "Computational action is ported; dialogs, callbacks and editable form controls are presentation. GWAD text uses format_gwad; file-dialog I/O is excluded."
+        },
+        {
+          "id": "PCLProject::MainForm::GetAngle#1",
+          "name": "GetAngle",
+          "line": 416,
+          "signature": "double PCLProject::MainForm::GetAngle(double x1, double y1, double x2, double y2)",
+          "disposition": "ported_computation",
+          "python": [
+            "railway_mls.geometry:source_angle"
+          ],
+          "note": "Computational action is ported; dialogs, callbacks and editable form controls are presentation. GWAD text uses format_gwad; file-dialog I/O is excluded."
+        },
+        {
+          "id": "PCLProject::MainForm::openPTSFileToolStripMenuItem_Click#1",
+          "name": "openPTSFileToolStripMenuItem_Click",
+          "line": 441,
+          "signature": "System::Void PCLProject::MainForm::openPTSFileToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "io_or_conversion_pending",
+          "python": [],
+          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+        },
+        {
+          "id": "PCLProject::MainForm::eCEFLASToUTMToolStripMenuItem_Click#1",
+          "name": "eCEFLASToUTMToolStripMenuItem_Click",
+          "line": 471,
+          "signature": "System::Void PCLProject::MainForm::eCEFLASToUTMToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "io_or_conversion_pending",
+          "python": [],
+          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+        },
+        {
+          "id": "PCLProject::MainForm::uTMPTSToECEFPTSToolStripMenuItem_Click#1",
+          "name": "uTMPTSToECEFPTSToolStripMenuItem_Click",
+          "line": 508,
+          "signature": "System::Void PCLProject::MainForm::uTMPTSToECEFPTSToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "io_or_conversion_pending",
+          "python": [],
+          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+        },
+        {
+          "id": "PCLProject::MainForm::dataConversionToolStripMenuItem_Click#1",
+          "name": "dataConversionToolStripMenuItem_Click",
+          "line": 546,
+          "signature": "System::Void PCLProject::MainForm::dataConversionToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "io_or_conversion_pending",
+          "python": [],
+          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+        },
+        {
+          "id": "PCLProject::MainForm::selectInitialLocationToolStripMenuItem_Click#1",
+          "name": "selectInitialLocationToolStripMenuItem_Click",
+          "line": 553,
+          "signature": "System::Void PCLProject::MainForm::selectInitialLocationToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::listFiles#1",
+          "name": "listFiles",
+          "line": 558,
+          "signature": "System::Void PCLProject::MainForm::listFiles(cli::array<String^>^ fileNames)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::loadFile#1",
+          "name": "loadFile",
+          "line": 576,
+          "signature": "System::Void PCLProject::MainForm::loadFile(String ^ fileName)",
+          "disposition": "io_or_conversion_pending",
+          "python": [],
+          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+        },
+        {
+          "id": "PCLProject::MainForm::updateTrackedLayers#1",
+          "name": "updateTrackedLayers",
+          "line": 660,
+          "signature": "System::Void PCLProject::MainForm::updateTrackedLayers()",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::filesTreeView_NodeMouseDoubleClick#1",
+          "name": "filesTreeView_NodeMouseDoubleClick",
+          "line": 698,
+          "signature": "System::Void PCLProject::MainForm::filesTreeView_NodeMouseDoubleClick(System::Object ^ sender, System::Windows::Forms::TreeNodeMouseClickEventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::exportGWADToolStripMenuItem_Click#1",
+          "name": "exportGWADToolStripMenuItem_Click",
+          "line": 722,
+          "signature": "System::Void PCLProject::MainForm::exportGWADToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "ported_computation",
+          "python": [
+            "railway_mls.grades:build_gwad_rows"
+          ],
+          "note": "Computational action is ported; dialogs, callbacks and editable form controls are presentation. GWAD text uses format_gwad; file-dialog I/O is excluded."
+        },
+        {
+          "id": "PCLProject::MainForm::setParametersToolStripMenuItem_Click#1",
+          "name": "setParametersToolStripMenuItem_Click",
+          "line": 802,
+          "signature": "System::Void PCLProject::MainForm::setParametersToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "ported_computation",
+          "python": [
+            "railway_mls.config:ExtractionConfig"
+          ],
+          "note": "Computational action is ported; dialogs, callbacks and editable form controls are presentation. GWAD text uses format_gwad; file-dialog I/O is excluded."
+        },
+        {
+          "id": "PCLProject::MainForm::computeGradeToolStripMenuItem_Click#1",
+          "name": "computeGradeToolStripMenuItem_Click",
+          "line": 817,
+          "signature": "System::Void PCLProject::MainForm::computeGradeToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "ported_computation",
+          "python": [
+            "railway_mls.grades:compute_layer_grades"
+          ],
+          "note": "Computational action is ported; dialogs, callbacks and editable form controls are presentation. GWAD text uses format_gwad; file-dialog I/O is excluded."
+        },
+        {
+          "id": "PCLProject::MainForm::setPointCloudColorToolStripMenuItem_Click#1",
+          "name": "setPointCloudColorToolStripMenuItem_Click",
+          "line": 829,
+          "signature": "System::Void PCLProject::MainForm::setPointCloudColorToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::exportOptionsToolStripMenuItem_Click#1",
+          "name": "exportOptionsToolStripMenuItem_Click",
+          "line": 846,
+          "signature": "System::Void PCLProject::MainForm::exportOptionsToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::setBackgroundColorToolStripMenuItem_Click#1",
+          "name": "setBackgroundColorToolStripMenuItem_Click",
+          "line": 853,
+          "signature": "System::Void PCLProject::MainForm::setBackgroundColorToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::toolIntensity_Click#1",
+          "name": "toolIntensity_Click",
+          "line": 866,
+          "signature": "System::Void PCLProject::MainForm::toolIntensity_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::layersTreeView_EnabledChanged#1",
+          "name": "layersTreeView_EnabledChanged",
+          "line": 871,
+          "signature": "System::Void PCLProject::MainForm::layersTreeView_EnabledChanged(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::layersTreeView_AfterCheck#1",
+          "name": "layersTreeView_AfterCheck",
+          "line": 875,
+          "signature": "System::Void PCLProject::MainForm::layersTreeView_AfterCheck(System::Object ^ sender, System::Windows::Forms::TreeViewEventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::renameToolStripMenuItem_Click#1",
+          "name": "renameToolStripMenuItem_Click",
+          "line": 879,
+          "signature": "System::Void PCLProject::MainForm::renameToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::SaveVectorToolStripMenuItem_Click#1",
+          "name": "SaveVectorToolStripMenuItem_Click",
+          "line": 891,
+          "signature": "System::Void PCLProject::MainForm::SaveVectorToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)",
+          "disposition": "io_or_conversion_pending",
+          "python": [],
+          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+        },
+        {
+          "id": "PCLProject::MainForm::saveRailVectorWithIndexToolStripMenuItem_Click#1",
+          "name": "saveRailVectorWithIndexToolStripMenuItem_Click",
+          "line": 904,
+          "signature": "System::Void PCLProject::MainForm::saveRailVectorWithIndexToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)",
+          "disposition": "io_or_conversion_pending",
+          "python": [],
+          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+        },
+        {
+          "id": "PCLProject::MainForm::layersTreeView_NodeMouseClick#1",
+          "name": "layersTreeView_NodeMouseClick",
+          "line": 910,
+          "signature": "System::Void PCLProject::MainForm::layersTreeView_NodeMouseClick(System::Object ^ sender, System::Windows::Forms::TreeNodeMouseClickEventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        },
+        {
+          "id": "PCLProject::MainForm::UpdateProgress#1",
+          "name": "UpdateProgress",
+          "line": 918,
+          "signature": "void PCLProject::MainForm::UpdateProgress(double readPoints, double totalPoints)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        }
+      ]
+    }
+  ],
+  "complete_reconstruction": false
+}

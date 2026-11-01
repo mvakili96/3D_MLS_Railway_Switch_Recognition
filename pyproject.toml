@@ -16,6 +16,9 @@ railway-mls = "railway_mls.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+railway_mls = ["source_coverage.json"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py310"
