@@ -7,7 +7,9 @@ are intentional; see docs/PYTHON_FOUNDATION.md before changing these formulas.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from collections.abc import Sequence
 from math import acos, fabs, isfinite, pi, sqrt, tan
+from operator import index
 
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
@@ -39,6 +41,78 @@ def source_angle(begin: Point3D, end: Point3D) -> float:
     if not isfinite(angle):
         angle = 0.0
     return angle * 180 / pi
+
+
+def inner_angle(start: Point3D, middle: Point3D, end: Point3D) -> float:
+    """ComputeInnerAngle: normalized XY arms, clamped dot product, IEEE NaNs."""
+    x1, y1 = start.x - middle.x, start.y - middle.y
+    x2, y2 = end.x - middle.x, end.y - middle.y
+    length1, length2 = sqrt(x1 * x1 + y1 * y1), sqrt(x2 * x2 + y2 * y2)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        x1, y1 = float(np.divide(x1, length1)), float(np.divide(y1, length1))
+        x2, y2 = float(np.divide(x2, length2)), float(np.divide(y2, length2))
+    product = x1 * x2 + y1 * y2
+    if product < -1:
+        product = -1.0
+    if product > 1:
+        product = 1.0
+    return acos(product) * 180 / pi
+
+
+def recount(total: int, current: int) -> int:
+    """ReCount's int32 contract; negative indices add total only once.
+
+    Undefined native integer division/overflow raise instead of wrapping Python
+    integers or manufacturing a usable polygon index.
+    """
+    total, current = index(total), index(current)
+    minimum, maximum = -(1 << 31), (1 << 31) - 1
+    if not all(minimum <= value <= maximum for value in (total, current)):
+        raise OverflowError("ReCount arguments must fit the source signed 32-bit int")
+    if current >= total:
+        if total == 0:
+            raise ZeroDivisionError("undefined source ReCount integer division by zero")
+        quotient = abs(current) // abs(total)
+        if (current < 0) != (total < 0):
+            quotient = -quotient
+        value = current - total * quotient
+    elif current < 0:
+        value = total + current
+    else:
+        value = current
+    if not minimum <= value <= maximum:
+        raise OverflowError("undefined source ReCount signed integer overflow")
+    return value
+
+
+def min_max_xy(points: PointSelection) -> tuple[float, float, float, float]:
+    """GetMinMaxXY: (minX, maxX, minY, maxY), including empty sentinels."""
+    if not len(points):
+        return 1e100, -1e100, 1e100, -1e100
+    xy = points.xyz[:, :2]
+    # argmin/argmax retain the FIRST equal value, including its zero sign.
+    lowest, highest = np.argmin(xy, axis=0), np.argmax(xy, axis=0)
+    return (
+        min(1e100, float(xy[lowest[0], 0])),
+        max(-1e100, float(xy[highest[0], 0])),
+        min(1e100, float(xy[lowest[1], 1])),
+        max(-1e100, float(xy[highest[1], 1])),
+    )
+
+
+def intersection_point_3d(
+    a1: float, b1: float, c1: float, a2: float, b2: float, c2: float
+) -> Point3D:
+    """Inactive ComputeIntersectionPoint3D helper, including its literal Y rule.
+
+    This is not a general corrected line solver. Parallel/coincident lines keep
+    IEEE results; Z is always zero, and the source's A2 == 1 branch is retained.
+    """
+    a1, b1, c1, a2, b2, c2 = map(float, (a1, b1, c1, a2, b2, c2))
+    with np.errstate(divide="ignore", invalid="ignore", over="ignore"):
+        x = float(np.divide(b1 * c2 - b2 * c1, a1 * b2 - b1 * a2))
+    y = a2 * x + c2 if a2 != 1 else a1 * x + c1
+    return Point3D(x, y, 0)
 
 
 def line_parameters(begin: Point3D, end: Point3D) -> tuple[float, float, float]:
@@ -170,6 +244,62 @@ class Line3D:
         )
 
 
+@dataclass(frozen=True)
+class BoundaryLine:
+    """GetLnsFromVtx initializes endpoints only; caches remain explicitly absent.
+
+    Native MemPts is an initialized empty vector. The default POINT3D endpoint
+    tags stay zero because its assignment operator copies XYZ only.
+    """
+
+    begin: Point3D
+    end: Point3D
+    a: None = field(default=None, init=False)
+    b: None = field(default=None, init=False)
+    c: None = field(default=None, init=False)
+    angle: None = field(default=None, init=False)
+    center: None = field(default=None, init=False)
+    unit_vector: None = field(default=None, init=False)
+    d3d: None = field(default=None, init=False)
+    members: tuple = field(default=(), init=False)
+
+
+def lines_from_vertices(vertices: Sequence[Point3D]) -> tuple[BoundaryLine, ...]:
+    """GetLnsFromVtx's replacement output, with cyclic edges in source order."""
+    count = len(vertices)
+    result = []
+    for i, vertex in enumerate(vertices):
+        following = vertices[recount(count, i + 1)]
+        result.append(
+            BoundaryLine(
+                Point3D(vertex.x, vertex.y, vertex.z),
+                Point3D(following.x, following.y, following.z),
+            )
+        )
+    return tuple(result)
+
+
+def distance_to_line_3d(
+    point: Point3D, line: Line3D | BoundaryLine, *, unit_vector: Point3D
+) -> float:
+    """DistanceBetweenPointAndLine3D, using the explicitly supplied stored vector.
+
+    A stale/nonunit vector is neither normalized nor replaced from endpoints.
+    The midpoint is recomputed; a stale stored center is ignored, as in C++.
+    """
+    if unit_vector is None:
+        raise ValueError("source line's stored unit vector is uninitialized")
+    middle = (line.begin + line.end) / 2
+    x, y, z = middle.x - point.x, middle.y - point.y, middle.z - point.z
+    product = unit_vector.x * x + unit_vector.y * y + unit_vector.z * z
+    dx, dy, dz = (
+        x - product * unit_vector.x,
+        y - product * unit_vector.y,
+        z - product * unit_vector.z,
+    )
+    return sqrt(dx * dx + dy * dy + dz * dz)
+
+
 def points_in_polygon(vertices: tuple[Point3D, ...], xy: ArrayLike) -> NDArray[np.bool_]:
     """Vectorized source pnpoly: XY only, strict crossing and asymmetric edges.
 
@@ -218,8 +348,9 @@ def points_in_convex_polygon(vertices: tuple[Point3D, ...], xy: ArrayLike) -> ND
     tags = []
     for i, first in enumerate(vertices):
         second = vertices[(i + 1) % len(vertices)]
-        cross = ((second.x - first.x) * (values[:, 1] - first.y)
-                 - (second.y - first.y) * (values[:, 0] - first.x))
+        cross = (second.x - first.x) * (values[:, 1] - first.y) - (second.y - first.y) * (
+            values[:, 0] - first.x
+        )
         tags.append(np.where(np.abs(cross) < 1e-10, 0, np.where(cross < 0, -1, 1)))
     return np.all(np.asarray(tags) == tags[0], axis=0)
 

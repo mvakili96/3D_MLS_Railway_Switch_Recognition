@@ -111,9 +111,10 @@ quirks can move adjusted centers far from the original points; no correction or
 reclassification is introduced.
 
 Boundary edges preserve source endpoint order, including closing each polygon.
-The native visualization edges have uninitialized cached coefficients; Python's
-`Line3D` constructor initializes its usual geometry fields. Only edge endpoints are
-part of this source comparison; those caches are not used by initialization.
+The shared `lines_from_vertices` helper creates `BoundaryLine` values, preserving
+the native absence of coefficient/angle/center/unit-vector/D3D caches as `None`.
+Endpoint tags stay zero under native XYZ-only assignment. Only initialized edge
+endpoints are read by native comparisons; see [the utility guide](PYTHON_UTILITIES.md).
 
 ## Filter equations and numerical behavior
 

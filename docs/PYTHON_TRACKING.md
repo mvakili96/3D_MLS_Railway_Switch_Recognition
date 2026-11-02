@@ -146,6 +146,9 @@ A rejected candidate can therefore leave one extra entry in each rail vector and
 an increased cumulative distance, while no segment or boundaries are appended.
 The port does not roll back those source side effects. Stop-check equality does
 not reject. Boundary edges go to the normal or turnout list based on each flag.
+The shared `lines_from_vertices` helper retains endpoint order and zero tags,
+with absent native caches represented by `BoundaryLine` fields set to `None`;
+see [the utility guide](PYTHON_UTILITIES.md).
 Point memberships are not reassigned after candidate geometry moves.
 
 ## Turnout-stack state

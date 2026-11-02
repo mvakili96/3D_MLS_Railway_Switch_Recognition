@@ -7,10 +7,10 @@ from dataclasses import dataclass
 from .config import ExtractionConfig
 from .fitting import RailHeadLineFit, descending_height, fit_rail_head_line
 from .gauge import GaugeAdjustment, adjust_two_lines
-from .geometry import Line3D, direction_mode
-from .gmm import GMMClustering, HeightGMMFit, WindowClassification, classify_window
+from .geometry import direction_mode, lines_from_vertices
+from .gmm import WindowClassification, classify_segment
 from .kalman import KalmanState
-from .models import GMMParameters, InitialLocation, TrackLayer, TrackSegment, seed_windows
+from .models import InitialLocation, TrackLayer, TrackSegment, seed_windows
 from .points import Point3D, PointSelection
 from .sampling import MsvcRand, RandSource
 from .spatial import GridIndex
@@ -47,20 +47,6 @@ def initial_kalman_states(segment: TrackSegment) -> tuple[KalmanState, KalmanSta
     Later covariance assignment remains the sequential tracker's responsibility.
     """
     return KalmanState(segment.track1.center), KalmanState(segment.track2.center)
-
-
-def _classify_initial_window(points: PointSelection) -> WindowClassification:
-    if len(points):
-        return classify_window(points)
-    # Empty ComputeGMMfeature has no invalid vector access: its zero denominators
-    # produce NaNs and the loop reaches nIter > 100. The general GMM API rejects
-    # empty inputs; retain this defined initialization path explicitly here.
-    fit = HeightGMMFit(
-        tuple(GMMParameters(float("nan"), float("nan"), float("nan")) for _ in range(3)),
-        101,
-        ("iteration_limit",),
-    )
-    return WindowClassification(points, fit, GMMClustering((points, points, points)))
 
 
 def initialize_tracks(
@@ -106,8 +92,8 @@ def initialize_tracks(
             status,
         )
 
-    memberships = grid.assign_segment_members(segment, neighborhood_size=5)
-    classifications = tuple(_classify_initial_window(points) for points in memberships)
+    grid.assign_segment_members(segment, neighborhood_size=5)
+    classifications = classify_segment(segment)
     heads = tuple(classification.heads for classification in classifications)
     if any(not len(points) for points in heads):
         # Native Setinitiallocation returns false, including defined partial
@@ -144,10 +130,7 @@ def initialize_tracks(
     segment.update_gauge()
     segment.distance_from_start = 0.0
     for window in (segment.track1, segment.track2):
-        for i, begin in enumerate(window.vertices):
-            target_layer.updated_boundaries.append(
-                Line3D(begin, window.vertices[(i + 1) % len(window.vertices)])
-            )
+        target_layer.updated_boundaries.extend(lines_from_vertices(window.vertices))
     target_layer.track_segments.append(segment)
     location = InitialLocation(
         segment.track1.center, lines[0].angle, modes[1], segment.track2.center

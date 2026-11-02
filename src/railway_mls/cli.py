@@ -11,16 +11,20 @@ from .heads import extract_track_points
 from .config import ExtractionConfig
 from .fitting import fit_line_ransac
 from .gauge import adjust_two_lines_with_observation
-from .geometry import Line3D, direction_mode
+from .geometry import (
+    Line3D, direction_mode, distance_to_line_3d, inner_angle, intersection_point_3d,
+    lines_from_vertices, min_max_xy, recount,
+)
+from .gmm import classify_segment
 from .initialization import initial_kalman_states, initialize_tracks
 from .kalman import kalman_predict, kalman_update
 from .mdl import segment_track_points_mdl
-from .models import BinaryString, seed_windows
+from .models import BinaryString, TrackSegment, TrackWindow, seed_windows
 from .orchestration import TrackingEngine
 from .switch_boxes import detect_switch_boxes
 from .grades import build_gwad_rows, compute_grade, format_gwad
 from .observations import determine_observation, observation_from_support
-from .points import Point3D
+from .points import Point3D, PointCloud
 from .sampling import MsvcRand
 from .recognition import define_templates, recognize_stacks, recognize_turnout
 from .spatial import GridIndex
@@ -40,9 +44,39 @@ from .synthetic import (
 from .tracking import track_railway
 from .toes import SUPPORTED_TOE_TYPES, detect_toe_points
 from .pipeline import PipelineOptions, run_pipeline
-from .artifacts import pipeline_summary, write_pipeline_outputs
+from .artifacts import pipeline_summary, strict_json_value, write_pipeline_outputs
+from .heads import filter_segment_by_previous_heights
 from .coverage import check_source_coverage, coverage_summary
 from .synthetic import pipeline_scene
+
+
+def _utilities_demo() -> dict:
+    heights = (-0.1, 0.0, 0.1, 0.2, 0.3)
+    xyz = [(i * 0.01, rail * 1.5, height) for rail in range(2)
+           for height in heights for i in range(6)]
+    cloud = PointCloud(xyz, class_codes=[9] * len(xyz), segment_ids=[7] * len(xyz))
+    segment = TrackSegment(TrackWindow(Point3D(0, 0, 0.2), 0, members=cloud.select(range(30))),
+                           TrackWindow(Point3D(0, 1.5, 0.2), 0, members=cloud.select(range(30, 60))))
+    filtered = filter_segment_by_previous_heights(segment, (0.2, 0.2), (0, 0), 0, 0)
+    classifications = classify_segment(segment)
+    vertices = (Point3D(0, 0, 2, 7), Point3D(2, 0, 3, 9), Point3D(1, 1, 4, 11))
+    line = Line3D(Point3D(0, 0, 0), Point3D(2, 0, 0))
+    return strict_json_value({
+        "status": "ok", "filtered_counts": [len(points) for points in filtered],
+        "gmm": [{"fit": asdict(result.fit), "head_ids": result.heads.indices.tolist(),
+                 "cluster_counts": [len(cluster) for cluster in result.clustering.clusters]}
+                for result in classifications],
+        "labels_unchanged": bool(np.all(cloud.class_codes == 9) and np.all(cloud.segment_ids == 7)),
+        "bounds": min_max_xy(cloud.select()), "empty_bounds": min_max_xy(cloud.select([])),
+        "inner_angle": inner_angle(Point3D(1, 0, 4), Point3D(0, 0, 1), Point3D(0, 1, 9)),
+        "degenerate_inner_angle": inner_angle(Point3D(0, 0, 0), Point3D(0, 0, 0), Point3D(1, 0, 0)),
+        "distance_3d": distance_to_line_3d(Point3D(1, 3, 4), line, unit_vector=Point3D(1, 0, 0)),
+        "recount": [{"total": total, "current": current, "result": recount(total, current)}
+                    for total, current in ((4, 5), (4, -1), (4, -9), (0, -1))],
+        "boundaries": [asdict(edge) for edge in lines_from_vertices(vertices)],
+        "inactive_intersection": asdict(intersection_point_3d(2, -1, 1, 1, 0, -3)),
+        "random_draws": 0,
+    })
 
 
 def _toe_json(toe):
@@ -581,6 +615,7 @@ def _observation_demo(seed: int) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="3D MLS railway Python foundation")
     commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("utilities-demo", help="exercise standalone source utilities and explicit boundary cache state")
     audit_parser = commands.add_parser("source-audit", help="check frozen native source and explicit coverage dispositions")
     audit_parser.add_argument("--repo", default=".", help="original source repository root (default: current directory)")
     pipeline_parser = commands.add_parser("pipeline-demo", help="run the integrated synthetic workflow and report limitations")
@@ -669,6 +704,9 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command == "utilities-demo":
+        print(json.dumps(_utilities_demo(), indent=2, allow_nan=False))
+        return 0
     if arguments.command == "source-audit":
         errors = check_source_coverage(arguments.repo)
         print(json.dumps({"status": "ok" if not errors else "drift", "errors": errors,

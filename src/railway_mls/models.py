@@ -10,7 +10,7 @@ from operator import index
 import numpy as np
 
 from .config import ExtractionConfig
-from .geometry import Line3D, distance_2d, points_in_polygon
+from .geometry import BoundaryLine, Line3D, distance_2d, points_in_polygon
 from .points import Point3D, PointSelection
 
 
@@ -124,8 +124,8 @@ class TrackLayer:
     rail2_vector: list[Point3D] = field(default_factory=list)
     center_vector: list[Point3D] = field(default_factory=list)
     predicted_points: list[Point3D] = field(default_factory=list)
-    updated_boundaries: list[Line3D] = field(default_factory=list)
-    turnout_boundaries: list[Line3D] = field(default_factory=list)
+    updated_boundaries: list[BoundaryLine] = field(default_factory=list)
+    turnout_boundaries: list[BoundaryLine] = field(default_factory=list)
     toe_points: list[ToePoint] = field(default_factory=list)
     switch_boxes: list[SwitchBox] = field(default_factory=list)
 

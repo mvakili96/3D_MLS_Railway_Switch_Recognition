@@ -170,9 +170,30 @@ def classify_window(points: PointSelection) -> WindowClassification:
     return WindowClassification(points, fit, cluster_by_gmm(points, fit.parameters))
 
 
+def _source_window_fit(points: PointSelection) -> HeightGMMFit:
+    if len(points):
+        return fit_height_gmm(points.xyz[:, 2])
+    # Empty native EM completes 101 iterations with three NaN parameter triples.
+    # Its scalar divisions are defined IEEE operations, not an invalid access.
+    return HeightGMMFit(
+        tuple(GMMParameters(float("nan"), float("nan"), float("nan")) for _ in range(3)),
+        101,
+        ("iteration_limit",),
+    )
+
+
 def classify_segment(segment: TrackSegment) -> tuple[WindowClassification, WindowClassification]:
-    """ComputeGMMParaAndCluster; no point labels are changed by this operation."""
+    """ComputeGMMParaAndCluster, including empty windows and partial clusters.
+
+    Both three-component fits precede both clustering calls. Returned parameter
+    and head vectors replace outputs; previous heads are not accumulated. This
+    standalone helper changes no labels and is not enabled in automatic tracking.
+    """
     first, second = segment.track1.members, segment.track2.members
     if first is None or second is None:
         raise ValueError("assign both window memberships before classification")
-    return classify_window(first), classify_window(second)
+    fits = _source_window_fit(first), _source_window_fit(second)
+    return tuple(
+        WindowClassification(points, fit, cluster_by_gmm(points, fit.parameters))
+        for points, fit in zip((first, second), fits)
+    )

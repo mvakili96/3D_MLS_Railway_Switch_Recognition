@@ -1,11 +1,14 @@
 """Source-faithful Python foundations for railway recognition from 3D MLS."""
 
 from .config import ExtractionConfig
-from .geometry import Line3D, direction_mode
+from .geometry import (
+    BoundaryLine, Line3D, direction_mode, distance_to_line_3d, inner_angle,
+    intersection_point_3d, lines_from_vertices, min_max_xy, recount,
+)
 from .fitting import LineFitResult, fit_fixed_angle, fit_line_ransac
 from .gmm import classify_segment, classify_window, cluster_by_gmm, fit_height_gmm
 from .gauge import GaugeAdjustment, adjust_two_lines, adjust_two_lines_with_observation
-from .heads import TrackHeadResult, extract_track_points
+from .heads import TrackHeadResult, extract_track_points, filter_segment_by_previous_heights
 from .grouping import PointGrouping, group_points
 from .initialization import InitializationResult, initial_kalman_states, initialize_tracks
 from .kalman import KalmanPrediction, KalmanState, KalmanUpdate, kalman_predict, kalman_update
@@ -103,6 +106,8 @@ from .coverage import check_source_coverage, coverage_summary, source_coverage
 __version__ = "0.1.0"
 
 __all__ = [
+    "BoundaryLine", "distance_to_line_3d", "inner_angle", "intersection_point_3d",
+    "lines_from_vertices", "min_max_xy", "recount", "filter_segment_by_previous_heights",
     "PipelineFinding", "PipelineOptions", "PipelineResult", "PipelineStage",
     "initial_location_from_picks", "run_pipeline", "pipeline_summary", "write_pipeline_outputs",
     "check_source_coverage", "coverage_summary", "source_coverage",

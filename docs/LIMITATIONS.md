@@ -65,12 +65,12 @@ engine/layer side effects together. **Status: open; review first.**
 | --- | --- | --- |
 | **LIM-008 — Equal-key sorting.** Native `std::sort` does not specify equal-height or equal-component-size order. | Python uses documented stable ties. Native exact-order comparisons use appropriate distinct-key fixtures; tied membership/height checks have narrower claims. | Compare the target compiler/runtime's permutations and resulting random-index selections, grouping choices and outputs. [Heads](PYTHON_GMM_HEADS.md#random-draws-and-ordering), [grouping](PYTHON_FITTING_MDL.md#grouping-and-point-identity). |
 | **LIM-009 — Random state and floating-point environment.** Unknown earlier native draws, point order and arithmetic near thresholds affect model choices. | Owned MSVC recurrence/default seed and recorded raw streams are available. Component extracts receive identical draws; a seed alone does not recover an unknown original session. | Save complete configuration, cloud order and draw streams for matched experiments. Investigate threshold/tie discrepancies with explicit numerical tolerances and exact identity comparisons. [Details](PYTHON_GMM_HEADS.md#random-draws-and-ordering). |
-| **LIM-010 — Python boundaries and native uninitialized fields.** Some invalid counts, ownership, dimensions or nonfinite query inputs have no supported native result. Default geometry/visualization fields also differ in initialization. | Python rejects invalid API inputs or exposes unavailable fields as `None`. Visualization edges have initialized Python caches while native comparisons cover their endpoints. | Audit every newly implemented consumer before reading those fields. Retain explicit boundary contracts and identify which comparisons exclude undefined native values. [Foundation](PYTHON_FOUNDATION.md), [initialization](PYTHON_KALMAN_INITIALIZATION.md), [toes](PYTHON_TOES.md). |
-| **LIM-011 — Whole-application equivalence.** Original Windows application has not been built/executed for full comparisons. | Current suite: 343 test methods, including 109 using compiled source extracts. Thirteen demos and a source audit are available. Integrated workflows match direct engine composition; picked-seed math is source-tested. Grade/GWAD and switch-box cases use original routines/JAMA; orchestration callbacks isolate control flow. Unsafe native reads are excluded. | Complete function/call-path coverage, then compare matched whole-path intermediate/final results where a usable reference exists. Keep component, controlled-callback and full-binary claims separate. |
+| **LIM-010 — Python boundaries and native uninitialized fields.** Some invalid counts, ownership, dimensions or nonfinite query inputs have no supported native result. Default geometry fields and native output-reference interfaces need explicit contracts. | Python rejects invalid API inputs or exposes unavailable fields as `None`. Endpoint-only boundary caches now remain absent in initialization/tracking; native comparisons read only defined endpoints/tags. New scalar 3D distance requires an explicit stored vector, and returned utility vectors do not expose aliased native output buffers. | Audit every newly implemented consumer before reading absent fields or assuming native reference aliasing. Retain explicit boundary contracts and identify comparisons that exclude undefined native values. [Utilities](PYTHON_UTILITIES.md), [initialization](PYTHON_KALMAN_INITIALIZATION.md), [toes](PYTHON_TOES.md). |
+| **LIM-011 — Whole-application equivalence.** Original Windows application has not been built/executed for full comparisons. | Current suite: 367 test methods, including 124 using compiled source extracts. Fourteen demos and a source audit are available. Integrated workflows match direct engine composition; picked-seed math and eight utility contracts are source-tested. Grade/GWAD and switch-box cases use original routines/JAMA; orchestration callbacks isolate control flow. Unsafe native reads are excluded. | Complete function/call-path coverage, then compare matched whole-path intermediate/final results where a usable reference exists. Keep component, controlled-callback and full-binary claims separate. |
 | **LIM-012 — Real-data/published evaluation.** Suitable raw inputs, annotations and reference outputs are not yet supplied. | Synthetic fixtures validate specified behavior only; published accuracy/recall and robustness are not reproduced. Historical evaluation-snapshot questions are deferred and do not replace the chosen source baseline. | Run recorded real-data experiments, error analysis and metric calculations once data is available. [Validation plan](../PYTHON_PORT_PLAN.md#validation-levels). |
 | **LIM-013 — Runtime and memory at MLS scale.** Local grouping can have quadratic scans; full step diagnostics retain reference arrays. | Sparse grid lookup and array operations are implemented; no representative real-cloud profiling has been completed. | Measure runtime/memory by stage and cloud/window size. Preserve neighbor/DFS/sample order when optimizing; assess optional diagnostic retention. [Grouping](PYTHON_FITTING_MDL.md), [tracking](PYTHON_TRACKING.md). |
 | **LIM-014 — Data adapters, units and precision.** Legacy readers have format-dependent thinning; count-prefixed text/CSV, CRS conversion and rounded exports need explicit contracts. | Core accepts owned double-precision coordinates with shared labels. Database integration and matched legacy I/O are deferred; no implicit unit/frame conversion is added. | Verify LAS alternating-point loading versus PTS density, export precision, metadata initialization, zone/hemisphere handling and database schema. [Data contract](../PYTHON_PORT_PLAN.md#data-contract-to-prepare-now). |
-| **LIM-015 — Remaining scope.** Inventory consistency is distinct from complete reconstruction. | Integrated API/CLI, diagnostic outputs and explicit dispositions for 124 engine/UI definitions now exist; 41 project and 51 dependency files are hashed. Four unused standalone helpers, three partial utility contracts, inactive loop/cross/intersection workflow and legacy I/O/conversion/export remain explicitly pending. Header members/dependency behavior are mapped by guides rather than individually inventoried. Existing undefined-source limitations remain. | Complete agreed remaining contracts and header/call-path review before declaring reconstruction complete. Keep unimplemented scope distinct from defects in completed components. [Pipeline audit](PYTHON_PIPELINE.md#explicit-coverage-audit), [plan](../PYTHON_PORT_PLAN.md#computational-inventory). |
+| **LIM-015 — Remaining scope.** Inventory consistency is distinct from complete reconstruction. | Integrated API/CLI, diagnostics and dispositions for 124 engine/UI definitions exist; 41 project and 51 dependency files are hashed. Eight former standalone/partial/inactive utility gaps are implemented, leaving no unused-helper-pending or partially mapped definitions. Inactive DetectLoopCross/ValidateLoopCross workflows and legacy I/O/conversion/export remain pending. Header members/dependency behavior are mapped by guides rather than individually inventoried. Existing undefined-source limitations remain. | Complete agreed remaining workflows and header/call-path review before declaring reconstruction complete. Keep unimplemented scope distinct from defects in completed components. [Utilities](PYTHON_UTILITIES.md), [pipeline audit](PYTHON_PIPELINE.md#explicit-coverage-audit), [plan](../PYTHON_PORT_PLAN.md#computational-inventory). |
 
 ## Preserved source behavior and findings awaiting later decisions
 
@@ -126,6 +126,39 @@ versus automatic geometry, source snapshots, input identities, RNG and tag state
 Decide legacy adapters/schema/precision separately. Audit remaining scope under
 LIM-015; retain LIM-001/LIM-002/LIM-025 and whole-reference/real-data gaps. No entry
 is closed by these new interfaces or their tests. **Status: open.**
+
+### LIM-033: Standalone utility arithmetic, cache and integer contracts
+
+**Evidence:** `RailwayExtraction.cpp:1172–1251,3574–3620,3641–3710,3860–3875,4296–4307`,
+`LIDARPT.h:324–443` and [the utility guide](PYTHON_UTILITIES.md).
+
+**Trigger and impact:** empty paired GMM fits produce three NaN parameter triples
+after 101 iterations; heads still come from the last component. Strict height
+erasure retains equality and treats NaN bounds as deleting nothing, unlike a
+rewritten inclusive keep predicate. Bounds retain empty sentinels and the first
+equal signed zero. `ReCount` adds the total only once for negative current, so it
+can return an invalid array index; negative totals have additional defined and
+undefined branches. Inner-angle zero arms retain NaN. The inactive intersection
+uses its literal A2-dependent Y rule even for noncanonical coefficients and keeps
+IEEE parallel/coincident results. These quirks remain in the baseline.
+
+**Current handling:** source bodies are ported as standalone APIs and tested on
+defined native inputs. Reached int32 division by zero and signed overflow raise
+explicit Python errors without inventing a native index. 3D distance requires
+the stored unit vector; stale/nonunit/nonfinite values are preserved and missing
+values are rejected. Endpoint-only boundaries keep all unavailable caches as
+`None`, empty membership and source zero endpoint tags. Initialization/tracking
+now use the same boundary helper. Explicit `Line3D` construction remains available
+when a caller intentionally computes derived geometry. Python returns paired
+parameter/head values rather than exposing aliased native output-reference buffers;
+those aliasing arrangements are not part of the comparison claim (LIM-010).
+
+**Post-reconstruction review:** characterize degenerate inputs, valid index
+preconditions, comparison/IEEE behavior, marked boundary consumers and cache
+initialization timing. Any conventional modulo, normalized direction, repaired
+intersection, finite angle or different empty-data policy is a separate change.
+Utility completion does not activate loop/cross scheduling, establish real-data
+accuracy or close earlier limitations. **Status: open.**
 
 ## Resolution history
 
