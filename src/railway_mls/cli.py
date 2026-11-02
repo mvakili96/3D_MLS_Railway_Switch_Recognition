@@ -54,6 +54,38 @@ from .models import TrackLayer
 from .loop_cross import detect_loop_cross, validate_loop_cross
 from .synthetic import loop_cross_scene
 from .legacy_io import LegacyTextReader, format_rail_vector, load_point_cloud
+from .conversion import CoordinateConverter, format_converted_points, write_converted_points
+from .coordinates import CONVERTER_PI, geodetic_to_ecef
+
+
+def _conversion_demo() -> dict:
+    cloud = PointCloud([geodetic_to_ecef((52 + i * .01) * CONVERTER_PI / 180,
+                                        (9 + i * .001) * CONVERTER_PI / 180, 100 + i)
+                        for i in range(12)], np.arange(12) * 100,
+                       class_codes=[7] * 12, segment_ids=[9] * 12)
+    events, export_events = [], []
+    converter = CoordinateConverter(cloud)
+    projected = converter.convert_ecef_to_utm(32, callback=lambda *v: events.append(v))
+    reverse = CoordinateConverter(projected.as_cloud()).convert_utm_to_ecef(32, False)
+    export = format_converted_points(projected.points, callback=lambda *v: export_events.append(v))
+    repeat = CoordinateConverter(PointCloud(cloud.xyz[:4]))
+    repeat.convert_ecef_to_utm(32)
+    repeat_events = []
+    repeated = repeat.convert_ecef_to_utm(32, callback=lambda *v: repeat_events.append(v))
+    origin = CoordinateConverter(PointCloud([[0, 0, 0]])).convert_ecef_to_utm(32)
+    return strict_json_value({
+        "status": projected.status, "data": "generated geodetic/ECEF component fixture",
+        "input_count": len(cloud), "zone": 32, "inverse_south_hemi": False,
+        "first_utm_point": asdict(projected.points[0]),
+        "roundtrip_max_abs_xyz_error": float(np.max(np.abs(reverse.as_cloud().xyz - cloud.xyz))),
+        "conversion_progress": events, "export_progress": export_events,
+        "converted_pts": export.text,
+        "repeated_call": {"input_count": 4, "buffer_count": len(repeated.points),
+                          "status": repeated.status, "progress": repeat_events},
+        "origin": {"status": origin.status, "point": asdict(origin.points[0])},
+        "source_batch_inverse_south_hemi": False,
+        "input_labels_unchanged": bool(np.all(cloud.class_codes == 7) and np.all(cloud.segment_ids == 9)),
+    })
 
 
 def _loaded_cloud_json(loaded) -> dict:
@@ -736,6 +768,16 @@ def _observation_demo(seed: int) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="3D MLS railway Python foundation")
     commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("conversion-demo", help="exercise source coordinate formulas, buffer state and converted PTS output")
+    convert_parser = commands.add_parser("convert-cloud", help="explicit legacy ECEF/UTM conversion with source formulas")
+    convert_parser.add_argument("source")
+    convert_parser.add_argument("destination")
+    convert_parser.add_argument("--direction", choices=("ecef-to-utm", "utm-to-ecef"), required=True)
+    convert_parser.add_argument("--zone", type=int, required=True)
+    convert_parser.add_argument("--hemisphere", choices=("north", "south"), help="required for inverse conversion")
+    convert_parser.add_argument("--format", choices=("pts", "csv", "las", "laz"))
+    convert_parser.add_argument("--delimiter", choices=("space", "comma"), default="space")
+    convert_parser.add_argument("--overwrite", action="store_true")
     commands.add_parser("legacy-io-demo", help="exercise legacy text readers and all three vector export formats")
     inspect_parser = commands.add_parser("inspect-cloud", help="read a legacy point cloud and report source sampling/bounds")
     inspect_parser.add_argument("path")
@@ -833,6 +875,31 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command == "conversion-demo":
+        print(json.dumps(_conversion_demo(), indent=2, allow_nan=False))
+        return 0
+    if arguments.command == "convert-cloud":
+        if arguments.direction == "utm-to-ecef" and arguments.hemisphere is None:
+            parser.error("inverse conversion requires --hemisphere north or south")
+        if arguments.direction == "ecef-to-utm" and arguments.hemisphere is not None:
+            parser.error("--hemisphere applies only to inverse conversion")
+        try:
+            loaded = load_point_cloud(arguments.source, format=arguments.format)
+            converter = CoordinateConverter(loaded.cloud)
+            result = (converter.convert_ecef_to_utm(arguments.zone) if arguments.direction == "ecef-to-utm"
+                      else converter.convert_utm_to_ecef(arguments.zone, arguments.hemisphere == "south"))
+            exported = write_converted_points(arguments.destination, converter.converted_points,
+                                              delimiter="," if arguments.delimiter == "comma" else " ",
+                                              overwrite=arguments.overwrite)
+        except (OSError, ValueError, ImportError) as error:
+            print(json.dumps({"status": getattr(error, "status", "conversion_failed"), "error": str(error)}, allow_nan=False))
+            return 1
+        print(json.dumps({"status": result.status, "direction": result.direction,
+                          "input_count": loaded.input_count, "converted_count": len(result.points),
+                          "zone_argument": result.zone_argument, "used_zones": sorted(set(result.zones)),
+                          "south_hemi": result.south_hemi, "output": arguments.destination,
+                          "export_status": exported.status}, indent=2, allow_nan=False))
+        return 0 if result.reference_comparable else 1
     if arguments.command == "legacy-io-demo":
         print(json.dumps(_legacy_io_demo(), indent=2, allow_nan=False))
         return 0

@@ -101,16 +101,16 @@ input/state fingerprints and optional detailed/draw traces. The picked-seed
 midpoint/float32-angle/mode prefix is source-tested. See
 [docs/PYTHON_PIPELINE.md](docs/PYTHON_PIPELINE.md).
 
-The packaged audit inventories 219 definitions: 124 in RailwayExtraction.cpp and
+The packaged audit inventories 246 definitions: 124 in RailwayExtraction.cpp and
 MainForm.cpp, 77 uncommented inline definitions in LIDARPT.h and 18 in the reader
-files. It also maps all
+files, plus 27 in DataConvertor.cpp, UTM.cpp and DataConverstionForm.cpp. It also maps all
 19 named header types, with dispositions for 41 project files and hashes
 for 51 bundled dependency files. Definitions retain explicit ported, unused-ported,
 pending, inactive, stub and presentation dispositions. It is not an exhaustive
 general C++ call-graph audit or a numerical coverage percentage. Loop/cross
 components are now standalone ports with inactive scheduling. Legacy readers and
-exports are implemented; coordinate conversion and two unused PCL point helpers
-remain pending. Complete
+exports and explicit coordinate conversion are implemented; two unused PCL point
+helpers remain pending. Complete
 reconstruction is not declared. Keep all limitation IDs open for the later review.
 
 Eight formerly pending/partial standalone utility contracts are implemented:
@@ -140,9 +140,16 @@ the NumPy-only core. Indexed undefined reads and malformed-input policies are
 explicit; no implicit coordinate conversion is added. See
 [docs/PYTHON_LEGACY_IO.md](docs/PYTHON_LEGACY_IO.md) and LIM-036.
 
-Verification passed 453 test methods, including 165 methods comparing against
+Coordinate conversion now ports all nine source UTM helpers, ECEF/geodetic
+constants and formulas, append/reprocess state, callbacks, converted PTS/CSV,
+source menu/batch bindings and an explicit CLI. Degree/radian contracts, separate
+pi/ellipsoid literals, automatic-zone edges and initialized nonfinite behavior
+remain literal. See [docs/PYTHON_COORDINATES.md](docs/PYTHON_COORDINATES.md) and
+LIM-037. No conversion is inserted into tracking.
+
+Verification passed 487 test methods, including 184 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. Remaining conversion/native filters, database integration, call-path review and full-reference/real-data checks
+been built. Remaining native filters, database integration, call-path review and full-reference/real-data checks
 will accompany later increments.
 
 ## Specification checklist
@@ -196,7 +203,8 @@ The unpacked version adds second seed coordinates, bidirectional tracking orches
 | Inline geometry/state | `LIDARPT.h:28–1310` | 77 definitions/19 types mapped; point/tag/cache operations, neighbor polygons, segment assignment and undefined-source policies implemented |
 | Loop/cross-region routines | `RailwayExtraction.cpp:2342,2404` | Implemented as standalone detection/validation; initialization/tracking/validation calls remain commented out at lines 512, 827 and 1016 |
 | File adapters and legacy vectors | `LASFileReader.cpp`; `TXTFileReader.cpp`; `MainForm.cpp:149,172,443,577` | Implemented: reader selection, precision/bounds/callbacks, cache/grid bridge, legacy vector formats and explicit input/output policies |
-| Coordinate conversion and unused PCL wrappers | `DataConvertor.cpp`; `UTM.cpp`; `LASFileReader.cpp:113,129` | Pending: coordinate workflows, float32 voxel-centroid filtering and centroid translation; no implicit coordinate conversion or native filtering is inserted |
+| Coordinate conversion | `DataConvertor.cpp`; `UTM.cpp`; `DataConverstionForm.cpp`; `MainForm.cpp:466,504` | Implemented: literal ECEF/geodetic/UTM formulas, accumulated buffer state, all overloads, exports/callbacks and numerical menu/batch bindings |
+| Unused PCL wrappers | `LASFileReader.cpp:113,129` | Pending: float32 voxel-centroid filtering and centroid translation; no implicit native filtering is inserted |
 
 The implementation inventory should cover all source computation, including orchestration inside the UI. Preserve active behavior and explicitly account for separately invoked computational features such as grade analysis and switch-box detection. Record inactive routines without enabling them merely because they appear in the source or paper. Recreating Windows Forms is a separate product task; its computational orchestration must still be ported.
 

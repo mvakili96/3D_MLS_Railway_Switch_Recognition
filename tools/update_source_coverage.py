@@ -9,7 +9,7 @@ from hashlib import sha256
 import json
 from pathlib import Path
 
-from railway_mls.coverage import SOURCE_DIRECTORY, cpp_definitions, source_text_hash
+from railway_mls.coverage import SOURCE_DIRECTORY, cpp_definitions, cpp_free_definitions, source_text_hash
 from header_coverage import header_entries
 
 
@@ -231,6 +231,34 @@ for name, target in (
 UI["LoadPointCloud"] = rule("ported_computation", ("railway_mls.spatial:GridIndex",),
                             "Source body only invokes GenerateGrid; it is not an additional file reader.")
 UI["savePointsToolStripMenuItem_Click"] = rule("source_stub", note="Source menu handler is empty; no invented point-file exporter.")
+for name in ("eCEFLASToUTMToolStripMenuItem_Click", "uTMPTSToECEFPTSToolStripMenuItem_Click"):
+    UI[name] = rule("conversion_ported", ("railway_mls.conversion:source_menu_conversion",),
+                    "Explicit paths replace dialogs; source menu actions retain zone 32 and inverse hemisphere false, reader selection, no-callback conversion and rounded PTS output. Managed cancellation/reentry is excluded.")
+UI["dataConversionToolStripMenuItem_Click"] = rule("presentation", note="Only launches the conversion dialog. Its numerical actions are mapped in DataConverstionForm.cpp.")
+
+CONVERTER = {
+    "DataConvertor": rule("conversion_ported", ("railway_mls.conversion:CoordinateConverter", "railway_mls.coordinates:ConverterEllipsoid"), "Source constants, shared input ownership and initially empty persistent output buffer."),
+    "~DataConvertor": rule("native_lifetime", note="Empty source destructor; Python owns converted records."),
+    "ConvertECEFToUTM": rule("conversion_ported", ("railway_mls.conversion:CoordinateConverter.convert_ecef_to_utm",), "Both overloads append input and reprocess the entire buffer; native phase order, PI units and periodic-only callback cadence are preserved."),
+    "ConvertUTMToECEF": rule("conversion_ported", ("railway_mls.conversion:CoordinateConverter.convert_utm_to_ecef",), "Both overloads preserve explicit hemisphere, radian intermediate values, repeated buffer conversion and periodic-only callbacks."),
+    "Ecef_to_geodetic": rule("conversion_ported", ("railway_mls.coordinates:ecef_to_geodetic",), "Literal two-branch inverse and constants; origin/domain IEEE NaN is retained."),
+    "Geodetic_to_ecef": rule("conversion_ported", ("railway_mls.coordinates:geodetic_to_ecef",), "Source radian inputs, constants and scalar expression order."),
+    "SaveConvertedPoints": rule("io_ported", ("railway_mls.conversion:format_converted_points", "railway_mls.conversion:write_converted_points"), "All three overloads: count header, fixed three decimals, intensity, delimiter and periodic-only progress. Python requires explicit overwrite and surfaces nonfinite output."),
+}
+UTM = {name: rule("conversion_ported", ("railway_mls.coordinates:" + target,),
+                   "Literal double-precision source formulas and pi/ellipsoid constants; actual forward input degrees, inverse radians, source zone behavior and initialized IEEE results are preserved. Unsafe automatic-zone casts are explicit guards.")
+       for name, target in (
+           ("DegToRad", "deg_to_rad"), ("RadToDeg", "rad_to_deg"),
+           ("ArcLengthOfMeridian", "arc_length_of_meridian"), ("UTMCentralMeridian", "utm_central_meridian"),
+           ("FootpointLatitude", "footpoint_latitude"), ("MapLatLonToXY", "map_lat_lon_to_xy"),
+           ("MapXYToLatLon", "map_xy_to_lat_lon"), ("LatLonToUTMXY", "lat_lon_to_utm_xy"),
+           ("UTMXYToLatLon", "utm_xy_to_lat_lon"))}
+CONVERSION_UI = {}
+for name in ("utmConvertButton_Click", "ecefConvertButton_Click"):
+    CONVERSION_UI[name] = rule("conversion_ported", ("railway_mls.conversion:convert_legacy_files",),
+                               "Ordered source batch dispatch/naming, missing-file skips, reverse hemisphere false and asymmetric aggregate progress timing. Explicit paths replace controls; Python file/error/overwrite policies remain explicit.")
+for name in ("sourceButton_Click", "destinationButton_Click", "UpdateProgress", "UpdateAllFilesProgress", "CheckErrors"):
+    CONVERSION_UI[name] = rule("presentation", note="File/folder selection, progress-bar rendering or nonempty-control validation. Callers provide explicit paths/zone; numerical workflows expose callbacks without recreating Windows Forms limits.")
 
 READERS = {
     "TXTFileReader": rule("io_ported", ("railway_mls.legacy_io:LegacyTextReader",), "Reader initialization and owned loaded-data state."),
@@ -294,7 +322,7 @@ for path in sorted(source.iterdir()):
         "UTM",
         "DataConverstionForm",
     ):
-        disposition = "io_or_conversion_pending"
+        disposition = "coordinate_conversion_ported"
     elif path.stem in ("RailwayExtraction", "MainForm", "LIDARPT", "PointXYZDouble"):
         disposition = "audited_core_or_state"
     else:
@@ -323,9 +351,13 @@ for filename, owner, rules in (
     ("MainForm.cpp", "PCLProject::MainForm", UI),
     ("TXTFileReader.cpp", "TXTFileReader", READERS),
     ("LASFileReader.cpp", "LASFileReader", READERS),
+    ("DataConvertor.cpp", "DataConvertor", CONVERTER),
+    ("UTM.cpp", "UTM", UTM),
+    ("DataConverstionForm.cpp", "PCLProject::DataConverstionForm", CONVERSION_UI),
 ):
     entries = []
-    for definition in cpp_definitions((source / filename).read_text(), owner):
+    inventory = cpp_free_definitions if filename == "UTM.cpp" else cpp_definitions
+    for definition in inventory((source / filename).read_text(), owner):
         entry = dict(definition)
         if owner in ("TXTFileReader", "LASFileReader") and entry["name"] in ("ReadData", "LoadedData"):
             target = "LegacyTextReader" if owner == "TXTFileReader" else "LegacyLasReader"
@@ -347,9 +379,12 @@ for filename, owner, rules in (
                 rule("source_stub", note="Zero-argument bounds method is empty in source.")
             )
         entries.append(entry)
-    definition_files.append({"path": filename, "owner": owner,
-                             "kind": "legacy_io" if owner in ("TXTFileReader", "LASFileReader") else "engine_ui",
-                             "definitions": entries})
+    kind = ("legacy_io" if owner in ("TXTFileReader", "LASFileReader") else
+            "coordinate_conversion" if filename in ("DataConvertor.cpp", "UTM.cpp", "DataConverstionForm.cpp") else "engine_ui")
+    item = {"path": filename, "owner": owner, "kind": kind, "definitions": entries}
+    if filename == "UTM.cpp":
+        item["definition_style"] = "free_functions"
+    definition_files.append(item)
 inline_entries, header_types = header_entries((source / "LIDARPT.h").read_text())
 definition_files.append({"path": "LIDARPT.h", "kind": "inline_header", "definitions": inline_entries})
 baseline = sha256(
@@ -361,6 +396,7 @@ audit = {
     "definition_scope": [
         "Every out-of-class definition in RailwayExtraction.cpp and MainForm.cpp",
         "All 18 out-of-class definitions in TXTFileReader.cpp and LASFileReader.cpp, including unused native-filter gaps",
+        "All 27 definitions in DataConvertor.cpp, UTM.cpp and DataConverstionForm.cpp, including free projection functions and computational UI actions",
         "All top-level project .cpp/.h files have file-level dispositions",
         "All 77 active inline definitions and 19 named top-level types in LIDARPT.h have explicit dispositions; commented Rotation3D/InverseRotation3D remain excluded",
         "Jama/etc are dependencies: only reached numerical behavior is ported, not whole libraries",

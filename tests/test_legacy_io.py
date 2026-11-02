@@ -426,16 +426,13 @@ class LegacyIOContractTests(unittest.TestCase):
                 report["engine_ui_definition_count"],
                 report["legacy_io_definition_count"],
             ),
-            (219, 124, 18),
+            (246, 124, 18),
         )
         self.assertEqual(
             {item["name"] for item in report["pending_definitions"]},
             {
                 "DecreaseDensity",
                 "Transform",
-                "eCEFLASToUTMToolStripMenuItem_Click",
-                "uTMPTSToECEFPTSToolStripMenuItem_Click",
-                "dataConversionToolStripMenuItem_Click",
             },
         )
         self.assertEqual(check_source_coverage(Path(__file__).resolve().parents[1]), ())
