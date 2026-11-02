@@ -81,6 +81,11 @@ def descending_height(points: PointSelection) -> PointSelection:
     return points.cloud.select(points.indices[np.argsort(-points.xyz[:, 2], kind="stable")])
 
 
+def higher_z_value(first: Point3D, second: Point3D) -> bool:
+    """HigherZValue's strict comparator; this does not prescribe equal-key sorting."""
+    return first.z > second.z
+
+
 def fit_rail_head_line(
     points: PointSelection, threshold: float = 0.04, *, rng: RandSource | None = None
 ) -> RailHeadLineFit:

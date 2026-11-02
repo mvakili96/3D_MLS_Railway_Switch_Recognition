@@ -127,6 +127,7 @@ def initialize_tracks(
         window.vertices = tuple(
             Point3D(point.x, point.y, line.begin.z, point.point_type) for point in window.vertices
         )
+    segment.update_center()
     segment.update_gauge()
     segment.distance_from_start = 0.0
     for window in (segment.track1, segment.track2):

@@ -72,7 +72,7 @@ def filter_segment_by_previous_heights(
 def _refine_candidates(candidates: PointSelection, fit: RailHeadLineFit) -> PointSelection:
     assert fit.line is not None
     line = fit.line
-    midpoint, unit = line.center.as_array(), line.unit_vector.as_array()
+    midpoint, unit = line.center.as_array(), line.update_unit_vector().as_array()
     difference = midpoint - candidates.xyz
     # DistanceBetweenPointAndLine3DHgt uses only the projected Z residual.
     with np.errstate(invalid="ignore"):

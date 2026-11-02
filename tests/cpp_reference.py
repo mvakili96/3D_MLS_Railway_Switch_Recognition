@@ -152,6 +152,8 @@ class CppReference:
             isnan = header[
                 header.index("inline bool bIsNan(") : header.index("inline int FLOOR_double")
             ]
+            isnan += function(header, "inline int FLOOR_double")
+            legacy_points = header[header.index("class LiDPOINT"):header.index("struct POINT3D {")]
             higher_z = function(header, "inline bool HigherZValue(")
             segments = header[
                 header.index("struct PtSegment {") : header.index("inline bool HigherZValue(")
@@ -576,6 +578,7 @@ int reference_rand() {
                 + matrix_source()
                 + isnan
                 + polygon
+                + legacy_points
                 + primitives
                 + header[header.index("struct SwitchBox {") : header.index("struct BinaryString {")]
                 + header[header.index("struct PlnPara {") : header.index("struct PtSegment {")]
@@ -799,7 +802,99 @@ int main() {
     string operation;
     cin >> operation;
     RailwayExtraction engine;
-    if (operation == "utility_recount") {
+    if(operation=="header_duplicate") {
+        TrackSegment destination,source;
+        auto old=readTypedVector(),values=readTypedVector();
+        destination.m_Track1.vtx=old;source.m_Track1.vtx=values;
+        destination.m_Track1.CenterPt=POINT3D(1,2,3);destination.m_Track1.CenterPt.PtType=10;
+        destination.m_Track2.CenterPt=POINT3D(4,5,6);destination.m_Track2.CenterPt.PtType=11;
+        source.m_Track1.CenterPt=POINT3D(20,21,22);source.m_Track1.CenterPt.PtType=30;
+        source.m_Track2.CenterPt=POINT3D(23,24,25);source.m_Track2.CenterPt.PtType=31;
+        for(auto w:{&source.m_Track1,&source.m_Track2,&destination.m_Track1,&destination.m_Track2}) {
+            w->ori=35;w->MemLn.BeginPt=POINT3D(1,2,3);w->MemLn.EndPt=POINT3D(4,5,6);
+            w->MemLn.CenterPt=POINT3D(2.5,3.5,4.5);w->MemLn.Ang=35;
+            w->MemLn.A2D=1;w->MemLn.B2D=-1;w->MemLn.C2D=0;w->MemLn.D3D=42;w->MemLn.m_UnitVec=POINT3D(1,0,0);
+        }
+        destination.m_Track1.MemLn.BeginPt.PtType=40;destination.m_Track1.MemLn.EndPt.PtType=41;
+        source.m_Track1.MemLn.BeginPt.PtType=20;source.m_Track1.MemLn.EndPt.PtType=21;
+        destination.distFromSp=99;source.distFromSp=5;destination.m_D=1;source.m_D=2;
+        destination.m_Center=POINT3D(1,2,3);destination.m_Center.PtType=9;
+        source.m_Center=POINT3D(10,11,12);source.m_Center.PtType=7;
+        destination.mmVtxBND={POINT3D(7,8,9)};source.mmVtxBND={POINT3D(99,98,97)};
+        destination.DuplicatePolyPair(source);cout<<"RESULT "<<destination.distFromSp<<' '<<destination.m_D<<' ';
+        printTypedVector({destination.m_Center,destination.m_Track1.CenterPt,destination.m_Track2.CenterPt});
+        printTypedVector(destination.m_Track1.vtx);printTypedVector(destination.mmVtxBND);
+        printTypedVector({destination.m_Track1.MemLn.BeginPt,destination.m_Track1.MemLn.EndPt});
+        auto line=destination.m_Track1.MemLn;
+        printTypedVector({line.CenterPt,line.m_UnitVec});
+        cout<<line.Ang<<' '<<line.A2D<<' '<<line.B2D<<' '<<line.C2D<<' '<<line.D3D<<' '<<line.MemPts.size();
+    } else if (operation == "header_round") {
+        double value=readScalar(); cout << "RESULT " << FLOOR_double(value);
+    } else if (operation == "header_point3d") {
+        string action; cin >> action; auto points=readTypedVector(); POINT3D point=points.at(0);
+        if(action=="assign") point=points.at(1);
+        else if(action=="set") point.SetPoint3D(points.at(1).x,points.at(1).y,points.at(1).z);
+        else if(action=="sign") point.ChangeSign();
+        else if(action=="normalize") point.Normalize();
+        cout << "RESULT "; printTypedVector({point});
+    } else if (operation == "header_point2d") {
+        string action; cin >> action; double x=readScalar(),y=readScalar();
+        POINT2D point(x,y); int flag; cin >> flag; point.flg=flag;
+        double otherX=readScalar(),otherY=readScalar(),scalar=readScalar(); POINT2D other(otherX,otherY), result;
+        if(action=="add") result=point+other;
+        else if(action=="subtract") result=point-other;
+        else if(action=="multiply") result=point*scalar;
+        else if(action=="divide") result=point/scalar;
+        else if(action=="default") result=POINT2D();
+        cout << "RESULT " << result.x << ' ' << result.y << ' ' << result.flg << ' '
+             << point.IsEqual(other) << ' ' << point.isEqual(other);
+    } else if (operation == "header_legacy") {
+        string action; cin >> action; auto first=readScalarPoint(),second=readScalarPoint();
+        LiDPOINT point(first.x,first.y,first.z),other(second.x,second.y,second.z);
+        point.ClassCode=9;point.SegmentID=7;point.Intensity=70000;point.dAlpha=3;point.dHoG=4;point.dZ=5;point.deltag=true;
+        if(action=="add") point=point+other;
+        else if(action=="subtract") point=point-other;
+        else if(action=="set") point.SetXYZ(second.x,second.y,second.z);
+        else if(action=="set_from") point.SetXYZ(other);
+        cout << "RESULT " << point.x << ' ' << point.y << ' ' << point.z << ' ' << point.ClassCode << ' '
+             << point.SegmentID << ' ' << point.Intensity << ' ' << point.dAlpha << ' ' << point.dHoG << ' '
+             << point.dZ << ' ' << point.deltag << ' ' << point.IsEqual(other);
+    } else if (operation == "header_neighbor") {
+        TrackSegment segment; segment.m_Track1.CenterPt=readScalarPoint();segment.m_Track2.CenterPt=readScalarPoint();
+        double length=readScalar(),width=readScalar(),windowWidth=readScalar();
+        segment.GetNeighborVtxBND(length,width,windowWidth); cout << "RESULT ";
+        for(auto points:{segment.mmVtxBND,segment.mlVtxBND,segment.mrVtxBND,segment.lVtxBND,segment.rVtxBND}) printTypedVector(points);
+    } else if (operation == "header_bounds") {
+        size_t count;cin>>count;Cloud cloud;cloud.points.resize(count);
+        for(auto &point:cloud.points){point.x=readScalar();point.y=readScalar();point.z=readScalar();}
+        TrackWindow window;window.MemPnts=readSelection(cloud);auto outputs=readTypedVector();
+        POINT3D maximum=outputs.at(0),minimum=outputs.at(1);window.GetMaxMinOfMemPnts(maximum,minimum);
+        cout << "RESULT ";printTypedVector({maximum,minimum});
+    } else if (operation == "header_line") {
+        string action;cin >> action;auto endpoints=readTypedVector();Line3D line;
+        line.BeginPt=endpoints.at(0);line.BeginPt.PtType=endpoints.at(0).PtType;
+        line.EndPt=endpoints.at(1);line.EndPt.PtType=endpoints.at(1).PtType;
+        line.CenterPt=readScalarPoint();cin>>line.CenterPt.PtType;
+        line.Ang=readScalar();line.A2D=readScalar();line.B2D=readScalar();line.C2D=readScalar();
+        line.m_UnitVec=readScalarPoint();cin>>line.m_UnitVec.PtType;line.D3D=readScalar();
+        bool result=false;vector<POINT3D> extended;
+        if(action=="coefficients")line.GetLineParameter();
+        else if(action=="angle")line.GetAngle();
+        else if(action=="parameters_at"){double x=readScalar(),y=readScalar();line.Get2DLineParameterWithAngleAndPt(x,y);}
+        else if(action=="center")line.GetCenterPt();
+        else if(action=="swap")line.SwapEnding();
+        else if(action=="swapvertex")line.SwapVertex();
+        else if(action=="order"){int mode;cin>>mode;line.SetEndingByMode(mode);}
+        else if(action=="reference")line.SetEndByReferencePt(readScalarPoint());
+        else if(action=="vertex")result=line.IsVertex(readScalarPoint());
+        else if(action=="extend"){auto output=line.ExtendEndingPts(readScalar());extended={output.BeginPt,output.EndPt};}
+        else if(action=="unit")line.GetUnitVec();
+        else if(action=="radius")line.SetEndingPntsByCenterAndLength(readScalar());
+        else if(action=="ending3d"){double a=readScalar(),b=readScalar(),c=readScalar(),d=readScalar();line.SetEndingPnts3D(a,b,c,d);}
+        cout << "RESULT " << result << ' ';printTypedVector({line.BeginPt,line.EndPt,line.CenterPt});
+        cout<<line.Ang<<' '<<line.A2D<<' '<<line.B2D<<' '<<line.C2D<<' ';
+        printTypedVector({line.m_UnitVec});cout<<line.D3D<<' ';printTypedVector(extended);
+    } else if (operation == "utility_recount") {
         int total,current; cin >> total >> current;
         cout << "RESULT " << engine.ReCount(total,current);
     } else if (operation == "utility_angle") {

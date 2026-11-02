@@ -61,6 +61,7 @@ def generate_tracking_segment(
         for prediction, window in zip(predictions, (current.track1, current.track2))
     ]
     segment = TrackSegment(*windows)
+    segment.update_center()
     for window in windows:
         window.generate_vertices(length, width, mode)
     segment.update_gauge()
@@ -416,6 +417,7 @@ class SequentialTracker:
             window.generate_vertices(
                 base, settings.track_window_width, direction_mode(line.end, line.begin)
             )
+        candidate.update_center()
         candidate.update_gauge()
         candidate.distance_from_start = self.distance
         if abs(candidate.gauge - settings.track_gauge) > 0.15:

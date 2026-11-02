@@ -48,6 +48,42 @@ from .artifacts import pipeline_summary, strict_json_value, write_pipeline_outpu
 from .heads import filter_segment_by_previous_heights
 from .coverage import check_source_coverage, coverage_summary
 from .synthetic import pipeline_scene
+from .points import LegacyLiDPoint, Point2D
+from .geometry import source_float_round
+from .models import TrackLayer
+
+
+def _header_demo() -> dict:
+    try:
+        LegacyLiDPoint(1, 2, 3) / 2
+    except ValueError as error:
+        division_status = str(error).partition(":")[0]
+    line = Line3D(Point3D(0, 0, 2, 7), Point3D(2, 1, 4, 9))
+    expanded = line.extend_endpoints(2)
+    line.swap_endpoints()
+    unit = line.update_unit_vector()
+    segment = TrackSegment(TrackWindow(Point3D(1000, 2000, 1), 35),
+                           TrackWindow(Point3D(1001.2, 1999.1, 9), 35))
+    regions = segment.generate_neighbor_regions(1.1, 0.5, 0.42)
+    source = TrackSegment(TrackWindow(Point3D(20, 21, 22), 35),
+                          TrackWindow(Point3D(23, 24, 25), 35))
+    source.update_center()
+    segment.distance_from_start = 99
+    assignment = segment.duplicate_from(source)
+    point = Point2D(3, 4)
+    return strict_json_value({
+        "status": "ok", "rounding": [source_float_round(v) for v in (-1.8, 0.5, 1.49999999)],
+        "point2d": asdict(point), "zero_division_copy": asdict(point / 0),
+        "normalized_marked_point": asdict(Point3D(3, 4, 0, 17).normalized()),
+        "legacy_default": asdict(LegacyLiDPoint()),
+        "legacy_division_status": division_status,
+        "expanded_line": asdict(expanded), "endpoint_tags_after_swap": [line.begin.point_type, line.end.point_type],
+        "stored_unit_vector": asdict(unit), "neighbor_status": regions.status,
+        "neighbor_regions": asdict(regions), "duplicate": asdict(assignment),
+        "retained_distance": segment.distance_from_start,
+        "inactive_pools_empty": not TrackLayer().loop_crosses,
+        "source_coverage": coverage_summary(), "random_draws": 0,
+    })
 
 
 def _utilities_demo() -> dict:
@@ -615,6 +651,7 @@ def _observation_demo(seed: int) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="3D MLS railway Python foundation")
     commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("header-demo", help="exercise source inline geometry, tags and state contracts")
     commands.add_parser("utilities-demo", help="exercise standalone source utilities and explicit boundary cache state")
     audit_parser = commands.add_parser("source-audit", help="check frozen native source and explicit coverage dispositions")
     audit_parser.add_argument("--repo", default=".", help="original source repository root (default: current directory)")
@@ -704,6 +741,9 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command == "header-demo":
+        print(json.dumps(_header_demo(), indent=2, allow_nan=False))
+        return 0
     if arguments.command == "utilities-demo":
         print(json.dumps(_utilities_demo(), indent=2, allow_nan=False))
         return 0

@@ -101,11 +101,12 @@ input/state fingerprints and optional detailed/draw traces. The picked-seed
 midpoint/float32-angle/mode prefix is source-tested. See
 [docs/PYTHON_PIPELINE.md](docs/PYTHON_PIPELINE.md).
 
-The packaged source audit inventories 124 definitions in RailwayExtraction.cpp
-and MainForm.cpp, plus file-level dispositions for 41 project files and hashes
+The packaged audit inventories 201 definitions: 124 in RailwayExtraction.cpp and
+MainForm.cpp plus 77 uncommented inline definitions in LIDARPT.h. It also maps all
+19 named header types, with dispositions for 41 project files and hashes
 for 51 bundled dependency files. Definitions retain explicit ported, unused-ported,
 pending, inactive, stub and presentation dispositions. It is not an exhaustive
-header/call-graph audit or a numerical coverage percentage. Inactive loop/cross
+general C++ call-graph audit or a numerical coverage percentage. Inactive loop/cross
 workflows and legacy I/O/conversion/export scope remain visible; complete
 reconstruction is not declared. Keep all limitation IDs open for the later review.
 
@@ -116,7 +117,13 @@ intersection. Active initialization/tracking now retain absent boundary caches
 using the same source helper. Four integrated scenario summaries retain their
 earlier results. See [docs/PYTHON_UTILITIES.md](docs/PYTHON_UTILITIES.md) and LIM-033.
 
-Verification passed 367 test methods, including 124 methods comparing against
+The inline header increment completes endpoint/cache operations, legacy points,
+five neighbor regions, destination-aware segment copying and remaining layer
+pools/comparators. It preserves tag assignment, undefined division and float32
+rounding. See [docs/PYTHON_HEADER.md](docs/PYTHON_HEADER.md) and LIM-034. Inactive
+workflows remain inactive.
+
+Verification passed 395 test methods, including 140 methods comparing against
 compiled extracts of the original C++. The complete original application has not
 been built. Remaining data/inactive workflows and full-reference/real-data checks
 will accompany later increments.
@@ -169,6 +176,7 @@ The unpacked version adds second seed coordinates, bidirectional tracking orches
 | Grade analysis and GWAD | `RailwayExtraction.cpp:5035–5189`; `LIDARPT.h:1254`; `MainForm.cpp:724–800,824–836` | Implemented: grade struct/division/parameters/reports, all-layer menu action, GWAD row computation and finite TSV formatting |
 | Integrated runner and audit | Existing engine/UI stages; `MainForm.cpp:349–439` seed picks | Implemented: unified API, 4 synthetic scenarios, supplied-state provenance, JSON/CSV artifacts, deterministic RNG metadata, picked seed and explicit source dispositions |
 | Standalone utilities | `RailwayExtraction.cpp:1172,1208,3574,3585,3641,3692,3860,4296` | Implemented: paired GMM/height erasure, empty bounds, literal int32 cycling, inner angle, stored-vector 3D distance, endpoint-only boundaries and inactive intersection |
+| Inline geometry/state | `LIDARPT.h:28–1310` | 77 definitions/19 types mapped; point/tag/cache operations, neighbor polygons, segment assignment and undefined-source policies implemented |
 | Loop/cross-region routines | `RailwayExtraction.cpp:2342,2404` | Present in source, but initialization/tracking/validation calls are commented out at approximately lines 512, 827 and 1016 |
 | File adapters and coordinate conversion | `LASFileReader.cpp`; `TXTFileReader.cpp`; `DataConvertor.cpp`; `UTM.cpp` | Input density, precision, output schemas and explicit coordinate metadata |
 
