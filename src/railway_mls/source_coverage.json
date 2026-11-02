@@ -3,6 +3,7 @@
   "baseline_id": "b04978b12f533a86f2fd24527e5dc4b4779a082461a7050142cb8e372b6c09f0",
   "definition_scope": [
     "Every out-of-class definition in RailwayExtraction.cpp and MainForm.cpp",
+    "All 18 out-of-class definitions in TXTFileReader.cpp and LASFileReader.cpp, including unused native-filter gaps",
     "All top-level project .cpp/.h files have file-level dispositions",
     "All 77 active inline definitions and 19 named top-level types in LIDARPT.h have explicit dispositions; commented Rotation3D/InverseRotation3D remain excluded",
     "Jama/etc are dependencies: only reached numerical behavior is ported, not whole libraries"
@@ -51,12 +52,12 @@
     {
       "path": "HashMap.cpp",
       "sha256": "721019575306aef8c393cb8cd6955961b77c263ead13655d7aa58ced590ba75f",
-      "disposition": "presentation_or_infrastructure"
+      "disposition": "io_cache_ported"
     },
     {
       "path": "HashMap.h",
       "sha256": "6a934db674455dd4b4fcd65b828b75eccc0de4c9979f0fd63ee5cb0855362db2",
-      "disposition": "presentation_or_infrastructure"
+      "disposition": "io_cache_ported"
     },
     {
       "path": "InitialLocationForm.cpp",
@@ -71,12 +72,12 @@
     {
       "path": "LASFileReader.cpp",
       "sha256": "4c66b2c386262467354cbbd5b5bef7faea3668f6261844075e8582b237dfa874",
-      "disposition": "io_or_conversion_pending"
+      "disposition": "reader_io_ported_native_filters_pending"
     },
     {
       "path": "LASFileReader.h",
       "sha256": "c3aade2bd7c82468c486bdda139d0d8e5b4d6afdc4fd9270215ff9d564cd5c02",
-      "disposition": "io_or_conversion_pending"
+      "disposition": "reader_io_ported_native_filters_pending"
     },
     {
       "path": "LIDARPT.cpp",
@@ -146,12 +147,12 @@
     {
       "path": "TXTFileReader.cpp",
       "sha256": "e40ee9c7ca1074390678fbe46170367fc138c8874eec6067ed1c15908816b8ab",
-      "disposition": "io_or_conversion_pending"
+      "disposition": "io_ported"
     },
     {
       "path": "TXTFileReader.h",
       "sha256": "9a0a1f0cd82e0a01657f0e9d9e987f99b03f58fde4dc657fb78eb81215630ae7",
-      "disposition": "io_or_conversion_pending"
+      "disposition": "io_ported"
     },
     {
       "path": "UTM.cpp",
@@ -475,6 +476,7 @@
     {
       "path": "RailwayExtraction.cpp",
       "owner": "RailwayExtraction",
+      "kind": "engine_ui",
       "definitions": [
         {
           "id": "RailwayExtraction::RailwayExtraction#1",
@@ -563,27 +565,36 @@
           "name": "updateMaxMinFromReader",
           "line": 124,
           "signature": "void RailwayExtraction::updateMaxMinFromReader(LASFileReader *reader, const char *filename)",
-          "disposition": "io_pending",
-          "python": [],
-          "note": "Legacy reader bounds/data adapters remain pending. Explicit GridIndex bounds are available without those adapters."
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:ReaderBounds",
+            "railway_mls.legacy_io:LegacyPointCloud.grid_bounds"
+          ],
+          "note": "Literal reader XYZ bounds are retained; Python grid adaptation preserves XY and explicitly encloses Z, which native grid lookup ignores. Text reader Z remains zero by construction."
         },
         {
           "id": "RailwayExtraction::readMaxMinFromReader#1",
           "name": "readMaxMinFromReader",
           "line": 129,
           "signature": "void RailwayExtraction::readMaxMinFromReader(LASFileReader *reader, const char *filename)",
-          "disposition": "io_pending",
-          "python": [],
-          "note": "Legacy reader bounds/data adapters remain pending. Explicit GridIndex bounds are available without those adapters."
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:ReaderBounds",
+            "railway_mls.legacy_io:LegacyPointCloud.grid_bounds"
+          ],
+          "note": "Literal reader XYZ bounds are retained; Python grid adaptation preserves XY and explicitly encloses Z, which native grid lookup ignores. Text reader Z remains zero by construction."
         },
         {
           "id": "RailwayExtraction::readMaxMinFromTXTReader#1",
           "name": "readMaxMinFromTXTReader",
           "line": 137,
           "signature": "void RailwayExtraction::readMaxMinFromTXTReader(TXTFileReader *txtReader)",
-          "disposition": "io_pending",
-          "python": [],
-          "note": "Legacy reader bounds/data adapters remain pending. Explicit GridIndex bounds are available without those adapters."
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:ReaderBounds",
+            "railway_mls.legacy_io:LegacyPointCloud.grid_bounds"
+          ],
+          "note": "Literal reader XYZ bounds are retained; Python grid adaptation preserves XY and explicitly encloses Z, which native grid lookup ignores. Text reader Z remains zero by construction."
         },
         {
           "id": "RailwayExtraction::generateGrid#1",
@@ -1324,15 +1335,18 @@
     {
       "path": "MainForm.cpp",
       "owner": "PCLProject::MainForm",
+      "kind": "engine_ui",
       "definitions": [
         {
           "id": "PCLProject::MainForm::openToolStripMenuItem_Click#1",
           "name": "openToolStripMenuItem_Click",
           "line": 46,
           "signature": "System::Void PCLProject::MainForm::openToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
-          "disposition": "io_or_conversion_pending",
-          "python": [],
-          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyFileSession.load_file"
+          ],
+          "note": "Reader/cache/grid or legacy export action ported with explicit path/layer inputs; dialogs/display and selected UI controls are excluded. Indexed undefined reads and Python file/input policies remain explicit."
         },
         {
           "id": "PCLProject::MainForm::setInitalLocationToolStripMenuItem_Click#1",
@@ -1361,36 +1375,42 @@
           "name": "saveRailVectorToolStripMenuItem_Click",
           "line": 144,
           "signature": "System::Void PCLProject::MainForm::saveRailVectorToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)",
-          "disposition": "io_or_conversion_pending",
-          "python": [],
-          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:write_layer_vectors"
+          ],
+          "note": "Reader/cache/grid or legacy export action ported with explicit path/layer inputs; dialogs/display and selected UI controls are excluded. Indexed undefined reads and Python file/input policies remain explicit."
         },
         {
           "id": "PCLProject::MainForm::saveRailVectorAtIndex#1",
           "name": "saveRailVectorAtIndex",
           "line": 149,
           "signature": "System::Void PCLProject::MainForm::saveRailVectorAtIndex(int index)",
-          "disposition": "io_or_conversion_pending",
-          "python": [],
-          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:write_layer_vectors"
+          ],
+          "note": "Reader/cache/grid or legacy export action ported with explicit path/layer inputs; dialogs/display and selected UI controls are excluded. Indexed undefined reads and Python file/input policies remain explicit."
         },
         {
           "id": "PCLProject::MainForm::saveRailVectorWithIndexAtIndex#1",
           "name": "saveRailVectorWithIndexAtIndex",
           "line": 172,
           "signature": "System::Void PCLProject::MainForm::saveRailVectorWithIndexAtIndex(int index)",
-          "disposition": "io_or_conversion_pending",
-          "python": [],
-          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:write_layer_vectors"
+          ],
+          "note": "Reader/cache/grid or legacy export action ported with explicit path/layer inputs; dialogs/display and selected UI controls are excluded. Indexed undefined reads and Python file/input policies remain explicit."
         },
         {
           "id": "PCLProject::MainForm::savePointsToolStripMenuItem_Click#1",
           "name": "savePointsToolStripMenuItem_Click",
           "line": 194,
           "signature": "System::Void PCLProject::MainForm::savePointsToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)",
-          "disposition": "io_or_conversion_pending",
+          "disposition": "source_stub",
           "python": [],
-          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+          "note": "Source menu handler is empty; no invented point-file exporter."
         },
         {
           "id": "PCLProject::MainForm::exitToolStripMenuItem_Click#1",
@@ -1498,9 +1518,11 @@
           "name": "LoadPointCloud",
           "line": 328,
           "signature": "System::Void PCLProject::MainForm::LoadPointCloud(System::Object ^obj)",
-          "disposition": "io_or_conversion_pending",
-          "python": [],
-          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+          "disposition": "ported_computation",
+          "python": [
+            "railway_mls.spatial:GridIndex"
+          ],
+          "note": "Source body only invokes GenerateGrid; it is not an additional file reader."
         },
         {
           "id": "PCLProject::MainForm::InitLocationPick#1",
@@ -1538,9 +1560,11 @@
           "name": "openPTSFileToolStripMenuItem_Click",
           "line": 441,
           "signature": "System::Void PCLProject::MainForm::openPTSFileToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
-          "disposition": "io_or_conversion_pending",
-          "python": [],
-          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyFileSession.open_pts"
+          ],
+          "note": "Reader/cache/grid or legacy export action ported with explicit path/layer inputs; dialogs/display and selected UI controls are excluded. Indexed undefined reads and Python file/input policies remain explicit."
         },
         {
           "id": "PCLProject::MainForm::eCEFLASToUTMToolStripMenuItem_Click#1",
@@ -1592,9 +1616,11 @@
           "name": "loadFile",
           "line": 576,
           "signature": "System::Void PCLProject::MainForm::loadFile(String ^ fileName)",
-          "disposition": "io_or_conversion_pending",
-          "python": [],
-          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyFileSession.load_file"
+          ],
+          "note": "Reader/cache/grid or legacy export action ported with explicit path/layer inputs; dialogs/display and selected UI controls are excluded. Indexed undefined reads and Python file/input policies remain explicit."
         },
         {
           "id": "PCLProject::MainForm::updateTrackedLayers#1",
@@ -1715,18 +1741,22 @@
           "name": "SaveVectorToolStripMenuItem_Click",
           "line": 891,
           "signature": "System::Void PCLProject::MainForm::SaveVectorToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)",
-          "disposition": "io_or_conversion_pending",
-          "python": [],
-          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:write_layer_vectors"
+          ],
+          "note": "Reader/cache/grid or legacy export action ported with explicit path/layer inputs; dialogs/display and selected UI controls are excluded. Indexed undefined reads and Python file/input policies remain explicit."
         },
         {
           "id": "PCLProject::MainForm::saveRailVectorWithIndexToolStripMenuItem_Click#1",
           "name": "saveRailVectorWithIndexToolStripMenuItem_Click",
           "line": 904,
           "signature": "System::Void PCLProject::MainForm::saveRailVectorWithIndexToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e)",
-          "disposition": "io_or_conversion_pending",
-          "python": [],
-          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:write_layer_vectors"
+          ],
+          "note": "Reader/cache/grid or legacy export action ported with explicit path/layer inputs; dialogs/display and selected UI controls are excluded. Indexed undefined reads and Python file/input policies remain explicit."
         },
         {
           "id": "PCLProject::MainForm::layersTreeView_NodeMouseClick#1",
@@ -1745,6 +1775,212 @@
           "disposition": "presentation",
           "python": [],
           "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
+        }
+      ]
+    },
+    {
+      "path": "TXTFileReader.cpp",
+      "owner": "TXTFileReader",
+      "kind": "legacy_io",
+      "definitions": [
+        {
+          "id": "TXTFileReader::TXTFileReader#1",
+          "name": "TXTFileReader",
+          "line": 12,
+          "signature": "TXTFileReader::TXTFileReader()",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyTextReader"
+          ],
+          "note": "Reader initialization and owned loaded-data state."
+        },
+        {
+          "id": "TXTFileReader::~TXTFileReader#1",
+          "name": "~TXTFileReader",
+          "line": 17,
+          "signature": "TXTFileReader::~TXTFileReader()",
+          "disposition": "native_lifetime",
+          "python": [],
+          "note": "Empty source destructor; Python owns reader/cloud references."
+        },
+        {
+          "id": "TXTFileReader::ReadData#1",
+          "name": "ReadData",
+          "line": 21,
+          "signature": "pcl::PointCloud<PointXYZDouble>::Ptr TXTFileReader::ReadData(const char *fileName)",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyTextReader.read"
+          ],
+          "note": "Ordered records and loaded-data identity preserved; LAS keeps zero-based even records. Optional codec equivalence, malformed inputs and CRT/runtime differences remain explicit limitations."
+        },
+        {
+          "id": "TXTFileReader::ReadData#2",
+          "name": "ReadData",
+          "line": 70,
+          "signature": "pcl::PointCloud<PointXYZDouble>::Ptr TXTFileReader::ReadData(const char * fileName, UnmanagedProgressCallback callback)",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyTextReader.read"
+          ],
+          "note": "Ordered records and loaded-data identity preserved; LAS keeps zero-based even records. Optional codec equivalence, malformed inputs and CRT/runtime differences remain explicit limitations."
+        },
+        {
+          "id": "TXTFileReader::ReadDataCSV#1",
+          "name": "ReadDataCSV",
+          "line": 128,
+          "signature": "pcl::PointCloud<PointXYZDouble>::Ptr TXTFileReader::ReadDataCSV(const char* fileName, UnmanagedProgressCallback callback)",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyTextReader.read"
+          ],
+          "note": "Count-prefixed strtok CSV, fourth field intensity, ordered records and source callback cadence."
+        },
+        {
+          "id": "TXTFileReader::LoadedData#1",
+          "name": "LoadedData",
+          "line": 186,
+          "signature": "pcl::PointCloud<PointXYZDouble>::Ptr TXTFileReader::LoadedData()",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyTextReader.loaded_data"
+          ],
+          "note": "Ordered records and loaded-data identity preserved; LAS keeps zero-based even records. Optional codec equivalence, malformed inputs and CRT/runtime differences remain explicit limitations."
+        },
+        {
+          "id": "TXTFileReader::saveRailVector#1",
+          "name": "saveRailVector",
+          "line": 191,
+          "signature": "void TXTFileReader::saveRailVector(const char *filename, vector<POINT3D> vtx)",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:format_rail_vector",
+            "railway_mls.legacy_io:write_rail_vector"
+          ],
+          "note": "Both overloads: fixed three decimals, center tags, center/rail1/rail2 order and tag 100 on both rails."
+        },
+        {
+          "id": "TXTFileReader::saveRailVector#2",
+          "name": "saveRailVector",
+          "line": 208,
+          "signature": "void TXTFileReader::saveRailVector(const char* filename, vector<POINT3D> vtx, vector<POINT3D> vtl, vector<POINT3D> vtr)",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:format_rail_vector",
+            "railway_mls.legacy_io:write_rail_vector"
+          ],
+          "note": "Both overloads: fixed three decimals, center tags, center/rail1/rail2 order and tag 100 on both rails."
+        },
+        {
+          "id": "TXTFileReader::saveRailVectorWithIndex#1",
+          "name": "saveRailVectorWithIndex",
+          "line": 247,
+          "signature": "void TXTFileReader::saveRailVectorWithIndex(const char* filename, vector<POINT3D> vtx, vector<POINT3D> vtl, vector<POINT3D> vtr)",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:format_rail_vector"
+          ],
+          "note": "Three rows per left record, one marker skip, 100/200 rail tags, partial-prefix diagnostics on undefined indexing."
+        }
+      ]
+    },
+    {
+      "path": "LASFileReader.cpp",
+      "owner": "LASFileReader",
+      "kind": "legacy_io",
+      "definitions": [
+        {
+          "id": "LASFileReader::LASFileReader#1",
+          "name": "LASFileReader",
+          "line": 8,
+          "signature": "LASFileReader::LASFileReader()",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyLasReader"
+          ],
+          "note": "Owned loaded-data state; optional decoder boundary."
+        },
+        {
+          "id": "LASFileReader::~LASFileReader#1",
+          "name": "~LASFileReader",
+          "line": 13,
+          "signature": "LASFileReader::~LASFileReader()",
+          "disposition": "native_lifetime",
+          "python": [],
+          "note": "Native shared-pointer reset; Python owns reader/cloud references."
+        },
+        {
+          "id": "LASFileReader::ReadData#1",
+          "name": "ReadData",
+          "line": 18,
+          "signature": "pcl::PointCloud<PointXYZDouble>::Ptr LASFileReader::ReadData(const char *fileName)",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyLasReader.read"
+          ],
+          "note": "Ordered records and loaded-data identity preserved; LAS keeps zero-based even records. Optional codec equivalence, malformed inputs and CRT/runtime differences remain explicit limitations."
+        },
+        {
+          "id": "LASFileReader::ReadData#2",
+          "name": "ReadData",
+          "line": 59,
+          "signature": "pcl::PointCloud<PointXYZDouble>::Ptr LASFileReader::ReadData(const char * fileName, UnmanagedProgressCallback callback)",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyLasReader.read"
+          ],
+          "note": "Ordered records and loaded-data identity preserved; LAS keeps zero-based even records. Optional codec equivalence, malformed inputs and CRT/runtime differences remain explicit limitations."
+        },
+        {
+          "id": "LASFileReader::LoadedData#1",
+          "name": "LoadedData",
+          "line": 108,
+          "signature": "pcl::PointCloud<PointXYZDouble>::Ptr LASFileReader::LoadedData()",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyLasReader.loaded_data"
+          ],
+          "note": "Ordered records and loaded-data identity preserved; LAS keeps zero-based even records. Optional codec equivalence, malformed inputs and CRT/runtime differences remain explicit limitations."
+        },
+        {
+          "id": "LASFileReader::DecreaseDensity#1",
+          "name": "DecreaseDensity",
+          "line": 113,
+          "signature": "pcl::PointCloud<pcl::PointXYZ>::Ptr LASFileReader::DecreaseDensity(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)",
+          "disposition": "native_filter_pending",
+          "python": [],
+          "note": "Unused wrappers around PCL float32 voxel-centroid filtering or centroid translation. They are not called by either reader and are reserved for a separate dependency-level numerical port."
+        },
+        {
+          "id": "LASFileReader::Transform#1",
+          "name": "Transform",
+          "line": 129,
+          "signature": "pcl::PointCloud<pcl::PointXYZ>::Ptr LASFileReader::Transform(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)",
+          "disposition": "native_filter_pending",
+          "python": [],
+          "note": "Unused wrappers around PCL float32 voxel-centroid filtering or centroid translation. They are not called by either reader and are reserved for a separate dependency-level numerical port."
+        },
+        {
+          "id": "LASFileReader::maxPoint#1",
+          "name": "maxPoint",
+          "line": 150,
+          "signature": "PointXYZDouble LASFileReader::maxPoint(const char *fileName)",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyLasReader.read_bounds"
+          ],
+          "note": "Original LAS header maxima, not sampled-cloud maxima."
+        },
+        {
+          "id": "LASFileReader::minPoint#1",
+          "name": "minPoint",
+          "line": 169,
+          "signature": "PointXYZDouble LASFileReader::minPoint(const char *fileName)",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyLasReader.read_bounds"
+          ],
+          "note": "Original LAS header minima, not sampled-cloud minima."
         }
       ]
     },

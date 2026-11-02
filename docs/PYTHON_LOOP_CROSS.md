@@ -13,8 +13,9 @@ commented automatic calls remain inactive, and no engine stage is added.
 
 The first two definitions now have `inactive_ported` dispositions. Their
 initialization/tracking/validation calls at source lines 512, 827 and 1016 remain
-commented out. The inventory still contains 201 definitions and 19 named header
-types. Legacy I/O/conversion/export and call-path review remain outstanding;
+commented out. That increment inventoried 201 definitions and 19 named header
+types. The later [legacy I/O increment](PYTHON_LEGACY_IO.md) expands to 219.
+Coordinate conversion, unused PCL point filters and call-path review remain outstanding;
 `complete_reconstruction` is still false.
 
 ## Detection API and ordered filtering

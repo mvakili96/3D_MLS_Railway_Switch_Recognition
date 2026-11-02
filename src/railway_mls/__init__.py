@@ -36,6 +36,10 @@ from .observations import (
 )
 from .points import LegacyLiDPoint, Point2D, Point3D, PointCloud, PointSelection
 from .sampling import MsvcRand, RecordedRand
+from .legacy_io import (
+    LegacyIOError, LegacyPointCloud, LegacyRailExport, LegacyLasReader, LegacyTextReader,
+    ReaderBounds, LegacyFileEntry, LegacyFileSession, format_rail_vector, load_point_cloud, write_layer_vectors, write_rail_vector,
+)
 from .spatial import Bounds3D, GridIndex
 from .recognition import (
     StackRecognition,
@@ -109,6 +113,8 @@ from .loop_cross import LoopCrossDetection, LoopCrossValidation, detect_loop_cro
 __version__ = "0.1.0"
 
 __all__ = [
+    "LegacyIOError", "LegacyPointCloud", "LegacyRailExport", "LegacyLasReader", "LegacyTextReader",
+    "ReaderBounds", "LegacyFileEntry", "LegacyFileSession", "format_rail_vector", "load_point_cloud", "write_layer_vectors", "write_rail_vector",
     "LoopCrossDetection", "LoopCrossValidation", "detect_loop_cross", "validate_loop_cross",
     "LegacyLiDPoint", "Point2D", "LoopCross", "NeighborRegions", "StateAssignment",
     "source_float_round", "source_is_nan", "higher_z_value", "larger_group",

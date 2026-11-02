@@ -1,6 +1,6 @@
 # Inline source geometry and state coverage
 
-The audit now inventories **201 definitions**: 124 engine/UI definitions and all
+This increment inventoried **201 definitions**: 124 engine/UI definitions and all
 **77 uncommented inline definitions** in `LIDARPT.h`. It also maps all **19 named
 top-level header types**. The two block-commented rotation functions remain
 explicitly excluded. This is scoped lexical coverage, not a general C++ parser
@@ -115,6 +115,7 @@ to earlier unversioned stack fingerprints. Cloud input hashing is unchanged.
 
 All limitations remain open, including LIM-034. The later
 [loop/cross increment](PYTHON_LOOP_CROSS.md) ports its two inactive bodies as
-standalone calls. Legacy data/conversion/export interfaces, whole-application comparison, real-data
+standalone calls; [legacy I/O](PYTHON_LEGACY_IO.md) implements readers/exports and
+expands the audit to 219. Coordinate conversion, unused PCL filters, whole-application comparison, real-data
 accuracy and MLS-scale profiling remain separate work. Inventory consistency
 does not establish native application equivalence or published performance.

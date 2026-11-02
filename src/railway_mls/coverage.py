@@ -131,7 +131,10 @@ def coverage_summary() -> dict:
         "engine_ui_definition_count": sum(
             len(file["definitions"])
             for file in audit["definition_files"]
-            if file.get("kind") != "inline_header"
+            if file.get("kind") not in ("inline_header", "legacy_io")
+        ),
+        "legacy_io_definition_count": sum(
+            len(file["definitions"]) for file in audit["definition_files"] if file.get("kind") == "legacy_io"
         ),
         "header_definition_count": sum(
             len(file["definitions"])
@@ -156,7 +159,7 @@ def coverage_summary() -> dict:
             if entry["disposition"] == "ported_reached_behavior"
         ],
         "pending_file_workflows": [
-            item for item in audit["files"] if item["disposition"] == "io_or_conversion_pending"
+            item for item in audit["files"] if "pending" in item["disposition"]
         ],
         "complete_reconstruction": False,
     }

@@ -169,8 +169,9 @@ class counts and grade/GWAD results; only the coverage dispositions differ.
 Boundary cache representation is intentionally more faithful to the source.
 
 The scoped audit now has no `unused_helper_pending` or `ported_reached_behavior`
-definitions. Legacy I/O/conversion/export and call-path review remain explicit
-scope gaps; the later [loop/cross increment](PYTHON_LOOP_CROSS.md) implements both
+definitions. The later [legacy I/O increment](PYTHON_LEGACY_IO.md) implements
+readers and vector exports; conversion, unused PCL filters and call-path review
+remain explicit scope gaps. The [loop/cross increment](PYTHON_LOOP_CROSS.md) implements both
 inactive component bodies without activating scheduling. The [header increment](PYTHON_HEADER.md)
 inventories all 77 inline definitions and 19 named types. Whole-application comparison,
 real-data evaluation and MLS-scale profiling remain unverified. All limitation
