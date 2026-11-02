@@ -57,6 +57,8 @@ document proposed corrections separately.
   provenance, JSON/CSV artifacts, source audit and explicitly pending scope.
 - [docs/PYTHON_UTILITIES.md](docs/PYTHON_UTILITIES.md): standalone paired GMM/height
   filtering, scalar geometry, index cycling and endpoint-only boundary state.
+- [docs/PYTHON_LOOP_CROSS.md](docs/PYTHON_LOOP_CROSS.md): standalone loop/cross
+  detection, integer-phase validation, projection and undefined-fit diagnostics.
 - [docs/PYTHON_HEADER.md](docs/PYTHON_HEADER.md): inline definition/type inventory,
   legacy points, tagged line/cache operations and segment state helpers.
 
@@ -90,6 +92,7 @@ python -m railway_mls pipeline-demo --scenario components --output outputs/compo
 python -m railway_mls source-audit --repo .
 python -m railway_mls utilities-demo
 python -m railway_mls header-demo
+python -m railway_mls loop-cross-demo
 python -m unittest discover -s tests -v
 ```
 
@@ -151,7 +154,12 @@ inactive.
 data. The header audit maps 77 uncommented definitions and 19 named types,
 including explicit policies for unknown and undefined native values.
 
-The installed `railway-mls` command supports the same fifteen demos and source
+`loop-cross-demo` supplies initialized rail references and 66 synthetic points.
+Detection fits 60 candidates, appends one record and suppresses a repeat;
+validation retains it. A separate sparse attempt reports the source's
+uninitialized failed-fit output explicitly. Automatic calls remain inactive.
+
+The installed `railway-mls` command supports the same sixteen demos and source
 audit. The audit inventories 201 definitions (124 engine/UI and 77 header), hashes 41 project and 51 bundled
 dependency files, and explicitly lists pending source scope. The former standalone
 and partially mapped utility gaps are implemented.
@@ -182,7 +190,8 @@ repository refer to its separate history.
 
 Continue from the integrated pipeline and completed utility contracts to the
 remaining call-path review and legacy data/conversion/export interfaces.
-Inactive loop/cross workflows remain recorded without enabling their scheduling.
+Loop/cross components are implemented explicitly; their automatic scheduling
+remains inactive as in the source.
 Keep scope gaps separate from the source limitations already reproduced.
 Include computational orchestration that currently lives in the GUI. Keep inactive source paths inactive
 and preserve defaults, templates, ordering, precision and reproducible quirks.

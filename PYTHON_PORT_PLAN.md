@@ -106,8 +106,9 @@ MainForm.cpp plus 77 uncommented inline definitions in LIDARPT.h. It also maps a
 19 named header types, with dispositions for 41 project files and hashes
 for 51 bundled dependency files. Definitions retain explicit ported, unused-ported,
 pending, inactive, stub and presentation dispositions. It is not an exhaustive
-general C++ call-graph audit or a numerical coverage percentage. Inactive loop/cross
-workflows and legacy I/O/conversion/export scope remain visible; complete
+general C++ call-graph audit or a numerical coverage percentage. Loop/cross
+components are now standalone ports with inactive scheduling. Legacy
+I/O/conversion/export scope remains visible; complete
 reconstruction is not declared. Keep all limitation IDs open for the later review.
 
 Eight formerly pending/partial standalone utility contracts are implemented:
@@ -123,9 +124,16 @@ pools/comparators. It preserves tag assignment, undefined division and float32
 rounding. See [docs/PYTHON_HEADER.md](docs/PYTHON_HEADER.md) and LIM-034. Inactive
 workflows remain inactive.
 
-Verification passed 395 test methods, including 140 methods comparing against
+Standalone loop/cross detection and validation preserve ordered inner-strip
+filtering, fixed-angle fitting, pre-flag endpoint projection, last-record duplicate
+gates and integer phase/group selection. Undefined failed-fit geometry, missing
+stored state and unsafe int32 arithmetic are explicit. See
+[docs/PYTHON_LOOP_CROSS.md](docs/PYTHON_LOOP_CROSS.md) and LIM-035. Automatic calls
+remain commented out in the baseline; no engine stage is added.
+
+Verification passed 423 test methods, including 156 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. Remaining data/inactive workflows and full-reference/real-data checks
+been built. Remaining data interfaces, call-path review and full-reference/real-data checks
 will accompany later increments.
 
 ## Specification checklist
@@ -177,7 +185,7 @@ The unpacked version adds second seed coordinates, bidirectional tracking orches
 | Integrated runner and audit | Existing engine/UI stages; `MainForm.cpp:349–439` seed picks | Implemented: unified API, 4 synthetic scenarios, supplied-state provenance, JSON/CSV artifacts, deterministic RNG metadata, picked seed and explicit source dispositions |
 | Standalone utilities | `RailwayExtraction.cpp:1172,1208,3574,3585,3641,3692,3860,4296` | Implemented: paired GMM/height erasure, empty bounds, literal int32 cycling, inner angle, stored-vector 3D distance, endpoint-only boundaries and inactive intersection |
 | Inline geometry/state | `LIDARPT.h:28–1310` | 77 definitions/19 types mapped; point/tag/cache operations, neighbor polygons, segment assignment and undefined-source policies implemented |
-| Loop/cross-region routines | `RailwayExtraction.cpp:2342,2404` | Present in source, but initialization/tracking/validation calls are commented out at approximately lines 512, 827 and 1016 |
+| Loop/cross-region routines | `RailwayExtraction.cpp:2342,2404` | Implemented as standalone detection/validation; initialization/tracking/validation calls remain commented out at lines 512, 827 and 1016 |
 | File adapters and coordinate conversion | `LASFileReader.cpp`; `TXTFileReader.cpp`; `DataConvertor.cpp`; `UTM.cpp` | Input density, precision, output schemas and explicit coordinate metadata |
 
 The implementation inventory should cover all source computation, including orchestration inside the UI. Preserve active behavior and explicitly account for separately invoked computational features such as grade analysis and switch-box detection. Record inactive routines without enabling them merely because they appear in the source or paper. Recreating Windows Forms is a separate product task; its computational orchestration must still be ported.

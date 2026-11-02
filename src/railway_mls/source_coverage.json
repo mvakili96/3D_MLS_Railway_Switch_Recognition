@@ -764,18 +764,22 @@
           "name": "ValidateLoopCross",
           "line": 2342,
           "signature": "void RailwayExtraction::ValidateLoopCross(vector<LoopCross> &loopcross)",
-          "disposition": "inactive_pending",
-          "python": [],
-          "note": "Loop/cross workflow calls are commented out. Workflow reconstruction remains pending; do not enable implicitly."
+          "disposition": "inactive_ported",
+          "python": [
+            "railway_mls.loop_cross:validate_loop_cross"
+          ],
+          "note": "Standalone literal source component, with explicit undefined-output/int32 guards. Original initialization/tracking/validation call sites stay commented out; no automatic scheduling is enabled."
         },
         {
           "id": "RailwayExtraction::DetectLoopCross#1",
           "name": "DetectLoopCross",
           "line": 2404,
           "signature": "void RailwayExtraction::DetectLoopCross(TrackSegment Seg, vector<PointXYZDouble*> Pts, double HgtOfGround, double HgtOfTrack, Line3D refLn, vector<LoopCross> &LC)",
-          "disposition": "inactive_pending",
-          "python": [],
-          "note": "Loop/cross workflow calls are commented out. Workflow reconstruction remains pending; do not enable implicitly."
+          "disposition": "inactive_ported",
+          "python": [
+            "railway_mls.loop_cross:detect_loop_cross"
+          ],
+          "note": "Standalone literal source component, with explicit undefined-output/int32 guards. Original initialization/tracking/validation call sites stay commented out; no automatic scheduling is enabled."
         },
         {
           "id": "RailwayExtraction::DetectSwitchBox#1",
@@ -863,7 +867,7 @@
           "python": [
             "railway_mls.fitting:fit_loop_cross_line"
           ],
-          "note": "Standalone fitter is implemented; loop/cross scheduling remains inactive and pending."
+          "note": "Standalone fitter and detection/validation are implemented; automatic loop/cross scheduling remains inactive."
         },
         {
           "id": "RailwayExtraction::ComputeGMMfeature#1",
@@ -2804,7 +2808,7 @@
       "python": [
         "railway_mls.models:LoopCross"
       ],
-      "note": "Unavailable line/distance None; inactive workflow remains pending and unscheduled."
+      "note": "Unavailable line/distance None; standalone detection/validation are implemented and automatic scheduling remains inactive."
     },
     {
       "name": "PlnPara",

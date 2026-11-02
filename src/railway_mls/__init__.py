@@ -104,10 +104,12 @@ from .pipeline import (
 )
 from .artifacts import pipeline_summary, write_pipeline_outputs
 from .coverage import check_source_coverage, coverage_summary, source_coverage
+from .loop_cross import LoopCrossDetection, LoopCrossValidation, detect_loop_cross, validate_loop_cross
 
 __version__ = "0.1.0"
 
 __all__ = [
+    "LoopCrossDetection", "LoopCrossValidation", "detect_loop_cross", "validate_loop_cross",
     "LegacyLiDPoint", "Point2D", "LoopCross", "NeighborRegions", "StateAssignment",
     "source_float_round", "source_is_nan", "higher_z_value", "larger_group",
     "BoundaryLine", "distance_to_line_3d", "inner_angle", "intersection_point_3d",

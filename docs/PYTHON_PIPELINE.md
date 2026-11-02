@@ -181,11 +181,13 @@ paired GMM, previous-height erasure, bounds, cycling, inner angle, stored-vector
 [the utility guide](PYTHON_UTILITIES.md). No selected definition remains
 `unused_helper_pending` or `ported_reached_behavior`.
 
+The inactive loop/cross detection and validation bodies are also implemented as
+[standalone components](PYTHON_LOOP_CROSS.md), including the literal fitter and
+intersection. No `inactive_pending` definitions remain. Their automatic calls
+stay disabled, preserving the source's commented scheduling.
+
 The audit still leaves these gaps visible:
 
-- Inactive `DetectLoopCross` and `ValidateLoopCross` workflows; they are recorded
-  without enabling their commented-out scheduling. Their intersection helper,
-  raw-count matcher and fixed-angle loop/cross fitter are standalone ports.
 - Legacy reader/bounds adapters, subsampling, coordinate conversion and legacy
   point/vector export actions (LIM-014). Numerical UI actions are mapped separately
   from display/dialog callbacks; Windows Forms/VTK presentation is out of scope.
