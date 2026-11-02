@@ -61,6 +61,8 @@ document proposed corrections separately.
   detection, integer-phase validation, projection and undefined-fit diagnostics.
 - [docs/PYTHON_LEGACY_IO.md](docs/PYTHON_LEGACY_IO.md): PTS/CSV/LAS/LAZ readers,
   source sampling/bounds, file switching/cache and three legacy vector formats.
+- [docs/PYTHON_COORDINATES.md](docs/PYTHON_COORDINATES.md): source ECEF/geodetic/UTM
+  formulas, persistent conversion state, batch/menu bindings and converted exports.
 - [docs/PYTHON_HEADER.md](docs/PYTHON_HEADER.md): inline definition/type inventory,
   legacy points, tagged line/cache operations and segment state helpers.
 
@@ -96,6 +98,7 @@ python -m railway_mls utilities-demo
 python -m railway_mls header-demo
 python -m railway_mls loop-cross-demo
 python -m railway_mls legacy-io-demo
+python -m railway_mls conversion-demo
 python -m unittest discover -s tests -v
 ```
 
@@ -169,8 +172,14 @@ decoder with `python -m pip install -e ".[las]"`. Then use
 LAS keeps alternating records; text retains all declared records. See the I/O
 guide before supplying input formats, bounds and coordinate metadata.
 
-The installed `railway-mls` command supports the same seventeen demos, cloud inspection and source
-audit. The audit inventories 219 definitions (124 engine/UI, 77 header and 18 reader), hashes 41 project and 51 bundled
+`conversion-demo` exercises source ECEF/geodetic/UTM formulas, converted PTS,
+progress, repeated buffers and nonfinite origin behavior. Conversion remains
+explicit. `convert-cloud` takes caller-supplied direction and zone, plus an
+explicit inverse hemisphere; see the coordinate guide before using real files.
+
+The installed `railway-mls` command supports the same eighteen demos, cloud inspection,
+explicit file conversion and source audit. The audit inventories 246 definitions
+(124 engine/UI, 77 header, 18 reader and 27 conversion), hashes 41 project and 51 bundled
 dependency files, and explicitly lists pending source scope. The former standalone
 and partially mapped utility gaps are implemented.
 Tests use `unittest`; when a C++ compiler is available they also compile temporary
@@ -199,7 +208,8 @@ repository refer to its separate history.
 ## Development direction
 
 Continue from the integrated pipeline and completed utility contracts to the
-remaining call-path review, coordinate conversion and unused native point filters.
+remaining call-path review and two unused native point filters. Explicit source
+coordinate conversion is implemented; units/CRS still come from the caller.
 Loop/cross components are implemented explicitly; their automatic scheduling
 remains inactive as in the source.
 Keep scope gaps separate from the source limitations already reproduced.

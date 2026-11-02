@@ -4,6 +4,7 @@
   "definition_scope": [
     "Every out-of-class definition in RailwayExtraction.cpp and MainForm.cpp",
     "All 18 out-of-class definitions in TXTFileReader.cpp and LASFileReader.cpp, including unused native-filter gaps",
+    "All 27 definitions in DataConvertor.cpp, UTM.cpp and DataConverstionForm.cpp, including free projection functions and computational UI actions",
     "All top-level project .cpp/.h files have file-level dispositions",
     "All 77 active inline definitions and 19 named top-level types in LIDARPT.h have explicit dispositions; commented Rotation3D/InverseRotation3D remain excluded",
     "Jama/etc are dependencies: only reached numerical behavior is ported, not whole libraries"
@@ -12,22 +13,22 @@
     {
       "path": "DataConverstionForm.cpp",
       "sha256": "454ec1126c4c0d9ab1470a3321d9d17be0630cacde35994cd7db73c0fda38c8e",
-      "disposition": "io_or_conversion_pending"
+      "disposition": "coordinate_conversion_ported"
     },
     {
       "path": "DataConverstionForm.h",
       "sha256": "924345549c51c8ab2a586fa3ea521d8c21dc4868b0b06d8be68233add93a1ffd",
-      "disposition": "io_or_conversion_pending"
+      "disposition": "coordinate_conversion_ported"
     },
     {
       "path": "DataConvertor.cpp",
       "sha256": "348dfa0f1224173a3eafdbdf2ff2eec1eb6ffcc4098a1c73f656ead553c6407c",
-      "disposition": "io_or_conversion_pending"
+      "disposition": "coordinate_conversion_ported"
     },
     {
       "path": "DataConvertor.h",
       "sha256": "773f57268be626302336938c729a01386bf8086aa69ba3da1b98b02261aaf723",
-      "disposition": "io_or_conversion_pending"
+      "disposition": "coordinate_conversion_ported"
     },
     {
       "path": "ExportOptionsForm.cpp",
@@ -157,12 +158,12 @@
     {
       "path": "UTM.cpp",
       "sha256": "0e89ea765c13eebce54869c010a742a0246a3399d65ee3d9ec93753ec7aa6726",
-      "disposition": "io_or_conversion_pending"
+      "disposition": "coordinate_conversion_ported"
     },
     {
       "path": "UTM.h",
       "sha256": "f4e3c2cc0b293b3f8b61437d036439c16b02ce35c84a9ba56ab705ea20d64e42",
-      "disposition": "io_or_conversion_pending"
+      "disposition": "coordinate_conversion_ported"
     },
     {
       "path": "VMouseInteractorStyle.cpp",
@@ -1571,27 +1572,31 @@
           "name": "eCEFLASToUTMToolStripMenuItem_Click",
           "line": 471,
           "signature": "System::Void PCLProject::MainForm::eCEFLASToUTMToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
-          "disposition": "io_or_conversion_pending",
-          "python": [],
-          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.conversion:source_menu_conversion"
+          ],
+          "note": "Explicit paths replace dialogs; source menu actions retain zone 32 and inverse hemisphere false, reader selection, no-callback conversion and rounded PTS output. Managed cancellation/reentry is excluded."
         },
         {
           "id": "PCLProject::MainForm::uTMPTSToECEFPTSToolStripMenuItem_Click#1",
           "name": "uTMPTSToECEFPTSToolStripMenuItem_Click",
           "line": 508,
           "signature": "System::Void PCLProject::MainForm::uTMPTSToECEFPTSToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
-          "disposition": "io_or_conversion_pending",
-          "python": [],
-          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.conversion:source_menu_conversion"
+          ],
+          "note": "Explicit paths replace dialogs; source menu actions retain zone 32 and inverse hemisphere false, reader selection, no-callback conversion and rounded PTS output. Managed cancellation/reentry is excluded."
         },
         {
           "id": "PCLProject::MainForm::dataConversionToolStripMenuItem_Click#1",
           "name": "dataConversionToolStripMenuItem_Click",
           "line": 546,
           "signature": "System::Void PCLProject::MainForm::dataConversionToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e)",
-          "disposition": "io_or_conversion_pending",
+          "disposition": "presentation",
           "python": [],
-          "note": "Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract."
+          "note": "Only launches the conversion dialog. Its numerical actions are mapped in DataConverstionForm.cpp."
         },
         {
           "id": "PCLProject::MainForm::selectInitialLocationToolStripMenuItem_Click#1",
@@ -1981,6 +1986,317 @@
             "railway_mls.legacy_io:LegacyLasReader.read_bounds"
           ],
           "note": "Original LAS header minima, not sampled-cloud minima."
+        }
+      ]
+    },
+    {
+      "path": "DataConvertor.cpp",
+      "owner": "DataConvertor",
+      "kind": "coordinate_conversion",
+      "definitions": [
+        {
+          "id": "DataConvertor::DataConvertor#1",
+          "name": "DataConvertor",
+          "line": 21,
+          "signature": "DataConvertor::DataConvertor(pcl::PointCloud<PointXYZDouble>::Ptr point_cloud)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.conversion:CoordinateConverter",
+            "railway_mls.coordinates:ConverterEllipsoid"
+          ],
+          "note": "Source constants, shared input ownership and initially empty persistent output buffer."
+        },
+        {
+          "id": "DataConvertor::~DataConvertor#1",
+          "name": "~DataConvertor",
+          "line": 34,
+          "signature": "DataConvertor::~DataConvertor()",
+          "disposition": "native_lifetime",
+          "python": [],
+          "note": "Empty source destructor; Python owns converted records."
+        },
+        {
+          "id": "DataConvertor::ConvertECEFToUTM#1",
+          "name": "ConvertECEFToUTM",
+          "line": 39,
+          "signature": "void DataConvertor::ConvertECEFToUTM(int zone)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.conversion:CoordinateConverter.convert_ecef_to_utm"
+          ],
+          "note": "Both overloads append input and reprocess the entire buffer; native phase order, PI units and periodic-only callback cadence are preserved."
+        },
+        {
+          "id": "DataConvertor::ConvertECEFToUTM#2",
+          "name": "ConvertECEFToUTM",
+          "line": 82,
+          "signature": "void DataConvertor::ConvertECEFToUTM(int zone, UnmanagedProgressCallback callback)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.conversion:CoordinateConverter.convert_ecef_to_utm"
+          ],
+          "note": "Both overloads append input and reprocess the entire buffer; native phase order, PI units and periodic-only callback cadence are preserved."
+        },
+        {
+          "id": "DataConvertor::ConvertUTMToECEF#1",
+          "name": "ConvertUTMToECEF",
+          "line": 149,
+          "signature": "void DataConvertor::ConvertUTMToECEF(int zone, bool southhemi)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.conversion:CoordinateConverter.convert_utm_to_ecef"
+          ],
+          "note": "Both overloads preserve explicit hemisphere, radian intermediate values, repeated buffer conversion and periodic-only callbacks."
+        },
+        {
+          "id": "DataConvertor::ConvertUTMToECEF#2",
+          "name": "ConvertUTMToECEF",
+          "line": 188,
+          "signature": "void DataConvertor::ConvertUTMToECEF(int zone, bool southhemi, UnmanagedProgressCallback callback)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.conversion:CoordinateConverter.convert_utm_to_ecef"
+          ],
+          "note": "Both overloads preserve explicit hemisphere, radian intermediate values, repeated buffer conversion and periodic-only callbacks."
+        },
+        {
+          "id": "DataConvertor::Ecef_to_geodetic#1",
+          "name": "Ecef_to_geodetic",
+          "line": 254,
+          "signature": "void DataConvertor::Ecef_to_geodetic(double x, double y, double z, double &lat, double &lon, double &altitude)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.coordinates:ecef_to_geodetic"
+          ],
+          "note": "Literal two-branch inverse and constants; origin/domain IEEE NaN is retained."
+        },
+        {
+          "id": "DataConvertor::Geodetic_to_ecef#1",
+          "name": "Geodetic_to_ecef",
+          "line": 295,
+          "signature": "void DataConvertor::Geodetic_to_ecef(double lat, double lon, double alt, double &x, double &y, double &z)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.coordinates:geodetic_to_ecef"
+          ],
+          "note": "Source radian inputs, constants and scalar expression order."
+        },
+        {
+          "id": "DataConvertor::SaveConvertedPoints#1",
+          "name": "SaveConvertedPoints",
+          "line": 303,
+          "signature": "void DataConvertor::SaveConvertedPoints(const char *filename)",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.conversion:format_converted_points",
+            "railway_mls.conversion:write_converted_points"
+          ],
+          "note": "All three overloads: count header, fixed three decimals, intensity, delimiter and periodic-only progress. Python requires explicit overwrite and surfaces nonfinite output."
+        },
+        {
+          "id": "DataConvertor::SaveConvertedPoints#2",
+          "name": "SaveConvertedPoints",
+          "line": 321,
+          "signature": "void DataConvertor::SaveConvertedPoints(const char* filename, UnmanagedProgressCallback callback)",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.conversion:format_converted_points",
+            "railway_mls.conversion:write_converted_points"
+          ],
+          "note": "All three overloads: count header, fixed three decimals, intensity, delimiter and periodic-only progress. Python requires explicit overwrite and surfaces nonfinite output."
+        },
+        {
+          "id": "DataConvertor::SaveConvertedPoints#3",
+          "name": "SaveConvertedPoints",
+          "line": 326,
+          "signature": "void DataConvertor::SaveConvertedPoints(const char* filename, UnmanagedProgressCallback callback, const char* delim)",
+          "disposition": "io_ported",
+          "python": [
+            "railway_mls.conversion:format_converted_points",
+            "railway_mls.conversion:write_converted_points"
+          ],
+          "note": "All three overloads: count header, fixed three decimals, intensity, delimiter and periodic-only progress. Python requires explicit overwrite and surfaces nonfinite output."
+        }
+      ]
+    },
+    {
+      "path": "UTM.cpp",
+      "owner": "UTM",
+      "kind": "coordinate_conversion",
+      "definitions": [
+        {
+          "id": "UTM::DegToRad#1",
+          "name": "DegToRad",
+          "line": 22,
+          "signature": "FLOAT DegToRad(FLOAT deg)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.coordinates:deg_to_rad"
+          ],
+          "note": "Literal double-precision source formulas and pi/ellipsoid constants; actual forward input degrees, inverse radians, source zone behavior and initialized IEEE results are preserved. Unsafe automatic-zone casts are explicit guards."
+        },
+        {
+          "id": "UTM::RadToDeg#1",
+          "name": "RadToDeg",
+          "line": 29,
+          "signature": "FLOAT RadToDeg(FLOAT rad)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.coordinates:rad_to_deg"
+          ],
+          "note": "Literal double-precision source formulas and pi/ellipsoid constants; actual forward input degrees, inverse radians, source zone behavior and initialized IEEE results are preserved. Unsafe automatic-zone casts are explicit guards."
+        },
+        {
+          "id": "UTM::ArcLengthOfMeridian#1",
+          "name": "ArcLengthOfMeridian",
+          "line": 49,
+          "signature": "FLOAT ArcLengthOfMeridian (FLOAT phi)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.coordinates:arc_length_of_meridian"
+          ],
+          "note": "Literal double-precision source formulas and pi/ellipsoid constants; actual forward input degrees, inverse radians, source zone behavior and initialized IEEE results are preserved. Unsafe automatic-zone casts are explicit guards."
+        },
+        {
+          "id": "UTM::UTMCentralMeridian#1",
+          "name": "UTMCentralMeridian",
+          "line": 96,
+          "signature": "FLOAT UTMCentralMeridian(int zone)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.coordinates:utm_central_meridian"
+          ],
+          "note": "Literal double-precision source formulas and pi/ellipsoid constants; actual forward input degrees, inverse radians, source zone behavior and initialized IEEE results are preserved. Unsafe automatic-zone casts are explicit guards."
+        },
+        {
+          "id": "UTM::FootpointLatitude#1",
+          "name": "FootpointLatitude",
+          "line": 118,
+          "signature": "FLOAT FootpointLatitude(FLOAT y)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.coordinates:footpoint_latitude"
+          ],
+          "note": "Literal double-precision source formulas and pi/ellipsoid constants; actual forward input degrees, inverse radians, source zone behavior and initialized IEEE results are preserved. Unsafe automatic-zone casts are explicit guards."
+        },
+        {
+          "id": "UTM::MapLatLonToXY#1",
+          "name": "MapLatLonToXY",
+          "line": 178,
+          "signature": "void MapLatLonToXY (FLOAT phi, FLOAT lambda, FLOAT lambda0, FLOAT &x, FLOAT &y)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.coordinates:map_lat_lon_to_xy"
+          ],
+          "note": "Literal double-precision source formulas and pi/ellipsoid constants; actual forward input degrees, inverse radians, source zone behavior and initialized IEEE results are preserved. Unsafe automatic-zone casts are explicit guards."
+        },
+        {
+          "id": "UTM::MapXYToLatLon#1",
+          "name": "MapXYToLatLon",
+          "line": 263,
+          "signature": "void MapXYToLatLon (FLOAT x, FLOAT y, FLOAT lambda0, FLOAT& phi, FLOAT& lambda)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.coordinates:map_xy_to_lat_lon"
+          ],
+          "note": "Literal double-precision source formulas and pi/ellipsoid constants; actual forward input degrees, inverse radians, source zone behavior and initialized IEEE results are preserved. Unsafe automatic-zone casts are explicit guards."
+        },
+        {
+          "id": "UTM::LatLonToUTMXY#1",
+          "name": "LatLonToUTMXY",
+          "line": 369,
+          "signature": "int LatLonToUTMXY (FLOAT lat, FLOAT lon, int zone, FLOAT& x, FLOAT& y)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.coordinates:lat_lon_to_utm_xy"
+          ],
+          "note": "Literal double-precision source formulas and pi/ellipsoid constants; actual forward input degrees, inverse radians, source zone behavior and initialized IEEE results are preserved. Unsafe automatic-zone casts are explicit guards."
+        },
+        {
+          "id": "UTM::UTMXYToLatLon#1",
+          "name": "UTMXYToLatLon",
+          "line": 404,
+          "signature": "void UTMXYToLatLon (FLOAT x, FLOAT y, int zone, bool southhemi, FLOAT& lat, FLOAT& lon)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.coordinates:utm_xy_to_lat_lon"
+          ],
+          "note": "Literal double-precision source formulas and pi/ellipsoid constants; actual forward input degrees, inverse radians, source zone behavior and initialized IEEE results are preserved. Unsafe automatic-zone casts are explicit guards."
+        }
+      ],
+      "definition_style": "free_functions"
+    },
+    {
+      "path": "DataConverstionForm.cpp",
+      "owner": "PCLProject::DataConverstionForm",
+      "kind": "coordinate_conversion",
+      "definitions": [
+        {
+          "id": "PCLProject::DataConverstionForm::sourceButton_Click#1",
+          "name": "sourceButton_Click",
+          "line": 9,
+          "signature": "System::Void PCLProject::DataConverstionForm::sourceButton_Click(System::Object^ sender, System::EventArgs^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "File/folder selection, progress-bar rendering or nonempty-control validation. Callers provide explicit paths/zone; numerical workflows expose callbacks without recreating Windows Forms limits."
+        },
+        {
+          "id": "PCLProject::DataConverstionForm::destinationButton_Click#1",
+          "name": "destinationButton_Click",
+          "line": 39,
+          "signature": "System::Void PCLProject::DataConverstionForm::destinationButton_Click(System::Object^ sender, System::EventArgs^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "File/folder selection, progress-bar rendering or nonempty-control validation. Callers provide explicit paths/zone; numerical workflows expose callbacks without recreating Windows Forms limits."
+        },
+        {
+          "id": "PCLProject::DataConverstionForm::utmConvertButton_Click#1",
+          "name": "utmConvertButton_Click",
+          "line": 50,
+          "signature": "System::Void PCLProject::DataConverstionForm::utmConvertButton_Click(System::Object^ sender, System::EventArgs^ e)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.conversion:convert_legacy_files"
+          ],
+          "note": "Ordered source batch dispatch/naming, missing-file skips, reverse hemisphere false and asymmetric aggregate progress timing. Explicit paths replace controls; Python file/error/overwrite policies remain explicit."
+        },
+        {
+          "id": "PCLProject::DataConverstionForm::ecefConvertButton_Click#1",
+          "name": "ecefConvertButton_Click",
+          "line": 150,
+          "signature": "System::Void PCLProject::DataConverstionForm::ecefConvertButton_Click(System::Object^ sender, System::EventArgs^ e)",
+          "disposition": "conversion_ported",
+          "python": [
+            "railway_mls.conversion:convert_legacy_files"
+          ],
+          "note": "Ordered source batch dispatch/naming, missing-file skips, reverse hemisphere false and asymmetric aggregate progress timing. Explicit paths replace controls; Python file/error/overwrite policies remain explicit."
+        },
+        {
+          "id": "PCLProject::DataConverstionForm::UpdateProgress#1",
+          "name": "UpdateProgress",
+          "line": 250,
+          "signature": "void PCLProject::DataConverstionForm::UpdateProgress(double readPoints, double totalPoints)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "File/folder selection, progress-bar rendering or nonempty-control validation. Callers provide explicit paths/zone; numerical workflows expose callbacks without recreating Windows Forms limits."
+        },
+        {
+          "id": "PCLProject::DataConverstionForm::UpdateAllFilesProgress#1",
+          "name": "UpdateAllFilesProgress",
+          "line": 257,
+          "signature": "void PCLProject::DataConverstionForm::UpdateAllFilesProgress(double readPoints, double totalPoints)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "File/folder selection, progress-bar rendering or nonempty-control validation. Callers provide explicit paths/zone; numerical workflows expose callbacks without recreating Windows Forms limits."
+        },
+        {
+          "id": "PCLProject::DataConverstionForm::CheckErrors#1",
+          "name": "CheckErrors",
+          "line": 264,
+          "signature": "bool PCLProject::DataConverstionForm::CheckErrors()",
+          "disposition": "presentation",
+          "python": [],
+          "note": "File/folder selection, progress-bar rendering or nonempty-control validation. Callers provide explicit paths/zone; numerical workflows expose callbacks without recreating Windows Forms limits."
         }
       ]
     },

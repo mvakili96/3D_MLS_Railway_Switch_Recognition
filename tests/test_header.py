@@ -444,7 +444,7 @@ class HeaderContractTests(unittest.TestCase):
                 summary["header_definition_count"],
                 summary["header_type_count"],
             ),
-            (219, 77, 19),
+            (246, 77, 19),
         )
         self.assertEqual(check_source_coverage(Path(__file__).resolve().parents[1]), ())
 

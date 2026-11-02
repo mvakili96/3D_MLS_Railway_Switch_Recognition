@@ -158,8 +158,9 @@ still required for reproduction. MLS-scale runtime/memory remains unprofiled.
 ## Explicit coverage audit
 
 [source_coverage.json](../src/railway_mls/source_coverage.json) is packaged in the
-wheel. It records **219** definitions: **124** in RailwayExtraction.cpp/MainForm.cpp
-and **77** inline definitions in LIDARPT.h plus **18** reader definitions, with owner/name/overload, signature, source line, disposition,
+wheel. It records **246** definitions: **124** in RailwayExtraction.cpp/MainForm.cpp,
+**77** inline definitions in LIDARPT.h, **18** reader and **27** coordinate conversion
+definitions, with owner/name/overload, signature, source line, disposition,
 Python target(s) and scope notes. All **41** top-level project .cpp/.h files and
 **51** bundled Jama/etc .cpp/.h/.inl files have normalized-newline SHA-256 hashes.
 Dependency hashes freeze the inputs; only reached numerical library behavior is
@@ -186,15 +187,14 @@ The inactive loop/cross detection and validation bodies are also implemented as
 intersection. No `inactive_pending` definitions remain. Their automatic calls
 stay disabled, preserving the source's commented scheduling.
 
-The audit still leaves these gaps visible:
+The two unused native PCL point filters remain implementation gaps. Explicit
+[coordinate conversion](PYTHON_COORDINATES.md) and [legacy I/O](PYTHON_LEGACY_IO.md)
+are implemented without inserting frame changes or filtering into tracking.
+Their 18 reader and 27 conversion definitions expand the audit to 246. Numerical
+UI actions are mapped separately from display/dialog callbacks; Windows Forms/VTK
+presentation is out of scope. Complete call-path review remains outstanding.
 
-- Coordinate conversion and two unused native PCL point filters remain pending.
-  [Legacy I/O](PYTHON_LEGACY_IO.md) now implements PTS/CSV/LAS/LAZ selection/bounds,
-  file switching/cache and all three vector export formats. Its 18 reader
-  definitions expand the audit to 219. Numerical UI actions are mapped separately
-  from display/dialog callbacks; Windows Forms/VTK presentation is out of scope.
-
-These are scope gaps, distinct from undefined-source behavior in implemented
+These scope gaps are distinct from undefined-source behavior in implemented
 components. The [limitations register](LIMITATIONS.md) remains open for the agreed
 post-reconstruction review. Real inputs, a usable native reference and profiling
 are still needed for evaluation.

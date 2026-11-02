@@ -115,6 +115,19 @@ def cpp_definitions(text: str, owner: str) -> tuple[dict, ...]:
     return tuple(result)
 
 
+def cpp_free_definitions(text: str, owner: str) -> tuple[dict, ...]:
+    """Scoped inventory of UTM.cpp's FLOAT/void/int free-function definitions."""
+    pattern = re.compile(r"(?m)^[ \t]*((?:FLOAT|void|int)\s+(\w+)\s*\([^;{}]*\))\s*\{")
+    counts, result = Counter(), []
+    for match in pattern.finditer(_cpp_code(text)):
+        name = match[2]
+        counts[name] += 1
+        result.append({"id": f"{owner}::{name}#{counts[name]}", "name": name,
+                       "line": text.count("\n", 0, match.start()) + 1,
+                       "signature": " ".join(match[1].split())})
+    return tuple(result)
+
+
 def source_coverage() -> dict:
     """Read the packaged audit; it describes dispositions, not verified parity."""
     return json.loads(resources.files("railway_mls").joinpath("source_coverage.json").read_text())
@@ -131,10 +144,13 @@ def coverage_summary() -> dict:
         "engine_ui_definition_count": sum(
             len(file["definitions"])
             for file in audit["definition_files"]
-            if file.get("kind") not in ("inline_header", "legacy_io")
+            if file.get("kind") not in ("inline_header", "legacy_io", "coordinate_conversion")
         ),
         "legacy_io_definition_count": sum(
             len(file["definitions"]) for file in audit["definition_files"] if file.get("kind") == "legacy_io"
+        ),
+        "coordinate_definition_count": sum(
+            len(file["definitions"]) for file in audit["definition_files"] if file.get("kind") == "coordinate_conversion"
         ),
         "header_definition_count": sum(
             len(file["definitions"])
@@ -206,6 +222,8 @@ def check_source_coverage(repo: str | Path) -> tuple[str, ...]:
             actual = (
                 cpp_header_inventory(path.read_text())[0]
                 if file.get("kind") == "inline_header"
+                else cpp_free_definitions(path.read_text(), file["owner"])
+                if file.get("definition_style") == "free_functions"
                 else cpp_definitions(path.read_text(), file["owner"])
             )
         except ValueError:

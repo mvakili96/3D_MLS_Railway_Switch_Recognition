@@ -23,7 +23,10 @@ Both readers' actual loading paths are implemented. Two unused PCL wrappers,
 `DecreaseDensity` (0.1 float voxel-centroid filtering) and `Transform` (centroid
 translation, rotation commented out), remain `native_filter_pending`. They are
 not part of either loading path. Coordinate-conversion workflows and call-path
-review also remain pending. No full-reconstruction claim is made.
+review remained pending at this increment. The later
+[coordinate increment](PYTHON_COORDINATES.md) ports conversion and expands the
+audit to 246; the two PCL helpers and call-path review remain pending. No
+full-reconstruction claim is made.
 
 ## Dependencies and commands
 

@@ -15,7 +15,8 @@ The first two definitions now have `inactive_ported` dispositions. Their
 initialization/tracking/validation calls at source lines 512, 827 and 1016 remain
 commented out. That increment inventoried 201 definitions and 19 named header
 types. The later [legacy I/O increment](PYTHON_LEGACY_IO.md) expands to 219.
-Coordinate conversion, unused PCL point filters and call-path review remain outstanding;
+The [coordinate increment](PYTHON_COORDINATES.md) expands to 246 and implements
+explicit conversion. Unused PCL point filters and call-path review remain outstanding;
 `complete_reconstruction` is still false.
 
 ## Detection API and ordered filtering
