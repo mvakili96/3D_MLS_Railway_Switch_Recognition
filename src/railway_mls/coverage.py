@@ -133,6 +133,11 @@ def source_coverage() -> dict:
     return json.loads(resources.files("railway_mls").joinpath("source_coverage.json").read_text())
 
 
+def pcl_reference() -> dict:
+    """Frozen reached PCL bodies; Eigen itself is needed only for native tests."""
+    return json.loads(resources.files("railway_mls").joinpath("pcl_reference.json").read_text())
+
+
 def coverage_summary() -> dict:
     audit = source_coverage()
     entries = [entry for file in audit["definition_files"] for entry in file["definitions"]]
@@ -162,6 +167,8 @@ def coverage_summary() -> dict:
         "dispositions": counts,
         "project_file_count": len(audit["files"]),
         "bundled_dependency_file_count": len(audit["bundled_dependencies"]),
+        "pcl_helper_extract_count": audit.get("pcl_helper_reference", {}).get("extract_count", 0),
+        "pcl_helper_dependency_file_count": audit.get("pcl_helper_reference", {}).get("dependency_file_count", 0),
         "pending_definitions": [
             {"source": file["path"], **entry}
             for file in audit["definition_files"]
@@ -195,6 +202,23 @@ def check_source_coverage(repo: str | Path) -> tuple[str, ...]:
             errors.append(f"missing source: {file['path']}")
         elif source_text_hash(path.read_text()) != file["sha256"]:
             errors.append(f"source changed: {file['path']}")
+    if "pcl_helper_reference" in audit:
+        reference = audit["pcl_helper_reference"]
+        try:
+            for name, expected in ((reference["resource"], reference["sha256"]),
+                                   (reference["license_resource"], reference["license_sha256"])):
+                text = resources.files("railway_mls").joinpath(name).read_text()
+                if source_text_hash(text) != expected:
+                    errors.append(f"PCL reference changed: {name}")
+            helper = pcl_reference()
+            if (len(helper["extracts"]), len(helper["sources"])) != (reference["extract_count"], reference["dependency_file_count"]):
+                errors.append("PCL reference inventory differs")
+            for file in helper["sources"]:
+                path = Path(repo) / file["path"]
+                if path.is_file() and source_text_hash(path.read_text()) != file["sha256"]:
+                    errors.append(f"local PCL/Eigen source changed: {file['path']}")
+        except (FileNotFoundError, ValueError, KeyError) as error:
+            errors.append(f"cannot read frozen PCL reference: {error}")
     actual_files = (
         {path.name for path in root.iterdir() if path.is_file() and path.suffix in (".cpp", ".h")}
         if root.is_dir()

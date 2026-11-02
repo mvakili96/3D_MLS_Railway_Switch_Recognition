@@ -20,7 +20,7 @@ railway-mls = "railway_mls.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-railway_mls = ["source_coverage.json"]
+railway_mls = ["source_coverage.json", "pcl_reference.json", "PCL_LICENSE.txt"]
 
 [tool.ruff]
 line-length = 100

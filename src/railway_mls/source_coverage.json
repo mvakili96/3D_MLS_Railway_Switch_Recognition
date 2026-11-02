@@ -73,12 +73,12 @@
     {
       "path": "LASFileReader.cpp",
       "sha256": "4c66b2c386262467354cbbd5b5bef7faea3668f6261844075e8582b237dfa874",
-      "disposition": "reader_io_ported_native_filters_pending"
+      "disposition": "reader_io_and_native_helpers_ported"
     },
     {
       "path": "LASFileReader.h",
       "sha256": "c3aade2bd7c82468c486bdda139d0d8e5b4d6afdc4fd9270215ff9d564cd5c02",
-      "disposition": "reader_io_ported_native_filters_pending"
+      "disposition": "reader_io_and_native_helpers_ported"
     },
     {
       "path": "LIDARPT.cpp",
@@ -1952,18 +1952,22 @@
           "name": "DecreaseDensity",
           "line": 113,
           "signature": "pcl::PointCloud<pcl::PointXYZ>::Ptr LASFileReader::DecreaseDensity(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)",
-          "disposition": "native_filter_pending",
-          "python": [],
-          "note": "Unused wrappers around PCL float32 voxel-centroid filtering or centroid translation. They are not called by either reader and are reserved for a separate dependency-level numerical port."
+          "disposition": "unused_helper_ported",
+          "python": [
+            "railway_mls.pcl_helpers:decrease_density"
+          ],
+          "note": "Standalone PointXYZ/PCL 1.8 helper; float32 voxel accumulation or double-centroid/float32 affine output. Native integer guards, tie-order replay and density/metadata contracts are explicit. Neither helper is inserted into readers/tracking."
         },
         {
           "id": "LASFileReader::Transform#1",
           "name": "Transform",
           "line": 129,
           "signature": "pcl::PointCloud<pcl::PointXYZ>::Ptr LASFileReader::Transform(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)",
-          "disposition": "native_filter_pending",
-          "python": [],
-          "note": "Unused wrappers around PCL float32 voxel-centroid filtering or centroid translation. They are not called by either reader and are reserved for a separate dependency-level numerical port."
+          "disposition": "unused_helper_ported",
+          "python": [
+            "railway_mls.pcl_helpers:center_point_cloud"
+          ],
+          "note": "Standalone PointXYZ/PCL 1.8 helper; float32 voxel accumulation or double-centroid/float32 affine output. Native integer guards, tie-order replay and density/metadata contracts are explicit. Neither helper is inserted into readers/tracking."
         },
         {
           "id": "LASFileReader::maxPoint#1",
@@ -3435,5 +3439,14 @@
       "reason": "definition is inside a block comment"
     }
   ],
-  "complete_reconstruction": false
+  "complete_reconstruction": false,
+  "pcl_helper_reference": {
+    "resource": "pcl_reference.json",
+    "sha256": "b27b3b2b5a17e7fae240375e917d93154798a02eacee00c8357b5218e9e192c9",
+    "license_resource": "PCL_LICENSE.txt",
+    "license_sha256": "45997389e795ebb3a49dfa17fdec301fc234ed6bfc539e78ef2af8b1fe034406",
+    "extract_count": 14,
+    "dependency_file_count": 19,
+    "scope": "Frozen selected PCL bodies and PCL/Eigen hashes. Local ignored dependency files are checked if present; installed runtime does not require the installers or Eigen."
+  }
 }

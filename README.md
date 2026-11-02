@@ -63,6 +63,8 @@ document proposed corrections separately.
   source sampling/bounds, file switching/cache and three legacy vector formats.
 - [docs/PYTHON_COORDINATES.md](docs/PYTHON_COORDINATES.md): source ECEF/geodetic/UTM
   formulas, persistent conversion state, batch/menu bindings and converted exports.
+- [docs/PYTHON_PCL_HELPERS.md](docs/PYTHON_PCL_HELPERS.md): standalone float32 voxel
+  centroids, double-centroid translation, metadata, sort replay and integer guards.
 - [docs/PYTHON_HEADER.md](docs/PYTHON_HEADER.md): inline definition/type inventory,
   legacy points, tagged line/cache operations and segment state helpers.
 
@@ -99,6 +101,7 @@ python -m railway_mls header-demo
 python -m railway_mls loop-cross-demo
 python -m railway_mls legacy-io-demo
 python -m railway_mls conversion-demo
+python -m railway_mls pcl-helpers-demo
 python -m unittest discover -s tests -v
 ```
 
@@ -177,15 +180,23 @@ progress, repeated buffers and nonfinite origin behavior. Conversion remains
 explicit. `convert-cloud` takes caller-supplied direction and zone, plus an
 explicit inverse hemisphere; see the coordinate guide before using real files.
 
-The installed `railway-mls` command supports the same eighteen demos, cloud inspection,
+`pcl-helpers-demo` exercises the source's two unused PointXYZ helpers with generated
+data. It preserves float32 voxel centroids, double-centroid translation, metadata
+and extent fallback, and reports empty/unsafe and equal-key sort limitations.
+Neither helper is added to loading or tracking.
+
+The installed `railway-mls` command supports the same nineteen demos, cloud inspection,
 explicit file conversion and source audit. The audit inventories 246 definitions
 (124 engine/UI, 77 header, 18 reader and 27 conversion), hashes 41 project and 51 bundled
-dependency files, and explicitly lists pending source scope. The former standalone
+dependency files, plus 14 frozen PCL extracts and 19 selected PCL/Eigen hashes.
+No scoped definition remains pending; full call-path review remains outstanding. The former standalone
 and partially mapped utility gaps are implemented.
 Tests use `unittest`; when a C++ compiler is available they also compile temporary
 extracts of the original
 source for direct behavior comparisons. The stage guides linked above document
 API contracts, preserved source quirks, undefined accesses and nonfinite arithmetic.
+PCL helper comparisons additionally require the locally bundled Eigen headers;
+their Python runtime and demo work without those headers or PCL libraries.
 
 ## What stays local
 
@@ -208,7 +219,7 @@ repository refer to its separate history.
 ## Development direction
 
 Continue from the integrated pipeline and completed utility contracts to the
-remaining call-path review and two unused native point filters. Explicit source
+remaining call-path/reconstruction review. Both unused native point helpers and explicit source
 coordinate conversion is implemented; units/CRS still come from the caller.
 Loop/cross components are implemented explicitly; their automatic scheduling
 remains inactive as in the source.

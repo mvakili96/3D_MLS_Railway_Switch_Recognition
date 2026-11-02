@@ -416,7 +416,7 @@ class LegacyIOContractTests(unittest.TestCase):
         )
         self.assertEqual(json.loads(process.stdout)["loaded_count"], 1)
 
-    def test_inventory_covers_all_reader_bodies_and_keeps_unused_pcl_helpers_pending(self):
+    def test_inventory_covers_all_reader_bodies_including_standalone_pcl_helpers(self):
         from railway_mls.coverage import check_source_coverage, coverage_summary
 
         report = coverage_summary()
@@ -428,13 +428,7 @@ class LegacyIOContractTests(unittest.TestCase):
             ),
             (246, 124, 18),
         )
-        self.assertEqual(
-            {item["name"] for item in report["pending_definitions"]},
-            {
-                "DecreaseDensity",
-                "Transform",
-            },
-        )
+        self.assertEqual(report["pending_definitions"], [])
         self.assertEqual(check_source_coverage(Path(__file__).resolve().parents[1]), ())
 
     @unittest.skipUnless(importlib.util.find_spec("laspy"), "optional LAS decoder not installed")

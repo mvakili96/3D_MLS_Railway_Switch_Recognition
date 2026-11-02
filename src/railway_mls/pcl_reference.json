@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "scope": "PCL 1.8.0 PointXYZ wrappers; default fixed filter settings; Eigen float/double expressions",
+  "sources": [
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/3rdParty/Eigen/eigen3/Eigen/Core",
+      "sha256": "55f541eeed0cf016defb135b0dda631e91d61ce49aa5f28187feced02db089b4"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/3rdParty/Eigen/eigen3/Eigen/Geometry",
+      "sha256": "671984a7cbd56fd4a73daabe7f398ca5e49cace893b9ad6b2b60a1262466f02d"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/3rdParty/Eigen/eigen3/Eigen/src/Core/Functors.h",
+      "sha256": "0c47bef9f4cc46286008884310032dd7dc292fb6ef695c285e8e58833c5720d2"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/3rdParty/Eigen/eigen3/Eigen/src/Core/SelfCwiseBinaryOp.h",
+      "sha256": "a85737962919bd87b89bef53e9a1ed871b5b228775e10cd6fb860bb1d2abfade"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/3rdParty/Eigen/eigen3/Eigen/src/Core/arch/SSE/PacketMath.h",
+      "sha256": "b3d7489c896dc8e6b44697c4699f922610d1f623049c9e04b46eebfd9f4940c6"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/PCLHeader.h",
+      "sha256": "5f04aa890b95e821d8bc455e79161ad806d4e17cdeacb4bdf6def5b393dee598"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/common/centroid.h",
+      "sha256": "0662bda03b077a135b20db19e5e406c7c917728c78796fc32b199b158ab94e43"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/common/impl/accumulators.hpp",
+      "sha256": "25f014634f414dd896ebfb8b0a826abc3e8d564de7a8dcc21db0b349fbd67de5"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/common/impl/centroid.hpp",
+      "sha256": "20ebd169057bb626addac4db2c504951a3bfac7db9ebe112e3fbf5fa47c4e2be"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/common/impl/common.hpp",
+      "sha256": "99a3b7ab662a2742234eea4ae0a12b8b5d996b2469aff81ca51bf5ef6cfcc585"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/common/impl/transforms.hpp",
+      "sha256": "f181855b82118bcfbf300792fd169556d71bd0d54df1aa387a28974a58f6acb8"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/common/point_tests.h",
+      "sha256": "48c0537a0cb84432d884b95a629864542dd19210cd4d6d3c484d0d1c91eab547"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/filters/filter.h",
+      "sha256": "3e2d8b312cf2ecba3b7148a6d3b8144560861fd238ce645a851196a324f7c680"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/filters/impl/voxel_grid.hpp",
+      "sha256": "fd00b5bf44c52f01b34f49be35640912bb95a50c1a7fe0f27bce661eedc9131e"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/filters/voxel_grid.h",
+      "sha256": "442dc80fe008e94eb08a8a00944bd5080d5d9fb54640d57fcd1ea7239dfb8d02"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/impl/pcl_base.hpp",
+      "sha256": "350e0666fff30336372bcd88e4ffadacd33f8636d28e13ca90bd419125d837c3"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/impl/point_types.hpp",
+      "sha256": "024c255611771ee5f7de2133ec3c9cd57aa2201d5801107d3106d7ab6796c30a"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/point_cloud.h",
+      "sha256": "55135b6bc1b32c2756d3d22c022daa390ef09ce63a5068f3476ac15ff2df111e"
+    },
+    {
+      "path": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/point_types.h",
+      "sha256": "9e05f5519b2e7b1f37443c89a20e5630a4ab6bfcccf4e75aa3d729c1f9af6b5f"
+    }
+  ],
+  "extracts": {
+    "voxel_apply": {
+      "source": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/filters/impl/voxel_grid.hpp",
+      "signature": "pcl::VoxelGrid<PointT>::applyFilter (PointCloud &output)",
+      "code": "pcl::VoxelGrid<PointT>::applyFilter (PointCloud &output)\n{\n  // Has the input dataset been set already?\n  if (!input_)\n  {\n    PCL_WARN (\"[pcl::%s::applyFilter] No input dataset given!\\n\", getClassName ().c_str ());\n    output.width = output.height = 0;\n    output.points.clear ();\n    return;\n  }\n\n  // Copy the header (and thus the frame_id) + allocate enough space for points\n  output.height       = 1;                    // downsampling breaks the organized structure\n  output.is_dense     = true;                 // we filter out invalid points\n\n  Eigen::Vector4f min_p, max_p;\n  // Get the minimum and maximum dimensions\n  if (!filter_field_name_.empty ()) // If we don't want to process the entire cloud...\n    getMinMax3D<PointT> (input_, *indices_, filter_field_name_, static_cast<float> (filter_limit_min_), static_cast<float> (filter_limit_max_), min_p, max_p, filter_limit_negative_);\n  else\n    getMinMax3D<PointT> (*input_, *indices_, min_p, max_p);\n\n  // Check that the leaf size is not too small, given the size of the data\n  int64_t dx = static_cast<int64_t>((max_p[0] - min_p[0]) * inverse_leaf_size_[0])+1;\n  int64_t dy = static_cast<int64_t>((max_p[1] - min_p[1]) * inverse_leaf_size_[1])+1;\n  int64_t dz = static_cast<int64_t>((max_p[2] - min_p[2]) * inverse_leaf_size_[2])+1;\n\n  if ((dx*dy*dz) > static_cast<int64_t>(std::numeric_limits<int32_t>::max()))\n  {\n    PCL_WARN(\"[pcl::%s::applyFilter] Leaf size is too small for the input dataset. Integer indices would overflow.\", getClassName().c_str());\n    output = *input_;\n    return;\n  }\n\n  // Compute the minimum and maximum bounding box values\n  min_b_[0] = static_cast<int> (floor (min_p[0] * inverse_leaf_size_[0]));\n  max_b_[0] = static_cast<int> (floor (max_p[0] * inverse_leaf_size_[0]));\n  min_b_[1] = static_cast<int> (floor (min_p[1] * inverse_leaf_size_[1]));\n  max_b_[1] = static_cast<int> (floor (max_p[1] * inverse_leaf_size_[1]));\n  min_b_[2] = static_cast<int> (floor (min_p[2] * inverse_leaf_size_[2]));\n  max_b_[2] = static_cast<int> (floor (max_p[2] * inverse_leaf_size_[2]));\n\n  // Compute the number of divisions needed along all axis\n  div_b_ = max_b_ - min_b_ + Eigen::Vector4i::Ones ();\n  div_b_[3] = 0;\n\n  // Set up the division multiplier\n  divb_mul_ = Eigen::Vector4i (1, div_b_[0], div_b_[0] * div_b_[1], 0);\n\n  // Storage for mapping leaf and pointcloud indexes\n  std::vector<cloud_point_index_idx> index_vector;\n  index_vector.reserve (indices_->size ());\n\n  // If we don't want to process the entire cloud, but rather filter points far away from the viewpoint first...\n  if (!filter_field_name_.empty ())\n  {\n    // Get the distance field index\n    std::vector<pcl::PCLPointField> fields;\n    int distance_idx = pcl::getFieldIndex (*input_, filter_field_name_, fields);\n    if (distance_idx == -1)\n      PCL_WARN (\"[pcl::%s::applyFilter] Invalid filter field name. Index is %d.\\n\", getClassName ().c_str (), distance_idx);\n\n    // First pass: go over all points and insert them into the index_vector vector\n    // with calculated idx. Points with the same idx value will contribute to the\n    // same point of resulting CloudPoint\n    for (std::vector<int>::const_iterator it = indices_->begin (); it != indices_->end (); ++it)\n    {\n      if (!input_->is_dense)\n        // Check if the point is invalid\n        if (!pcl_isfinite (input_->points[*it].x) || \n            !pcl_isfinite (input_->points[*it].y) || \n            !pcl_isfinite (input_->points[*it].z))\n          continue;\n\n      // Get the distance value\n      const uint8_t* pt_data = reinterpret_cast<const uint8_t*> (&input_->points[*it]);\n      float distance_value = 0;\n      memcpy (&distance_value, pt_data + fields[distance_idx].offset, sizeof (float));\n\n      if (filter_limit_negative_)\n      {\n        // Use a threshold for cutting out points which inside the interval\n        if ((distance_value < filter_limit_max_) && (distance_value > filter_limit_min_))\n          continue;\n      }\n      else\n      {\n        // Use a threshold for cutting out points which are too close/far away\n        if ((distance_value > filter_limit_max_) || (distance_value < filter_limit_min_))\n          continue;\n      }\n      \n      int ijk0 = static_cast<int> (floor (input_->points[*it].x * inverse_leaf_size_[0]) - static_cast<float> (min_b_[0]));\n      int ijk1 = static_cast<int> (floor (input_->points[*it].y * inverse_leaf_size_[1]) - static_cast<float> (min_b_[1]));\n      int ijk2 = static_cast<int> (floor (input_->points[*it].z * inverse_leaf_size_[2]) - static_cast<float> (min_b_[2]));\n\n      // Compute the centroid leaf index\n      int idx = ijk0 * divb_mul_[0] + ijk1 * divb_mul_[1] + ijk2 * divb_mul_[2];\n      index_vector.push_back (cloud_point_index_idx (static_cast<unsigned int> (idx), *it));\n    }\n  }\n  // No distance filtering, process all data\n  else\n  {\n    // First pass: go over all points and insert them into the index_vector vector\n    // with calculated idx. Points with the same idx value will contribute to the\n    // same point of resulting CloudPoint\n    for (std::vector<int>::const_iterator it = indices_->begin (); it != indices_->end (); ++it)\n    {\n      if (!input_->is_dense)\n        // Check if the point is invalid\n        if (!pcl_isfinite (input_->points[*it].x) || \n            !pcl_isfinite (input_->points[*it].y) || \n            !pcl_isfinite (input_->points[*it].z))\n          continue;\n\n      int ijk0 = static_cast<int> (floor (input_->points[*it].x * inverse_leaf_size_[0]) - static_cast<float> (min_b_[0]));\n      int ijk1 = static_cast<int> (floor (input_->points[*it].y * inverse_leaf_size_[1]) - static_cast<float> (min_b_[1]));\n      int ijk2 = static_cast<int> (floor (input_->points[*it].z * inverse_leaf_size_[2]) - static_cast<float> (min_b_[2]));\n\n      // Compute the centroid leaf index\n      int idx = ijk0 * divb_mul_[0] + ijk1 * divb_mul_[1] + ijk2 * divb_mul_[2];\n      index_vector.push_back (cloud_point_index_idx (static_cast<unsigned int> (idx), *it));\n    }\n  }\n\n  // Second pass: sort the index_vector vector using value representing target cell as index\n  // in effect all points belonging to the same output cell will be next to each other\n  std::sort (index_vector.begin (), index_vector.end (), std::less<cloud_point_index_idx> ());\n\n  // Third pass: count output cells\n  // we need to skip all the same, adjacenent idx values\n  unsigned int total = 0;\n  unsigned int index = 0;\n  // first_and_last_indices_vector[i] represents the index in index_vector of the first point in\n  // index_vector belonging to the voxel which corresponds to the i-th output point,\n  // and of the first point not belonging to.\n  std::vector<std::pair<unsigned int, unsigned int> > first_and_last_indices_vector;\n  // Worst case size\n  first_and_last_indices_vector.reserve (index_vector.size ());\n  while (index < index_vector.size ()) \n  {\n    unsigned int i = index + 1;\n    while (i < index_vector.size () && index_vector[i].idx == index_vector[index].idx) \n      ++i;\n    if (i - index >= min_points_per_voxel_)\n    {\n      ++total;\n      first_and_last_indices_vector.push_back (std::pair<unsigned int, unsigned int> (index, i));\n    }\n    index = i;\n  }\n\n  // Fourth pass: compute centroids, insert them into their final position\n  output.points.resize (total);\n  if (save_leaf_layout_)\n  {\n    try\n    { \n      // Resizing won't reset old elements to -1.  If leaf_layout_ has been used previously, it needs to be re-initialized to -1\n      uint32_t new_layout_size = div_b_[0]*div_b_[1]*div_b_[2];\n      //This is the number of elements that need to be re-initialized to -1\n      uint32_t reinit_size = std::min (static_cast<unsigned int> (new_layout_size), static_cast<unsigned int> (leaf_layout_.size()));\n      for (uint32_t i = 0; i < reinit_size; i++)\n      {\n        leaf_layout_[i] = -1;\n      }        \n      leaf_layout_.resize (new_layout_size, -1);           \n    }\n    catch (std::bad_alloc&)\n    {\n      throw PCLException(\"VoxelGrid bin size is too low; impossible to allocate memory for layout\", \n        \"voxel_grid.hpp\", \"applyFilter\");\t\n    }\n    catch (std::length_error&)\n    {\n      throw PCLException(\"VoxelGrid bin size is too low; impossible to allocate memory for layout\", \n        \"voxel_grid.hpp\", \"applyFilter\");\t\n    }\n  }\n  \n  index = 0;\n  for (unsigned int cp = 0; cp < first_and_last_indices_vector.size (); ++cp)\n  {\n    // calculate centroid - sum values from all input points, that have the same idx value in index_vector array\n  \tunsigned int first_index = first_and_last_indices_vector[cp].first;\n  \tunsigned int last_index = first_and_last_indices_vector[cp].second;\n\n    // index is centroid final position in resulting PointCloud\n    if (save_leaf_layout_)\n      leaf_layout_[index_vector[first_index].idx] = index;\n\n    //Limit downsampling to coords\n    if (!downsample_all_data_)\n    {\n      Eigen::Vector4f centroid (Eigen::Vector4f::Zero ());\n\n      for (unsigned int li = first_index; li < last_index; ++li)\n        centroid += input_->points[index_vector[li].cloud_point_index].getVector4fMap ();\n\n      centroid /= static_cast<float> (last_index - first_index);\n      output.points[index].getVector4fMap () = centroid;\n    }\n    else\n    {\n      CentroidPoint<PointT> centroid;\n\n      // fill in the accumulator with leaf points\n      for (unsigned int li = first_index; li < last_index; ++li)\n        centroid.add (input_->points[index_vector[li].cloud_point_index]);  \n\n      centroid.get (output.points[index]);\n    }\n     \n    ++index;\n  }\n  output.width = static_cast<uint32_t> (output.points.size ());\n}"
+    },
+    "voxel_index": {
+      "source": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/filters/impl/voxel_grid.hpp",
+      "signature": "struct cloud_point_index_idx",
+      "code": "struct cloud_point_index_idx \n{\n  unsigned int idx;\n  unsigned int cloud_point_index;\n\n  cloud_point_index_idx (unsigned int idx_, unsigned int cloud_point_index_) : idx (idx_), cloud_point_index (cloud_point_index_) {}\n  bool operator < (const cloud_point_index_idx &p) const { return (idx < p.idx); }\n}"
+    },
+    "voxel_constructor": {
+      "source": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/filters/voxel_grid.h",
+      "signature": "VoxelGrid () :",
+      "code": "VoxelGrid () : \n        leaf_size_ (Eigen::Vector4f::Zero ()),\n        inverse_leaf_size_ (Eigen::Array4f::Zero ()),\n        downsample_all_data_ (true), \n        save_leaf_layout_ (false),\n        leaf_layout_ (),\n        min_b_ (Eigen::Vector4i::Zero ()),\n        max_b_ (Eigen::Vector4i::Zero ()),\n        div_b_ (Eigen::Vector4i::Zero ()),\n        divb_mul_ (Eigen::Vector4i::Zero ()),\n        filter_field_name_ (\"\"), \n        filter_limit_min_ (-FLT_MAX), \n        filter_limit_max_ (FLT_MAX),\n        filter_limit_negative_ (false),\n        min_points_per_voxel_ (0)\n      {\n        filter_name_ = \"VoxelGrid\";\n      }"
+    },
+    "voxel_leaf": {
+      "source": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/filters/voxel_grid.h",
+      "signature": "setLeafSize (float lx, float ly, float lz)",
+      "code": "setLeafSize (float lx, float ly, float lz)\n      {\n        leaf_size_[0] = lx; leaf_size_[1] = ly; leaf_size_[2] = lz;\n        // Avoid division errors\n        if (leaf_size_[3] == 0)\n          leaf_size_[3] = 1;\n        // Use multiplications instead of divisions\n        inverse_leaf_size_ = Eigen::Array4f::Ones () / leaf_size_.array ();\n      }"
+    },
+    "bounds": {
+      "source": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/common/impl/common.hpp",
+      "signature": "pcl::getMinMax3D (const pcl::PointCloud<PointT> &cloud, const std::vector<int> &indices,",
+      "code": "pcl::getMinMax3D (const pcl::PointCloud<PointT> &cloud, const std::vector<int> &indices,\n                  Eigen::Vector4f &min_pt, Eigen::Vector4f &max_pt)\n{\n  min_pt.setConstant (FLT_MAX);\n  max_pt.setConstant (-FLT_MAX);\n\n  // If the data is dense, we don't need to check for NaN\n  if (cloud.is_dense)\n  {\n    for (size_t i = 0; i < indices.size (); ++i)\n    {\n      pcl::Array4fMapConst pt = cloud.points[indices[i]].getArray4fMap ();\n      min_pt = min_pt.array ().min (pt);\n      max_pt = max_pt.array ().max (pt);\n    }\n  }\n  // NaN or Inf values could exist => check for them\n  else\n  {\n    for (size_t i = 0; i < indices.size (); ++i)\n    {\n      // Check if the point is invalid\n      if (!pcl_isfinite (cloud.points[indices[i]].x) || \n          !pcl_isfinite (cloud.points[indices[i]].y) || \n          !pcl_isfinite (cloud.points[indices[i]].z))\n        continue;\n      pcl::Array4fMapConst pt = cloud.points[indices[i]].getArray4fMap ();\n      min_pt = min_pt.array ().min (pt);\n      max_pt = max_pt.array ().max (pt);\n    }\n  }\n}"
+    },
+    "centroid": {
+      "source": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/common/impl/centroid.hpp",
+      "signature": "pcl::compute3DCentroid (const pcl::PointCloud<PointT> &cloud, \n",
+      "code": "pcl::compute3DCentroid (const pcl::PointCloud<PointT> &cloud, \n                        Eigen::Matrix<Scalar, 4, 1> &centroid)\n{\n  if (cloud.empty ())\n    return (0);\n\n  // Initialize to 0\n  centroid.setZero ();\n  // For each point in the cloud\n  // If the data is dense, we don't need to check for NaN\n  if (cloud.is_dense)\n  {\n    for (size_t i = 0; i < cloud.size (); ++i)\n    {\n      centroid[0] += cloud[i].x;\n      centroid[1] += cloud[i].y;\n      centroid[2] += cloud[i].z;\n    }\n    centroid /= static_cast<Scalar> (cloud.size ());\n    centroid[3] = 1;\n\n    return (static_cast<unsigned int> (cloud.size ()));\n  }\n  // NaN or Inf values could exist => check for them\n  else\n  {\n    unsigned cp = 0;\n    for (size_t i = 0; i < cloud.size (); ++i)\n    {\n      // Check if the point is invalid\n      if (!isFinite (cloud [i]))\n        continue;\n\n      centroid[0] += cloud[i].x;\n      centroid[1] += cloud[i].y;\n      centroid[2] += cloud[i].z;\n      ++cp;\n    }\n    centroid /= static_cast<Scalar> (cp);\n    centroid[3] = 1;\n\n    return (cp);\n  }\n}"
+    },
+    "transform": {
+      "source": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/common/impl/transforms.hpp",
+      "signature": "pcl::transformPointCloud (const pcl::PointCloud<PointT> &cloud_in, \n",
+      "code": "pcl::transformPointCloud (const pcl::PointCloud<PointT> &cloud_in, \n                          pcl::PointCloud<PointT> &cloud_out,\n                          const Eigen::Transform<Scalar, 3, Eigen::Affine> &transform,\n                          bool copy_all_fields)\n{\n  if (&cloud_in != &cloud_out)\n  {\n    cloud_out.header   = cloud_in.header;\n    cloud_out.is_dense = cloud_in.is_dense;\n    cloud_out.width    = cloud_in.width;\n    cloud_out.height   = cloud_in.height;\n    cloud_out.points.reserve (cloud_in.points.size ());\n    if (copy_all_fields)\n      cloud_out.points.assign (cloud_in.points.begin (), cloud_in.points.end ());\n    else\n      cloud_out.points.resize (cloud_in.points.size ());\n    cloud_out.sensor_orientation_ = cloud_in.sensor_orientation_;\n    cloud_out.sensor_origin_      = cloud_in.sensor_origin_;\n  }\n\n  if (cloud_in.is_dense)\n  {\n    // If the dataset is dense, simply transform it!\n    for (size_t i = 0; i < cloud_out.points.size (); ++i)\n    {\n      //cloud_out.points[i].getVector3fMap () = transform * cloud_in.points[i].getVector3fMap ();\n      Eigen::Matrix<Scalar, 3, 1> pt (cloud_in[i].x, cloud_in[i].y, cloud_in[i].z);\n      cloud_out[i].x = static_cast<float> (transform (0, 0) * pt.coeffRef (0) + transform (0, 1) * pt.coeffRef (1) + transform (0, 2) * pt.coeffRef (2) + transform (0, 3));\n      cloud_out[i].y = static_cast<float> (transform (1, 0) * pt.coeffRef (0) + transform (1, 1) * pt.coeffRef (1) + transform (1, 2) * pt.coeffRef (2) + transform (1, 3));\n      cloud_out[i].z = static_cast<float> (transform (2, 0) * pt.coeffRef (0) + transform (2, 1) * pt.coeffRef (1) + transform (2, 2) * pt.coeffRef (2) + transform (2, 3));\n    }\n  }\n  else\n  {\n    // Dataset might contain NaNs and Infs, so check for them first,\n    // otherwise we get errors during the multiplication (?)\n    for (size_t i = 0; i < cloud_out.points.size (); ++i)\n    {\n      if (!pcl_isfinite (cloud_in.points[i].x) || \n          !pcl_isfinite (cloud_in.points[i].y) || \n          !pcl_isfinite (cloud_in.points[i].z))\n        continue;\n      //cloud_out.points[i].getVector3fMap () = transform * cloud_in.points[i].getVector3fMap ();\n      Eigen::Matrix<Scalar, 3, 1> pt (cloud_in[i].x, cloud_in[i].y, cloud_in[i].z);\n      cloud_out[i].x = static_cast<float> (transform (0, 0) * pt.coeffRef (0) + transform (0, 1) * pt.coeffRef (1) + transform (0, 2) * pt.coeffRef (2) + transform (0, 3));\n      cloud_out[i].y = static_cast<float> (transform (1, 0) * pt.coeffRef (0) + transform (1, 1) * pt.coeffRef (1) + transform (1, 2) * pt.coeffRef (2) + transform (1, 3));\n      cloud_out[i].z = static_cast<float> (transform (2, 0) * pt.coeffRef (0) + transform (2, 1) * pt.coeffRef (1) + transform (2, 2) * pt.coeffRef (2) + transform (2, 3));\n    }\n  }\n}"
+    },
+    "accumulator_xyz": {
+      "source": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/common/impl/accumulators.hpp",
+      "signature": "struct AccumulatorXYZ",
+      "code": "struct AccumulatorXYZ\n    {\n\n      // Requires that point type has x, y, and z fields\n      typedef pcl::traits::has_xyz<boost::mpl::_1> IsCompatible;\n\n      // Storage\n      Eigen::Vector3f xyz;\n\n      AccumulatorXYZ () : xyz (Eigen::Vector3f::Zero ()) { }\n\n      template <typename PointT> void\n      add (const PointT& t) { xyz += t.getVector3fMap (); }\n\n      template <typename PointT> void\n      get (PointT& t, size_t n) const { t.getVector3fMap () = xyz / n; }\n\n      EIGEN_MAKE_ALIGNED_OPERATOR_NEW\n\n    }"
+    },
+    "add_point": {
+      "source": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/common/impl/accumulators.hpp",
+      "signature": "struct AddPoint",
+      "code": "struct AddPoint\n    {\n\n      const PointT& p;\n\n      AddPoint (const PointT& point) : p (point) { }\n\n      template <typename AccumulatorT> void\n      operator () (AccumulatorT& accumulator) const\n      {\n        accumulator.add (p);\n      }\n\n    }"
+    },
+    "get_point": {
+      "source": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/common/impl/accumulators.hpp",
+      "signature": "struct GetPoint",
+      "code": "struct GetPoint\n    {\n\n      PointT& p;\n      size_t n;\n\n      GetPoint (PointT& point, size_t num) : p (point), n (num) { }\n\n      template <typename AccumulatorT> void\n      operator () (AccumulatorT& accumulator) const\n      {\n        accumulator.get (p, n);\n      }\n\n    }"
+    },
+    "centroid_point": {
+      "source": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/common/centroid.h",
+      "signature": "class CentroidPoint",
+      "code": "class CentroidPoint\n  {\n\n    public:\n\n      CentroidPoint ()\n      : num_points_ (0)\n      {\n      }\n\n      /** Add a new point to the centroid computation.\n        *\n        * In this function only the accumulators and point counter are updated,\n        * actual centroid computation does not happen until get() is called. */\n      void\n      add (const PointT& point)\n      {\n        // Invoke add point on each accumulator\n        boost::fusion::for_each (accumulators_, detail::AddPoint<PointT> (point));\n        ++num_points_;\n      }\n\n      /** Retrieve the current centroid.\n        *\n        * Computation (division of accumulated values by the number of points\n        * and normalization where applicable) happens here. The result is not\n        * cached, so any subsequent call to this function will trigger\n        * re-computation.\n        *\n        * If the number of accumulated points is zero, then the point will be\n        * left untouched. */\n      template <typename PointOutT> void\n      get (PointOutT& point) const\n      {\n        if (num_points_ != 0)\n        {\n          // Filter accumulators so that only those that are compatible with\n          // both PointT and requested point type remain\n          typename pcl::detail::Accumulators<PointT, PointOutT>::type ca (accumulators_);\n          // Invoke get point on each accumulator in filtered list\n          boost::fusion::for_each (ca, detail::GetPoint<PointOutT> (point, num_points_));\n        }\n      }\n\n      /** Get the total number of points that were added. */\n      size_t\n      getSize () const\n      {\n        return (num_points_);\n      }\n\n      EIGEN_MAKE_ALIGNED_OPERATOR_NEW\n\n    private:\n\n      size_t num_points_;\n      typename pcl::detail::Accumulators<PointT>::type accumulators_;\n\n  }"
+    },
+    "filter": {
+      "source": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/filters/filter.h",
+      "signature": "filter (PointCloud &output)",
+      "code": "filter (PointCloud &output)\n      {\n        if (!initCompute ())\n          return;\n\n        if (input_.get () == &output)  // cloud_in = cloud_out\n        {\n          PointCloud output_temp;\n          applyFilter (output_temp);\n          output_temp.header = input_->header;\n          output_temp.sensor_origin_ = input_->sensor_origin_;\n          output_temp.sensor_orientation_ = input_->sensor_orientation_;\n          pcl::copyPointCloud (output_temp, output);\n        }\n        else\n        {\n          output.header = input_->header;\n          output.sensor_origin_ = input_->sensor_origin_;\n          output.sensor_orientation_ = input_->sensor_orientation_;\n          applyFilter (output);\n        }\n\n        deinitCompute ();\n      }"
+    },
+    "init_compute": {
+      "source": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/impl/pcl_base.hpp",
+      "signature": "pcl::PCLBase<PointT>::initCompute ()",
+      "code": "pcl::PCLBase<PointT>::initCompute ()\n{\n  // Check if input was set\n  if (!input_)\n    return (false);\n\n  // If no point indices have been given, construct a set of indices for the entire input point cloud\n  if (!indices_)\n  {\n    fake_indices_ = true;\n    indices_.reset (new std::vector<int>);\n    try\n    {\n      indices_->resize (input_->points.size ());\n    }\n    catch (const std::bad_alloc&)\n    {\n      PCL_ERROR (\"[initCompute] Failed to allocate %lu indices.\\n\", input_->points.size ());\n    }\n    for (size_t i = 0; i < indices_->size (); ++i) { (*indices_)[i] = static_cast<int>(i); }\n  }\n\n  // If we have a set of fake indices, but they do not match the number of points in the cloud, update them\n  if (fake_indices_ && indices_->size () != input_->points.size ())\n  {\n    size_t indices_size = indices_->size ();\n    indices_->resize (input_->points.size ());\n    for (size_t i = indices_size; i < indices_->size (); ++i) { (*indices_)[i] = static_cast<int>(i); }\n  }\n\n  return (true);\n}"
+    },
+    "deinit_compute": {
+      "source": "ADE code/Installations/Installations/PCL 1.8.0/include/pcl-1.8/pcl/impl/pcl_base.hpp",
+      "signature": "pcl::PCLBase<PointT>::deinitCompute ()",
+      "code": "pcl::PCLBase<PointT>::deinitCompute ()\n{\n  return (true);\n}"
+    }
+  }
+}

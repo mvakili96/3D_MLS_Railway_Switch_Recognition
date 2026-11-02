@@ -36,6 +36,7 @@ from .observations import (
 )
 from .points import LegacyLiDPoint, Point2D, Point3D, PointCloud, PointSelection
 from .sampling import MsvcRand, RecordedRand
+from .pcl_helpers import PclHeader, PclXYZCloud, VoxelDownsample, PclCentering, decrease_density, center_point_cloud
 from .coordinates import (
     ConverterEllipsoid, UndefinedCoordinateArithmetic, arc_length_of_meridian,
     deg_to_rad, rad_to_deg, utm_central_meridian, footpoint_latitude,
@@ -123,6 +124,7 @@ from .loop_cross import LoopCrossDetection, LoopCrossValidation, detect_loop_cro
 __version__ = "0.1.0"
 
 __all__ = [
+    "PclHeader", "PclXYZCloud", "VoxelDownsample", "PclCentering", "decrease_density", "center_point_cloud",
     "ConverterEllipsoid", "UndefinedCoordinateArithmetic", "arc_length_of_meridian",
     "deg_to_rad", "rad_to_deg", "utm_central_meridian", "footpoint_latitude",
     "map_lat_lon_to_xy", "map_xy_to_lat_lon", "lat_lon_to_utm_xy", "utm_xy_to_lat_lon",
