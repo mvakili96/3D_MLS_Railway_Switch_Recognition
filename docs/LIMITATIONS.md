@@ -66,11 +66,11 @@ engine/layer side effects together. **Status: open; review first.**
 | **LIM-008 — Equal-key sorting.** Native `std::sort` does not specify equal-height or equal-component-size order. | Python uses documented stable ties. Native exact-order comparisons use appropriate distinct-key fixtures; tied membership/height checks have narrower claims. | Compare the target compiler/runtime's permutations and resulting random-index selections, grouping choices and outputs. [Heads](PYTHON_GMM_HEADS.md#random-draws-and-ordering), [grouping](PYTHON_FITTING_MDL.md#grouping-and-point-identity). |
 | **LIM-009 — Random state and floating-point environment.** Unknown earlier native draws, point order and arithmetic near thresholds affect model choices. | Owned MSVC recurrence/default seed and recorded raw streams are available. Component extracts receive identical draws; a seed alone does not recover an unknown original session. | Save complete configuration, cloud order and draw streams for matched experiments. Investigate threshold/tie discrepancies with explicit numerical tolerances and exact identity comparisons. [Details](PYTHON_GMM_HEADS.md#random-draws-and-ordering). |
 | **LIM-010 — Python boundaries and native uninitialized fields.** Some invalid counts, ownership, dimensions or nonfinite query inputs have no supported native result. Default geometry fields and native output-reference interfaces need explicit contracts. | Python rejects invalid API inputs or exposes unavailable fields as `None`. Endpoint-only boundary caches now remain absent in initialization/tracking; native comparisons read only defined endpoints/tags. New scalar 3D distance requires an explicit stored vector, and returned utility vectors do not expose aliased native output buffers. | Audit every newly implemented consumer before reading absent fields or assuming native reference aliasing. Retain explicit boundary contracts and identify comparisons that exclude undefined native values. [Utilities](PYTHON_UTILITIES.md), [initialization](PYTHON_KALMAN_INITIALIZATION.md), [toes](PYTHON_TOES.md). |
-| **LIM-011 — Whole-application equivalence.** Original Windows application has not been built/executed for full comparisons. | Current suite: 423 test methods, including 156 using compiled source extracts. Sixteen demos and a source audit are available. Integrated workflows match direct engine composition; inline point/line/neighbor/state and loop/cross contracts are source-tested. Loop/cross failure comparisons stop before unsafe reads; grade/GWAD and switch-box cases use original routines/JAMA; orchestration callbacks isolate control flow. Unsafe native reads are excluded. | Complete call-path/reference review, then compare matched whole-path intermediate/final results where a usable reference exists. Keep component, controlled-callback and full-binary claims separate. |
+| **LIM-011 — Whole-application equivalence.** Original Windows application has not been built/executed for full comparisons. | Current suite: 453 test methods, including 165 using compiled source extracts. Seventeen demos, cloud inspection and a source audit are available. Legacy I/O tests compare source readers/exports with data/decoded-record shims, while real Python LAS/LAZ decoding is tested separately. Integrated workflows match direct engine composition; unsafe native reads are excluded. Orchestration callbacks still isolate control flow. | Complete call-path/reference review, then compare matched whole-path intermediate/final results where a usable reference exists. Keep component, controlled-callback/decoder and full-binary claims separate. |
 | **LIM-012 — Real-data/published evaluation.** Suitable raw inputs, annotations and reference outputs are not yet supplied. | Synthetic fixtures validate specified behavior only; published accuracy/recall and robustness are not reproduced. Historical evaluation-snapshot questions are deferred and do not replace the chosen source baseline. | Run recorded real-data experiments, error analysis and metric calculations once data is available. [Validation plan](../PYTHON_PORT_PLAN.md#validation-levels). |
 | **LIM-013 — Runtime and memory at MLS scale.** Local grouping can have quadratic scans; full step diagnostics retain reference arrays. | Sparse grid lookup and array operations are implemented; no representative real-cloud profiling has been completed. | Measure runtime/memory by stage and cloud/window size. Preserve neighbor/DFS/sample order when optimizing; assess optional diagnostic retention. [Grouping](PYTHON_FITTING_MDL.md), [tracking](PYTHON_TRACKING.md). |
-| **LIM-014 — Data adapters, units and precision.** Legacy readers have format-dependent thinning; count-prefixed text/CSV, CRS conversion and rounded exports need explicit contracts. | Core accepts owned double-precision coordinates with shared labels. Database integration and matched legacy I/O are deferred; no implicit unit/frame conversion is added. | Verify LAS alternating-point loading versus PTS density, export precision, metadata initialization, zone/hemisphere handling and database schema. [Data contract](../PYTHON_PORT_PLAN.md#data-contract-to-prepare-now). |
-| **LIM-015 — Remaining scope.** Inventory consistency is distinct from complete reconstruction. | Dispositions cover 201 definitions: 124 engine/UI and 77 inline header definitions, plus 19 named header types. 41 project and 51 dependency files are hashed. Utility, inline geometry/state and standalone DetectLoopCross/ValidateLoopCross contracts are implemented or have explicit undefined-source/input policies. Automatic loop/cross scheduling stays inactive. Legacy I/O/conversion/export and call-path review remain pending. Commented rotation functions stay excluded; dependency math is ported only where reached. | Complete agreed remaining workflows and call-path/reference review before declaring reconstruction complete. Keep implementation scope distinct from defects or undefined behavior. [Loop/cross](PYTHON_LOOP_CROSS.md), [header audit](PYTHON_HEADER.md), [pipeline audit](PYTHON_PIPELINE.md#explicit-coverage-audit), [plan](../PYTHON_PORT_PLAN.md#computational-inventory). |
+| **LIM-014 — Data adapters, units and precision.** Legacy readers have format-dependent thinning; count-prefixed text/CSV, CRS conversion and rounded exports need explicit contracts. | PTS/CSV/LAS/LAZ and all three vector exporters are implemented with original field/order/precision rules. LAS keeps records 0/2/4; text retains declared records and zero Z bounds. Optional decoder equivalence, malformed-input/runtime policies and database integration remain unverified. No implicit unit/frame conversion is added. | Review source-codec/format compatibility, sampling/density, rounded exports, bounds/labels, zone/hemisphere handling and database schema. [I/O guide](PYTHON_LEGACY_IO.md), LIM-036, [data contract](../PYTHON_PORT_PLAN.md#data-contract-to-prepare-now). |
+| **LIM-015 — Remaining scope.** Inventory consistency is distinct from complete reconstruction. | Dispositions cover 219 definitions: 124 engine/UI, 77 inline header and 18 reader definitions, plus 19 named header types. 41 project and 51 dependency files retain their hashes. Utility, state, standalone loop/cross, legacy readers/exports and computational file-cache contracts are implemented or have explicit policies. Automatic loop/cross scheduling stays inactive. Coordinate conversion, unused PCL voxel/centroid wrappers and call-path review remain pending. Commented rotations stay excluded; dependency math is ported only where reached. | Complete agreed remaining workflows and call-path/reference review before declaring reconstruction complete. Keep implementation scope distinct from defects or undefined behavior. [I/O](PYTHON_LEGACY_IO.md), [loop/cross](PYTHON_LOOP_CROSS.md), [pipeline audit](PYTHON_PIPELINE.md#explicit-coverage-audit), [plan](../PYTHON_PORT_PLAN.md#computational-inventory). |
 
 ## Preserved source behavior and findings awaiting later decisions
 
@@ -229,6 +229,45 @@ int32 ranges and group selection with real/reference inputs. Decide any Boolean
 guard, corrected intersection/phase formula, geometry recovery or activation of
 commented scheduling as a separate change. Existing source behavior remains the
 baseline and all earlier IDs remain open. **Status: open.**
+
+### LIM-036: Legacy reader bounds, codec, tokenization and vector export policies
+
+**Evidence:** `TXTFileReader.cpp`, `LASFileReader.cpp`,
+`RailwayExtraction.cpp:108–143`, `MainForm.cpp:149,172,443,577`, `HashMap.h` and
+[the I/O guide](PYTHON_LEGACY_IO.md).
+
+**Triggers and impact:** format-dependent density keeps LAS indices 0/2/4 while
+PTS/CSV retain all declared rows. LAS uses unsampled header extrema. Text resets
+only X/Y extrema; Z stays at its constructor zero. Source tokenization collapses
+space/comma delimiters, C numeric prefixes can become zero, and fourth-field CSV
+tags become intensity. Indexed export skips exactly one marker and can read
+past center/right vectors after already writing a prefix. Three-decimal outputs
+lose numerical precision; both unindexed rails receive tag 100. Cached filename
+reentry retains existing engines/labels/layers, while direct PTS opening is fresh.
+
+**Current handling:** literal reader bounds and read-only source indices remain
+available. Explicit grid adaptation preserves source XY and encloses Z because
+the native index ignores Z. Missing/overlong/NUL/nonfinite/out-of-range inputs are
+rejected without invented coordinates. Optional laspy/lazrs decoding is separately
+tested; libLAS codecs, format versions and malformed-file behavior are not proven
+equivalent. The historical MIN/MAX macro inclusion chain remains unverified:
+conditional macro shims are used, and equal signed-zero bounds have no matched
+Windows parity claim. C-locale parsing and nonfinite/rounding text can differ by
+CRT/runtime. Logical LF/ASCII text comparisons do not prove Windows CRLF bytes.
+Reader periodic/final callbacks preserve their source cadence; grid/display
+progress is separate. Python validates a new session grid before cache commit,
+requires explicit overwrite and rejects undefined indexed output before file
+creation. Defined prefixes are inspectable; multi-file writes are not atomic.
+These file/input policies deliberately do not claim native failure side effects.
+
+**Post-reconstruction review:** compare real LAS/LAZ and text files with the
+matched Windows reader/runtime, decoder/backend versions, metadata and sampling;
+inspect header bounds, source macros, line lengths/locale and round-trip loss.
+Review indexed markers/vector assumptions, cache/error lifecycle and output
+overwrite/partial-write requirements with consumers. Port the unused PCL helpers
+and coordinate workflows separately; establish units/CRS and database adapters
+before real-data evaluation. No existing limitation is closed by I/O completion.
+**Status: open.**
 
 ## Resolution history
 

@@ -1,4 +1,4 @@
-"""Versioned diagnostic JSON/CSV, separate from the pending legacy I/O formats."""
+"""Versioned diagnostic JSON/CSV, separate from the source legacy I/O formats."""
 
 from collections import Counter
 from dataclasses import asdict, fields, is_dataclass

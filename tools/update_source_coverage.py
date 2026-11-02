@@ -159,8 +159,8 @@ ENGINE["LineExtractionWithFixedAngleForLoopCross"] = rule(
 )
 for name in ("updateMaxMinFromReader", "readMaxMinFromReader", "readMaxMinFromTXTReader"):
     ENGINE[name] = rule(
-        "io_pending",
-        note="Legacy reader bounds/data adapters remain pending. Explicit GridIndex bounds are available without those adapters.",
+        "io_ported", ("railway_mls.legacy_io:ReaderBounds", "railway_mls.legacy_io:LegacyPointCloud.grid_bounds"),
+        "Literal reader XYZ bounds are retained; Python grid adaptation preserves XY and explicitly encloses Z, which native grid lookup ignores. Text reader Z remains zero by construction.",
     )
 for name in (
     "PrintTurnoutType",
@@ -216,6 +216,35 @@ for name in (
         "io_or_conversion_pending",
         note="Legacy loading, coordinate conversion or export workflow. New diagnostic artifacts are not a substitute for this legacy schema/precision contract.",
     )
+for name, target in (
+    ("openToolStripMenuItem_Click", "LegacyFileSession.load_file"),
+    ("openPTSFileToolStripMenuItem_Click", "LegacyFileSession.open_pts"),
+    ("loadFile", "LegacyFileSession.load_file"),
+    ("saveRailVectorToolStripMenuItem_Click", "write_layer_vectors"),
+    ("saveRailVectorAtIndex", "write_layer_vectors"),
+    ("saveRailVectorWithIndexAtIndex", "write_layer_vectors"),
+    ("SaveVectorToolStripMenuItem_Click", "write_layer_vectors"),
+    ("saveRailVectorWithIndexToolStripMenuItem_Click", "write_layer_vectors"),
+):
+    UI[name] = rule("io_ported", ("railway_mls.legacy_io:" + target,),
+                    "Reader/cache/grid or legacy export action ported with explicit path/layer inputs; dialogs/display and selected UI controls are excluded. Indexed undefined reads and Python file/input policies remain explicit.")
+UI["LoadPointCloud"] = rule("ported_computation", ("railway_mls.spatial:GridIndex",),
+                            "Source body only invokes GenerateGrid; it is not an additional file reader.")
+UI["savePointsToolStripMenuItem_Click"] = rule("source_stub", note="Source menu handler is empty; no invented point-file exporter.")
+
+READERS = {
+    "TXTFileReader": rule("io_ported", ("railway_mls.legacy_io:LegacyTextReader",), "Reader initialization and owned loaded-data state."),
+    "~TXTFileReader": rule("native_lifetime", note="Empty source destructor; Python owns reader/cloud references."),
+    "ReadDataCSV": rule("io_ported", ("railway_mls.legacy_io:LegacyTextReader.read",), "Count-prefixed strtok CSV, fourth field intensity, ordered records and source callback cadence."),
+    "saveRailVector": rule("io_ported", ("railway_mls.legacy_io:format_rail_vector", "railway_mls.legacy_io:write_rail_vector"), "Both overloads: fixed three decimals, center tags, center/rail1/rail2 order and tag 100 on both rails."),
+    "saveRailVectorWithIndex": rule("io_ported", ("railway_mls.legacy_io:format_rail_vector",), "Three rows per left record, one marker skip, 100/200 rail tags, partial-prefix diagnostics on undefined indexing."),
+    "LASFileReader": rule("io_ported", ("railway_mls.legacy_io:LegacyLasReader",), "Owned loaded-data state; optional decoder boundary."),
+    "~LASFileReader": rule("native_lifetime", note="Native shared-pointer reset; Python owns reader/cloud references."),
+    "minPoint": rule("io_ported", ("railway_mls.legacy_io:LegacyLasReader.read_bounds",), "Original LAS header minima, not sampled-cloud minima."),
+    "maxPoint": rule("io_ported", ("railway_mls.legacy_io:LegacyLasReader.read_bounds",), "Original LAS header maxima, not sampled-cloud maxima."),
+}
+for name in ("DecreaseDensity", "Transform"):
+    READERS[name] = rule("native_filter_pending", note="Unused wrappers around PCL float32 voxel-centroid filtering or centroid translation. They are not called by either reader and are reserved for a separate dependency-level numerical port.")
 for name in (
     "exitToolStripMenuItem_Click",
     "showPointCloud",
@@ -254,9 +283,13 @@ files = []
 for path in sorted(source.iterdir()):
     if not path.is_file() or path.suffix not in (".cpp", ".h"):
         continue
-    if path.stem in (
-        "LASFileReader",
-        "TXTFileReader",
+    if path.stem == "HashMap":
+        disposition = "io_cache_ported"
+    elif path.stem == "TXTFileReader":
+        disposition = "io_ported"
+    elif path.stem == "LASFileReader":
+        disposition = "reader_io_ported_native_filters_pending"
+    elif path.stem in (
         "DataConvertor",
         "UTM",
         "DataConverstionForm",
@@ -288,13 +321,20 @@ definition_files = []
 for filename, owner, rules in (
     ("RailwayExtraction.cpp", "RailwayExtraction", ENGINE),
     ("MainForm.cpp", "PCLProject::MainForm", UI),
+    ("TXTFileReader.cpp", "TXTFileReader", READERS),
+    ("LASFileReader.cpp", "LASFileReader", READERS),
 ):
     entries = []
     for definition in cpp_definitions((source / filename).read_text(), owner):
         entry = dict(definition)
-        if entry["name"] not in rules:
+        if owner in ("TXTFileReader", "LASFileReader") and entry["name"] in ("ReadData", "LoadedData"):
+            target = "LegacyTextReader" if owner == "TXTFileReader" else "LegacyLasReader"
+            entry.update(rule("io_ported", ("railway_mls.legacy_io:" + target + (".read" if entry["name"] == "ReadData" else ".loaded_data"),),
+                              "Ordered records and loaded-data identity preserved; LAS keeps zero-based even records. Optional codec equivalence, malformed inputs and CRT/runtime differences remain explicit limitations."))
+        elif entry["name"] not in rules:
             raise ValueError(f"Review unclassified definition: {entry['id']}")
-        entry.update(rules[entry["name"]])
+        else:
+            entry.update(rules[entry["name"]])
         if entry["id"] == "RailwayExtraction::OnRailextractionSetinit#1":
             entry.update(
                 rule(
@@ -307,7 +347,9 @@ for filename, owner, rules in (
                 rule("source_stub", note="Zero-argument bounds method is empty in source.")
             )
         entries.append(entry)
-    definition_files.append({"path": filename, "owner": owner, "definitions": entries})
+    definition_files.append({"path": filename, "owner": owner,
+                             "kind": "legacy_io" if owner in ("TXTFileReader", "LASFileReader") else "engine_ui",
+                             "definitions": entries})
 inline_entries, header_types = header_entries((source / "LIDARPT.h").read_text())
 definition_files.append({"path": "LIDARPT.h", "kind": "inline_header", "definitions": inline_entries})
 baseline = sha256(
@@ -318,6 +360,7 @@ audit = {
     "baseline_id": baseline,
     "definition_scope": [
         "Every out-of-class definition in RailwayExtraction.cpp and MainForm.cpp",
+        "All 18 out-of-class definitions in TXTFileReader.cpp and LASFileReader.cpp, including unused native-filter gaps",
         "All top-level project .cpp/.h files have file-level dispositions",
         "All 77 active inline definitions and 19 named top-level types in LIDARPT.h have explicit dispositions; commented Rotation3D/InverseRotation3D remain excluded",
         "Jama/etc are dependencies: only reached numerical behavior is ported, not whole libraries",

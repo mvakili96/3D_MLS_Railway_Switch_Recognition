@@ -59,6 +59,8 @@ document proposed corrections separately.
   filtering, scalar geometry, index cycling and endpoint-only boundary state.
 - [docs/PYTHON_LOOP_CROSS.md](docs/PYTHON_LOOP_CROSS.md): standalone loop/cross
   detection, integer-phase validation, projection and undefined-fit diagnostics.
+- [docs/PYTHON_LEGACY_IO.md](docs/PYTHON_LEGACY_IO.md): PTS/CSV/LAS/LAZ readers,
+  source sampling/bounds, file switching/cache and three legacy vector formats.
 - [docs/PYTHON_HEADER.md](docs/PYTHON_HEADER.md): inline definition/type inventory,
   legacy points, tagged line/cache operations and segment state helpers.
 
@@ -93,6 +95,7 @@ python -m railway_mls source-audit --repo .
 python -m railway_mls utilities-demo
 python -m railway_mls header-demo
 python -m railway_mls loop-cross-demo
+python -m railway_mls legacy-io-demo
 python -m unittest discover -s tests -v
 ```
 
@@ -159,8 +162,15 @@ Detection fits 60 candidates, appends one record and suppresses a repeat;
 validation retains it. A separate sparse attempt reports the source's
 uninitialized failed-fit output explicitly. Automatic calls remain inactive.
 
-The installed `railway-mls` command supports the same sixteen demos and source
-audit. The audit inventories 201 definitions (124 engine/UI and 77 header), hashes 41 project and 51 bundled
+`legacy-io-demo` reads generated temporary PTS/CSV files and exercises all three
+source rail-vector export formats. For real LAS/LAZ files, install the optional
+decoder with `python -m pip install -e ".[las]"`. Then use
+`python -m railway_mls inspect-cloud data/example.laz` to inspect loaded records.
+LAS keeps alternating records; text retains all declared records. See the I/O
+guide before supplying input formats, bounds and coordinate metadata.
+
+The installed `railway-mls` command supports the same seventeen demos, cloud inspection and source
+audit. The audit inventories 219 definitions (124 engine/UI, 77 header and 18 reader), hashes 41 project and 51 bundled
 dependency files, and explicitly lists pending source scope. The former standalone
 and partially mapped utility gaps are implemented.
 Tests use `unittest`; when a C++ compiler is available they also compile temporary
@@ -189,7 +199,7 @@ repository refer to its separate history.
 ## Development direction
 
 Continue from the integrated pipeline and completed utility contracts to the
-remaining call-path review and legacy data/conversion/export interfaces.
+remaining call-path review, coordinate conversion and unused native point filters.
 Loop/cross components are implemented explicitly; their automatic scheduling
 remains inactive as in the source.
 Keep scope gaps separate from the source limitations already reproduced.

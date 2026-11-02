@@ -53,6 +53,47 @@ from .geometry import source_float_round
 from .models import TrackLayer
 from .loop_cross import detect_loop_cross, validate_loop_cross
 from .synthetic import loop_cross_scene
+from .legacy_io import LegacyTextReader, format_rail_vector, load_point_cloud
+
+
+def _loaded_cloud_json(loaded) -> dict:
+    return {
+        "status": "ok", "source_format": loaded.source_format,
+        "declared_count": loaded.declared_count, "input_count": loaded.input_count,
+        "loaded_count": len(loaded.cloud), "reader_bounds": asdict(loaded.reader_bounds),
+        "first_record_indices": loaded.record_indices[:20].tolist(),
+        "class_codes": np.unique(loaded.cloud.class_codes).tolist(),
+        "segment_ids": np.unique(loaded.cloud.segment_ids).tolist(),
+        "coordinate_units": None, "crs": None,
+    }
+
+
+def _legacy_io_demo() -> dict:
+    from pathlib import Path
+    from tempfile import TemporaryDirectory
+    # Deliberately synthetic file fixtures; all temporary files are cleaned up.
+    with TemporaryDirectory(prefix="railway-mls-io-demo-") as directory:
+        path = Path(directory) / "points.pts"
+        path.write_text("12\n" + "".join(f"{500000 + i * .125:.9f} {6000000 + i * .25:.9f} {100 + i * .1:.9f} {i}\n" for i in range(12)))
+        events = []
+        loaded = LegacyTextReader().read(path, callback=lambda *value: events.append(value))
+        center = [Point3D(0, 0, 0, 2), Point3D(1, 0, 0, 7), Point3D(2, 0, 0, 9)]
+        left = [Point3D(1, 1, 0), Point3D(2, 1, 0)]
+        right = [Point3D(1, -1, 0), Point3D(2, -1, 0)]
+        exports = {"center": format_rail_vector(center),
+                   "paired": format_rail_vector(center, left, right),
+                   "indexed": format_rail_vector(center, left, right, indexed=True)}
+        csv = path.with_suffix(".csv")
+        csv.write_text(exports["paired"].text)
+        csv_loaded = load_point_cloud(csv)
+        undefined = format_rail_vector([], left, right, indexed=True)
+        return {"status": "ok", "data": "generated temporary legacy text/vector fixtures",
+                "pts": _loaded_cloud_json(loaded), "progress": events,
+                "grid_bounds": asdict(loaded.grid_bounds()),
+                "exports": {name: asdict(value) for name, value in exports.items()},
+                "csv": _loaded_cloud_json(csv_loaded),
+                "csv_intensity": csv_loaded.cloud.intensity.tolist(),
+                "undefined_indexed_export": asdict(undefined)}
 
 
 def _loop_cross_demo(seed: int) -> dict:
@@ -695,6 +736,11 @@ def _observation_demo(seed: int) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="3D MLS railway Python foundation")
     commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("legacy-io-demo", help="exercise legacy text readers and all three vector export formats")
+    inspect_parser = commands.add_parser("inspect-cloud", help="read a legacy point cloud and report source sampling/bounds")
+    inspect_parser.add_argument("path")
+    inspect_parser.add_argument("--format", choices=("pts", "csv", "las", "laz"))
+    inspect_parser.add_argument("--chunk-size", type=int, default=1_000_000)
     loop_parser = commands.add_parser("loop-cross-demo", help="exercise inactive source loop/cross components with supplied references")
     loop_parser.add_argument("--seed", type=int, default=1, help="Microsoft CRT seed (default: 1)")
     commands.add_parser("header-demo", help="exercise source inline geometry, tags and state contracts")
@@ -787,6 +833,17 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command == "legacy-io-demo":
+        print(json.dumps(_legacy_io_demo(), indent=2, allow_nan=False))
+        return 0
+    if arguments.command == "inspect-cloud":
+        try:
+            loaded = load_point_cloud(arguments.path, format=arguments.format, chunk_size=arguments.chunk_size)
+        except (OSError, ValueError, ImportError) as error:
+            print(json.dumps({"status": getattr(error, "status", "load_failed"), "error": str(error)}, allow_nan=False))
+            return 1
+        print(json.dumps(_loaded_cloud_json(loaded), indent=2, allow_nan=False))
+        return 0
     if arguments.command == "loop-cross-demo":
         print(json.dumps(_loop_cross_demo(arguments.seed), indent=2, allow_nan=False))
         return 0
