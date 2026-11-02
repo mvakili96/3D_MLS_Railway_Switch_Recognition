@@ -1,0 +1,2206 @@
+{
+  "schema_version": 1,
+  "baseline_id": "b04978b12f533a86f2fd24527e5dc4b4779a082461a7050142cb8e372b6c09f0",
+  "review_status": "complete",
+  "scope": "Computational reconstruction of the frozen unpacked project, including standalone uncommented algorithm helpers and numerical input/output boundaries; presentation and whole dependency libraries are excluded.",
+  "evidence_limits": [
+    "Review and inventory consistency are not numerical parity proofs or a percentage of algorithm correctness.",
+    "Lexical tokens exclude comments/strings but do not resolve overloads, templates, macros, pointer calls or runtime reachability; matching external method names can collide.",
+    "Original C++ extracts use documented shims, instrumentation and supported initialized paths. Scheduling comparisons use controlled callbacks; the original Windows application has not been built or run.",
+    "Synthetic and generated file tests establish implementation behavior, not real MLS accuracy or published performance.",
+    "All limitation IDs remain open. Source undefined behavior, sorting/RNG/platform boundaries and diagnostic policies are retained for the separate post-reconstruction review."
+  ],
+  "findings": [
+    {
+      "id": "AUD-001",
+      "resolution": "implemented",
+      "note": "Explicit source parameter adapter now preserves four double-to-int assignments and ten-field getter mapping. Tracking retains unsigned count comparisons for negative thresholds; original-loop tests compare retries, stops, side effects and random draws."
+    },
+    {
+      "id": "AUD-002",
+      "resolution": "implemented",
+      "note": "Scalar PointXYZDouble default/XYZ/pointer-copy, equality, exact null and homogeneous coordinate are explicit; row identity is unchanged."
+    },
+    {
+      "id": "AUD-003",
+      "resolution": "implemented",
+      "note": "Active seed dialog normalization is available as an explicit adapter; direct numeric seeds bypass presentation."
+    },
+    {
+      "id": "AUD-004",
+      "resolution": "documented_and_checked",
+      "note": "19 previously file-only support definitions are now inventoried, including HashMap and both numerical forms. All 41 source files have reviewed scope notes."
+    },
+    {
+      "id": "AUD-005",
+      "resolution": "documented_and_checked",
+      "note": "15 workflows, active/inactive call-site witnesses and lexical token inventory record the call-path review without claiming whole-binary parity."
+    }
+  ],
+  "file_reviews": [
+    {
+      "files": [
+        "RailwayExtraction.cpp",
+        "RailwayExtraction.h"
+      ],
+      "outcome": "computational_methods_mapped",
+      "note": "All 79 definitions reviewed: defaults, bounds/grid, initialization, tracking/retries, postpasses, branches, fitting, grades and inactive helpers. Rendering/progress/print-only methods are excluded; uninitialized source reads retain diagnostics."
+    },
+    {
+      "files": [
+        "LIDARPT.cpp",
+        "LIDARPT.h"
+      ],
+      "outcome": "inline_state_and_geometry_mapped",
+      "note": "All 77 uncommented inline definitions and 19 named types mapped. Constructors, tag assignment, cached geometry and snapshot semantics are explicit. Two block-commented rotations remain excluded."
+    },
+    {
+      "files": [
+        "MainForm.cpp",
+        "MainForm.h"
+      ],
+      "outcome": "computational_ui_actions_mapped",
+      "note": "All 45 out-of-class definitions reviewed. File/cache lifecycle, picked seed, reverse-first two-pass tracking, grades, exports and coordinate menu bindings are mapped. Generated controls, dialogs, layer names, progress and rendering are presentation."
+    },
+    {
+      "files": [
+        "PointXYZDouble.cpp",
+        "PointXYZDouble.h"
+      ],
+      "outcome": "scalar_point_boundary_mapped",
+      "note": "Default/XYZ/pointer-copy, homogeneous coordinate, metadata, strict tolerance equality and exact null are now explicit. Core cloud row identity remains separate; native PCL registration/alignment are storage infrastructure."
+    },
+    {
+      "files": [
+        "LASFileReader.cpp",
+        "LASFileReader.h",
+        "TXTFileReader.cpp",
+        "TXTFileReader.h"
+      ],
+      "outcome": "readers_exports_and_unused_helpers_mapped",
+      "note": "All 18 methods mapped. Original order, alternate LAS records, text reader bounds, cache identity and all vector formats retained. Optional LAS decoding is a declared library boundary. DecreaseDensity/Transform are standalone and remain absent from loading/tracking."
+    },
+    {
+      "files": [
+        "DataConverstionForm.cpp",
+        "DataConverstionForm.h",
+        "DataConvertor.cpp",
+        "DataConvertor.h",
+        "UTM.cpp",
+        "UTM.h"
+      ],
+      "outcome": "conversion_paths_mapped",
+      "note": "All 27 definitions mapped, including UTM free functions, unit conventions, accumulating buffers, callback variants, exports, batch actions and the source inverse-menu northern binding. File dialogs/progress are presentation."
+    },
+    {
+      "files": [
+        "ExtractionParameterForm.cpp",
+        "ExtractionParameterForm.h",
+        "InitialLocationForm.cpp",
+        "InitialLocationForm.h"
+      ],
+      "outcome": "numeric_boundary_and_presentation_separated",
+      "note": "All 11 cpp definitions classified. Ten numeric doubles feed four engine int casts. Active seed defaults truncate/wrap angle and normalize mode; inactive XY overload remains presentation. Numeric Python inputs replace locale-sensitive text round trips. No dialog behavior is inserted into direct engine calls."
+    },
+    {
+      "files": [
+        "HashMap.cpp",
+        "HashMap.h",
+        "SharedData.cpp",
+        "SharedData.h",
+        "SharedResources.cpp",
+        "SharedResources.h"
+      ],
+      "outcome": "explicit_session_ownership",
+      "note": "HashMap get inserts a null exact-string key and put replaces its engine; LegacyFileSession preserves those effects. SharedData's singleton/cloud/file map and SharedResources filename list are application ownership. The display center of mass is not an algorithm input or implicit cloud transform."
+    },
+    {
+      "files": [
+        "VMouseInteractorStyle.cpp",
+        "VMouseInteractorStyle.h",
+        "VTKWindowControl.cpp",
+        "VTKWindowControl.h",
+        "VTKWindowController.cpp",
+        "VTKWindowController.h",
+        "typedef1.cpp",
+        "typedef1.h"
+      ],
+      "outcome": "presentation_excluded",
+      "note": "Reviewed controller, duplicate mouse styles, event forwarding, cameras and axes. Display-world coordinates are translated back by adding the display centroid before the six-coordinate ReceivedPoints callback. Python picks already use input/world coordinates. Screen projection, double-click state, sentinel bugs and unused event-position Z reads are UI behavior; no VTK cloud transform enters tracking."
+    },
+    {
+      "files": [
+        "Viewer.cpp",
+        "Viewer.h"
+      ],
+      "outcome": "viewer_demo_excluded",
+      "note": "Unused sample PCL viewer generates an elliptical cylinder for display and sets RGB/camera properties. It is independent of railway tracking and Python railway test fixtures."
+    },
+    {
+      "files": [
+        "Main.cpp"
+      ],
+      "outcome": "application_entry_and_fps_excluded",
+      "note": "Windows Forms startup and FPS display callback only. Python CLI replaces application startup; render-time reciprocal is presentation."
+    },
+    {
+      "files": [
+        "ExportOptionsForm.cpp",
+        "ExportOptionsForm.h"
+      ],
+      "outcome": "generated_dialog_excluded",
+      "note": "Generated path/format dialog and resource lifetime. Numeric rail/GWAD formats are implemented by legacy_io/grades; the Windows selection UI is excluded."
+    }
+  ],
+  "workflows": [
+    {
+      "id": "configuration_and_state",
+      "definitions": [
+        "RailwayExtraction::RailwayExtraction#1",
+        "RailwayExtraction::updateExtractionParameters#1",
+        "RailwayExtraction::getExtractionParameters#1",
+        "PointXYZDouble::isNull#1"
+      ],
+      "python": [
+        "railway_mls.config:ExtractionConfig",
+        "railway_mls.points:PointXYZDouble"
+      ],
+      "tests": [
+        "tests/test_foundation.py",
+        "tests/test_header.py",
+        "tests/test_reconstruction.py"
+      ],
+      "note": "Default configuration, live field types, explicit immutable source-parameter updates, point/tag identity, constructor/cache state and undefined values reviewed. Four source double-to-int assignments are now compared directly. Negative count thresholds retain native unsigned retry comparisons."
+    },
+    {
+      "id": "loading_and_file_lifecycle",
+      "definitions": [
+        "PCLProject::MainForm::loadFile#1",
+        "HashMap::get#1",
+        "TXTFileReader::ReadData#1",
+        "LASFileReader::ReadData#1"
+      ],
+      "python": [
+        "railway_mls.legacy_io:LegacyFileSession",
+        "railway_mls.legacy_io:load_point_cloud"
+      ],
+      "tests": [
+        "tests/test_legacy_io.py"
+      ],
+      "note": "PTS/CSV tokenization, LAS sampling/bounds/callbacks, case-sensitive cache keys, null misses, direct fresh PTS loading and persistent engine state reviewed. Native reader compares decoded LAS shims; optional generated LAS/LAZ tests check the codec adapter separately."
+    },
+    {
+      "id": "bounds_grid_and_membership",
+      "definitions": [
+        "RailwayExtraction::generateGrid#1",
+        "RailwayExtraction::GetNeighborIdx#1",
+        "TrackWindow::SetTrackWindowMemPnts#1"
+      ],
+      "python": [
+        "railway_mls.spatial:GridIndex",
+        "railway_mls.models:TrackWindow.assign_members"
+      ],
+      "tests": [
+        "tests/test_foundation.py",
+        "tests/test_cpp_parity.py"
+      ],
+      "note": "Source XY indexing, cell/point traversal order, explicit text/header bounds and membership polygon behavior reviewed. Validated finite Python inputs are an explicit boundary."
+    },
+    {
+      "id": "seed_and_initialization",
+      "definitions": [
+        "PCLProject::MainForm::ReceivedPoints#1",
+        "RailwayExtraction::OnRailextractionSetinit#2",
+        "RailwayExtraction::Setinitiallocation#1",
+        "PCLProject::InitialLocationForm::updateInputs#2"
+      ],
+      "python": [
+        "railway_mls.pipeline:initial_location_from_picks",
+        "railway_mls.orchestration:initial_location_dialog_defaults",
+        "railway_mls.initialization:initialize_tracks"
+      ],
+      "tests": [
+        "tests/test_kalman_initialization.py",
+        "tests/test_pipeline.py",
+        "tests/test_reconstruction.py"
+      ],
+      "note": "World-coordinate picks, float wrapper narrowing, mode/angle directions, reset/append layers, failed-init side effects, both GMMs/fits, initial heights and saved seed reviewed. Dialog normalization is available explicitly and not applied to direct seeds."
+    },
+    {
+      "id": "gmm_and_rail_heads",
+      "definitions": [
+        "RailwayExtraction::ComputeGMMfeature#1",
+        "RailwayExtraction::ClusteringByGMM#1",
+        "RailwayExtraction::ExtractTrkPts#1"
+      ],
+      "python": [
+        "railway_mls.gmm:fit_height_gmm",
+        "railway_mls.heads:extract_track_points"
+      ],
+      "tests": [
+        "tests/test_gmm_heads.py",
+        "tests/test_gmm_cpp_parity.py"
+      ],
+      "note": "Custom three-component EM, initialized RNG draws, early means-close stop, height filtering/refinement, head order, shared labels and retry-retained head buffers reviewed."
+    },
+    {
+      "id": "fitting_grouping_and_mdl",
+      "definitions": [
+        "RailwayExtraction::LineExtractionByRansac#1",
+        "RailwayExtraction::LineExtractionByRansac#2",
+        "RailwayExtraction::SegmentTrackPtsByMDL#1",
+        "RailwayExtraction::PointGrowing#1"
+      ],
+      "python": [
+        "railway_mls.fitting:fit_line_ransac",
+        "railway_mls.fitting:fit_rail_head_line",
+        "railway_mls.mdl:segment_track_points_mdl"
+      ],
+      "tests": [
+        "tests/test_fitting_mdl.py",
+        "tests/test_fitting_mdl_cpp.py"
+      ],
+      "note": "100/500-trial overloads, fixed-angle fits, growing components, pointer identity, candidate flags, strict ties, RNG consumption and undefined intermediate policies reviewed. MDL with missing candidates remains an explicit limitation."
+    },
+    {
+      "id": "observations_gauge_and_filter",
+      "definitions": [
+        "RailwayExtraction::DetermineObservation#1",
+        "RailwayExtraction::AdjustTwoLines#1",
+        "RailwayExtraction::AdjustTwoLinesWithObservation#1",
+        "RailwayExtraction::KalmanPredict#1",
+        "RailwayExtraction::KalmanUpdate#1"
+      ],
+      "python": [
+        "railway_mls.observations:determine_observation",
+        "railway_mls.gauge:adjust_two_lines_with_observation",
+        "railway_mls.kalman:kalman_update"
+      ],
+      "tests": [
+        "tests/test_observation_gauge.py",
+        "tests/test_kalman_initialization.py"
+      ],
+      "note": "Directional sorting/ties and side memberships, gauge formulas/cache update order, support mean/height, source LU and covariance behavior reviewed. NumPy inverse is not substituted for bundled matrix semantics."
+    },
+    {
+      "id": "tracking_retries_and_stops",
+      "definitions": [
+        "RailwayExtraction::Trackingrailway#1",
+        "RailwayExtraction::GenerateTrkSegAssignMemPts#1",
+        "TrackSegment::DuplicatePolyPair#1"
+      ],
+      "python": [
+        "railway_mls.tracking:SequentialTracker"
+      ],
+      "tests": [
+        "tests/test_tracking.py",
+        "tests/test_pipeline.py"
+      ],
+      "note": "Raw integration and original loop comparisons cover growing windows, strict count gates, previous/current snapshots, stack append/flush order, vectors written before stopping, gauge/trajectory stops and terminal postpasses. Print/progress/render tail is excluded. Diagnostic limits defer later stages."
+    },
+    {
+      "id": "recognition_and_toes",
+      "definitions": [
+        "RailwayExtraction::DefineTemplates#1",
+        "RailwayExtraction::RecognitionTurnoutType#1",
+        "RailwayExtraction::DetectToePnts#1"
+      ],
+      "python": [
+        "railway_mls.recognition:recognize_stacks",
+        "railway_mls.toes:detect_toe_points"
+      ],
+      "tests": [
+        "tests/test_recognition.py",
+        "tests/test_toes.py"
+      ],
+      "note": "20 literal templates, duplicate-pattern ambiguity, stack-length/score gates, 12 toe families, unsupported cases and stack/reference initialization reviewed. Tracker-created missing reference lines remain undefined (LIM-001); initialized component fixtures do not cure that path."
+    },
+    {
+      "id": "planes_and_switch_boxes",
+      "definitions": [
+        "RailwayExtraction::ExtractPlaneByRANSAC#1",
+        "RailwayExtraction::DetectSwitchBox#1"
+      ],
+      "python": [
+        "railway_mls.planes:fit_plane_ransac",
+        "railway_mls.switch_boxes:detect_switch_boxes"
+      ],
+      "tests": [
+        "tests/test_switch_boxes.py"
+      ],
+      "note": "Candidate region order, point grouping, original JAMA eigen solver, plane constraints, switch box geometry and class-5 labels reviewed. Original detection comparisons execute initialized fits; failed native fits remain diagnosed."
+    },
+    {
+      "id": "branch_and_bidirectional_assembly",
+      "definitions": [
+        "RailwayExtraction::OnRailextractionTrackingRailway#1",
+        "RailwayExtraction::ReserverVectors#1",
+        "PCLProject::MainForm::railwayTrackingToolStripMenuItem_Click#1"
+      ],
+      "python": [
+        "railway_mls.orchestration:TrackingEngine.run_pass",
+        "railway_mls.orchestration:TrackingEngine.run_bidirectional"
+      ],
+      "tests": [
+        "tests/test_orchestration.py",
+        "tests/test_pipeline.py"
+      ],
+      "note": "Toe-copy/used state, new-layer-before-type-filter, branch seed Y-for-Z quirk, global stack/toe/box state, reverse-first GUI schedule, XYZ-only reversals and center tagging reviewed. Original wrapper comparisons use controlled fit/track callbacks; raw synthetic integration is separate evidence, not whole-native equivalence."
+    },
+    {
+      "id": "grades_gwad_and_vector_exports",
+      "definitions": [
+        "RailwayExtraction::ComputeGrade#1",
+        "PCLProject::MainForm::exportGWADToolStripMenuItem_Click#1",
+        "TXTFileReader::saveRailVectorWithIndex#1"
+      ],
+      "python": [
+        "railway_mls.grades:compute_layer_grades",
+        "railway_mls.grades:build_gwad_rows",
+        "railway_mls.legacy_io:format_rail_vector"
+      ],
+      "tests": [
+        "tests/test_grades.py",
+        "tests/test_legacy_io.py"
+      ],
+      "note": "Grade is a separate action, GWAD explicitly computes grades, source curve algebra/XYZ tag behavior, missing native outputs, export row ordering/markers and three-decimal formats reviewed. UI dialog/name selection is external."
+    },
+    {
+      "id": "coordinate_conversion_actions",
+      "definitions": [
+        "DataConvertor::ConvertECEFToUTM#1",
+        "DataConvertor::ConvertUTMToECEF#1",
+        "UTM::LatLonToUTMXY#1",
+        "PCLProject::MainForm::uTMPTSToECEFPTSToolStripMenuItem_Click#1",
+        "PCLProject::DataConverstionForm::utmConvertButton_Click#1"
+      ],
+      "python": [
+        "railway_mls.conversion:CoordinateConverter",
+        "railway_mls.conversion:convert_legacy_files"
+      ],
+      "tests": [
+        "tests/test_coordinates.py"
+      ],
+      "note": "Scalar projections, source float aliases/constants/units, repeated buffers, callbacks, metadata, menus and batch selection/export reviewed. Explicit conversion stays outside core tracking and preserves the source menu's northern inverse binding."
+    },
+    {
+      "id": "standalone_header_utilities_and_loop_cross",
+      "definitions": [
+        "RailwayExtraction::ComputeGMMParaAndCluster#1",
+        "RailwayExtraction::DeleteSegPntsCmpWithPreHgt#1",
+        "RailwayExtraction::DetectLoopCross#1",
+        "RailwayExtraction::ValidateLoopCross#1",
+        "Line3D::GetUnitVec#1"
+      ],
+      "python": [
+        "railway_mls.gmm:classify_segment",
+        "railway_mls.loop_cross:detect_loop_cross",
+        "railway_mls.loop_cross:validate_loop_cross"
+      ],
+      "tests": [
+        "tests/test_header.py",
+        "tests/test_source_utilities.py",
+        "tests/test_loop_cross.py"
+      ],
+      "note": "Uncalled wrappers, scalar math, mutable/cache-sensitive header operations, loop/cross projection and integer-phase validation reviewed. Standalone ports are available; inactive source scheduling and commented rotations remain inactive."
+    },
+    {
+      "id": "standalone_pcl_helpers",
+      "definitions": [
+        "LASFileReader::DecreaseDensity#1",
+        "LASFileReader::Transform#1"
+      ],
+      "python": [
+        "railway_mls.pcl_helpers:decrease_density",
+        "railway_mls.pcl_helpers:center_point_cloud"
+      ],
+      "tests": [
+        "tests/test_pcl_helpers.py"
+      ],
+      "note": "Literal 0.1f voxel grid, double centroid plus float32 affine output, metadata, density/nonfinite/empty cases, integer-overflow guards, float floor overload and equal-key replay reviewed. Selected PCL extracts and bundled Eigen comparisons need local headers only for tests; helpers remain uncalled by readers/tracking."
+    }
+  ],
+  "call_sites": [
+    {
+      "caller": "RailwayExtraction::RailwayExtraction#1",
+      "must_call": [
+        "DefineTemplates"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "PCLProject::MainForm::loadFile#1",
+      "must_call": [
+        "get",
+        "put",
+        "ReadData",
+        "generateGrid"
+      ],
+      "must_not_call": [
+        "DecreaseDensity",
+        "Transform",
+        "ConvertECEFToUTM",
+        "ConvertUTMToECEF"
+      ]
+    },
+    {
+      "caller": "PCLProject::MainForm::openPTSFileToolStripMenuItem_Click#1",
+      "must_call": [
+        "ReadData",
+        "generateGrid"
+      ],
+      "must_not_call": [
+        "DecreaseDensity",
+        "Transform"
+      ]
+    },
+    {
+      "caller": "PCLProject::MainForm::ReceivedPoints#1",
+      "must_call": [
+        "GetAngle",
+        "OnRailextractionSetinit",
+        "updateInputs",
+        "getLocation"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "PCLProject::MainForm::setParametersToolStripMenuItem_Click#1",
+      "must_call": [
+        "getExtractionParameters",
+        "updateValues",
+        "getValues",
+        "updateExtractionParameters"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "RailwayExtraction::OnRailextractionSetinit#2",
+      "must_call": [
+        "Setinitiallocation"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "RailwayExtraction::Setinitiallocation#1",
+      "must_call": [
+        "ComputeGMMfeature",
+        "ClusteringByGMM",
+        "LineExtractionByRansac",
+        "AdjustTwoLines",
+        "GetLnsFromVtx"
+      ],
+      "must_not_call": [
+        "DetectLoopCross",
+        "DetectLoopCrossDemo"
+      ]
+    },
+    {
+      "caller": "RailwayExtraction::Trackingrailway#1",
+      "must_call": [
+        "KalmanPredict",
+        "GenerateTrkSegAssignMemPts",
+        "ExtractTrkPts",
+        "SegmentTrackPtsByMDL",
+        "DetermineObservation",
+        "LineExtractionByRansac",
+        "KalmanUpdate",
+        "AdjustTwoLinesWithObservation",
+        "DuplicatePolyPair",
+        "DefineTemplates",
+        "RecognitionTurnoutType",
+        "DetectToePnts",
+        "DetectSwitchBox"
+      ],
+      "must_not_call": [
+        "DetectLoopCross",
+        "DetectLoopCrossDemo",
+        "ValidateLoopCross",
+        "ValidateTurnoutType",
+        "TemplateMatching",
+        "ComputeGrade",
+        "DeleteSegPntsCmpWithPreHgt"
+      ]
+    },
+    {
+      "caller": "RailwayExtraction::ExtractTrkPts#1",
+      "must_call": [
+        "ComputeGMMfeature",
+        "ClusteringByGMM",
+        "LineExtractionByRansac",
+        "DistanceBetweenPointAndLine3DHgt"
+      ],
+      "must_not_call": [
+        "DeleteSegPntsCmpWithPreHgt"
+      ]
+    },
+    {
+      "caller": "RailwayExtraction::SegmentTrackPtsByMDL#1",
+      "must_call": [
+        "LineExtractionWithFixedAngle",
+        "SegmentPoints",
+        "ComputeCloseness"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "RailwayExtraction::DetermineObservation#1",
+      "must_call": [
+        "DistanceBetweenPointAndLine2D",
+        "AdjustTwoLines"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "RailwayExtraction::OnRailextractionTrackingRailway#1",
+      "must_call": [
+        "Trackingrailway",
+        "Setinitiallocation",
+        "AddPointTofootOfPependicularOnRailVtx"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "PCLProject::MainForm::railwayTrackingToolStripMenuItem_Click#1",
+      "must_call": [
+        "OnRailextractionSetinit",
+        "OnRailextractionTrackingRailway",
+        "ReserverVectors",
+        "Setinitiallocation"
+      ],
+      "must_not_call": [
+        "ComputeGrade",
+        "DetectLoopCross"
+      ]
+    },
+    {
+      "caller": "RailwayExtraction::DetectToePnts#1",
+      "must_call": [
+        "SegmentPoints",
+        "LineExtractionByRansac",
+        "ComputeFootOfPerpendicular"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "RailwayExtraction::DetectSwitchBox#1",
+      "must_call": [
+        "GetBufferVtxOfLine",
+        "ExtractPlaneByRANSAC",
+        "SegmentPoints",
+        "GenerateRgnsUsingCenterPt"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "RailwayExtraction::ExtractPlaneByRANSAC#1",
+      "must_call": [
+        "GetPlaneParameters3p",
+        "GetPlaneParametersEigen"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "RailwayExtraction::ComputeGMMParaAndCluster#1",
+      "must_call": [
+        "ComputeGMMfeature",
+        "ClusteringByGMM"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "RailwayExtraction::DetectLoopCross#1",
+      "must_call": [
+        "LineExtractionWithFixedAngleForLoopCross",
+        "ComputeIntersectionPoint3D"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "PCLProject::MainForm::computeGradeToolStripMenuItem_Click#1",
+      "must_call": [
+        "GetLayers",
+        "ComputeGrade"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "PCLProject::MainForm::exportGWADToolStripMenuItem_Click#1",
+      "must_call": [
+        "ComputeGrade",
+        "DistanceBetweenPoints3D",
+        "IsEqual"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "RailwayExtraction::ComputeGrade#1",
+      "must_call": [
+        "DetermineGradeSection",
+        "ComputeGradeParameters"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "PCLProject::MainForm::saveRailVectorAtIndex#1",
+      "must_call": [
+        "saveRailVector"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "PCLProject::MainForm::saveRailVectorWithIndexAtIndex#1",
+      "must_call": [
+        "saveRailVectorWithIndex"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "DataConvertor::ConvertECEFToUTM#1",
+      "must_call": [
+        "Ecef_to_geodetic",
+        "LatLonToUTMXY"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "DataConvertor::ConvertUTMToECEF#1",
+      "must_call": [
+        "UTMXYToLatLon",
+        "Geodetic_to_ecef"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "PCLProject::MainForm::eCEFLASToUTMToolStripMenuItem_Click#1",
+      "must_call": [
+        "ConvertECEFToUTM",
+        "SaveConvertedPoints"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "PCLProject::MainForm::uTMPTSToECEFPTSToolStripMenuItem_Click#1",
+      "must_call": [
+        "ConvertUTMToECEF",
+        "SaveConvertedPoints"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "PCLProject::DataConverstionForm::utmConvertButton_Click#1",
+      "must_call": [
+        "ConvertECEFToUTM",
+        "SaveConvertedPoints"
+      ],
+      "must_not_call": []
+    },
+    {
+      "caller": "PCLProject::DataConverstionForm::ecefConvertButton_Click#1",
+      "must_call": [
+        "ConvertUTMToECEF",
+        "SaveConvertedPoints"
+      ],
+      "must_not_call": []
+    }
+  ],
+  "call_inventory": [
+    {
+      "definition": "RailwayExtraction::RailwayExtraction#1",
+      "project_named_call_tokens": {
+        "DefineTemplates": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::updateExtractionParameters#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::getExtractionParameters#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::~RailwayExtraction#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::setInitialLocation#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::updateMaxMin#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::updateMaxMin#2",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::updateMaxMin#3",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::updateMaxMinFromReader#1",
+      "project_named_call_tokens": {
+        "readMaxMinFromReader": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::readMaxMinFromReader#1",
+      "project_named_call_tokens": {
+        "maxPoint": 1,
+        "minPoint": 1,
+        "updateMaxMin": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::readMaxMinFromTXTReader#1",
+      "project_named_call_tokens": {
+        "updateMaxMin": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::generateGrid#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::OnRailextractionSetinit#1",
+      "project_named_call_tokens": {
+        "Setinitiallocation": 1,
+        "updateView": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::OnRailextractionSetinit#2",
+      "project_named_call_tokens": {
+        "Setinitiallocation": 1,
+        "updateView": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::OnRailextractionTrackingRailway#1",
+      "project_named_call_tokens": {
+        "Trackingrailway": 3,
+        "SetPoint3D": 1,
+        "Setinitiallocation": 1,
+        "AddPointTofootOfPependicularOnRailVtx": 1,
+        "updateView": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::Setinitiallocation#1",
+      "project_named_call_tokens": {
+        "SetTrkGauge": 1,
+        "SetPoint3D": 4,
+        "SwapWnd": 1,
+        "GenerateVtxUsingCenterAndAngle": 4,
+        "GetCenterOfTwoTracks": 2,
+        "GetNeighborIdx": 1,
+        "SetTrackWindowMemPnts": 2,
+        "ComputeGMMfeature": 2,
+        "ClusteringByGMM": 2,
+        "LineExtractionByRansac": 2,
+        "SetEndingByMode": 2,
+        "GetDirectionMode": 4,
+        "AdjustTwoLines": 1,
+        "GetDistanceBetweenTwoCenter": 1,
+        "GetLnsFromVtx": 2
+      }
+    },
+    {
+      "definition": "RailwayExtraction::Trackingrailway#1",
+      "project_named_call_tokens": {
+        "GetDirectionMode": 7,
+        "KalmanPredict": 6,
+        "GenerateTrkSegAssignMemPts": 3,
+        "ExtractTrkPts": 2,
+        "SegmentTrackPtsByMDL": 2,
+        "DetermineObservation": 1,
+        "LineExtractionByRansac": 4,
+        "SetEndByReferencePt": 4,
+        "KalmanUpdate": 2,
+        "SetPoint3D": 8,
+        "GetLineParameter": 5,
+        "GetAngle": 3,
+        "AdjustTwoLinesWithObservation": 1,
+        "DistanceBetweenPoints2D": 2,
+        "GenerateVtxUsingCenterAndAngle": 2,
+        "GetCenterOfTwoTracks": 1,
+        "GetDistanceBetweenTwoCenter": 1,
+        "GetLnsFromVtx": 4,
+        "DuplicatePolyPair": 1,
+        "updateView": 1,
+        "DefineTemplates": 1,
+        "SetBinaryString": 1,
+        "RecognitionTurnoutType": 1,
+        "DetectToePnts": 1,
+        "DetectSwitchBox": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::ExtractTrkPts#1",
+      "project_named_call_tokens": {
+        "ComputeGMMfeature": 2,
+        "ClusteringByGMM": 2,
+        "LineExtractionByRansac": 2,
+        "GetUnitVec": 2,
+        "GetLineParameter": 2,
+        "DistanceBetweenPointAndLine3DHgt": 2
+      }
+    },
+    {
+      "definition": "RailwayExtraction::ComputeGMMParaAndCluster#1",
+      "project_named_call_tokens": {
+        "ComputeGMMfeature": 2,
+        "ClusteringByGMM": 2
+      }
+    },
+    {
+      "definition": "RailwayExtraction::DeleteSegPntsCmpWithPreHgt#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::GenerateTrkSegAssignMemPts#1",
+      "project_named_call_tokens": {
+        "SetPoint3D": 2,
+        "GenerateVtxUsingCenterAndAngle": 2,
+        "GetCenterOfTwoTracks": 1,
+        "GetDistanceBetweenTwoCenter": 1,
+        "GetNeighborIdx": 1,
+        "SetTrackWindowMemPnts": 2
+      }
+    },
+    {
+      "definition": "RailwayExtraction::DetermineObservation#1",
+      "project_named_call_tokens": {
+        "DistanceBetweenPointAndLine2D": 36,
+        "GetDirectionMode": 2,
+        "AdjustTwoLines": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::SegmentTrackPtsByMDL#1",
+      "project_named_call_tokens": {
+        "LineExtractionWithFixedAngle": 5,
+        "SetEndingByMode": 3,
+        "SegmentPoints": 2,
+        "DistanceBetweenPoints2D": 3,
+        "ComputeCloseness": 3
+      }
+    },
+    {
+      "definition": "RailwayExtraction::ComputeCloseness#1",
+      "project_named_call_tokens": {
+        "DistanceBetweenPointAndLine2D": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::DefineTemplates#1",
+      "project_named_call_tokens": {
+        "SetBinaryString": 20
+      }
+    },
+    {
+      "definition": "RailwayExtraction::AdjustTwoLines#1",
+      "project_named_call_tokens": {
+        "GetCenterPt": 2,
+        "Get2DLineParameterWithAngleAndPt": 4,
+        "ComputeFootOfPerpendicular": 1,
+        "GetLineParameter": 1,
+        "DistanceBetweenPoints2D": 1,
+        "ExtendEndingPts": 1,
+        "SetEndingPntsByCenterAndLength": 2,
+        "SetEndingByMode": 2
+      }
+    },
+    {
+      "definition": "RailwayExtraction::AdjustTwoLinesWithObservation#1",
+      "project_named_call_tokens": {
+        "GetCenterPt": 2,
+        "Get2DLineParameterWithAngleAndPt": 4,
+        "ComputeFootOfPerpendicular": 1,
+        "DistanceBetweenPointAndLine2D": 2,
+        "GetLineParameter": 1,
+        "ExtendEndingPts": 1,
+        "SetEndingPntsByCenterAndLength": 2,
+        "SetEndByReferencePt": 2
+      }
+    },
+    {
+      "definition": "RailwayExtraction::ValidateLoopCross#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::DetectLoopCross#1",
+      "project_named_call_tokens": {
+        "GetNeighborVtxBND": 1,
+        "GetPntsInsidePolygon": 2,
+        "DistanceBetweenPointAndLine2D": 4,
+        "LineExtractionWithFixedAngleForLoopCross": 1,
+        "ComputeIntersectionPoint3D": 2,
+        "GetLineParameter": 1,
+        "GetCenterPt": 1,
+        "DistanceBetweenPoints2D": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::DetectSwitchBox#1",
+      "project_named_call_tokens": {
+        "GetLineParameter": 4,
+        "GetAngle": 2,
+        "GetCenterPt": 2,
+        "ExtendEndingPts": 1,
+        "SetEndingPntsByCenterAndLength": 2,
+        "GetBufferVtxOfLine": 2,
+        "GetNeighborIdx": 1,
+        "GetPntsInsidePolygon": 1,
+        "ExtractPlaneByRANSAC": 2,
+        "SegmentPoints": 1,
+        "GenerateRgnsUsingCenterPt": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::DetectToePnts#1",
+      "project_named_call_tokens": {
+        "SegmentPoints": 4,
+        "LineExtractionByRansac": 4,
+        "GetMinMaxXY": 4,
+        "SetEndingPnts": 4,
+        "DistanceBetweenPoints2D": 8,
+        "GetAngle": 4,
+        "ComputeFootOfPerpendicular": 8,
+        "GetDirectionMode": 4
+      }
+    },
+    {
+      "definition": "RailwayExtraction::RecognitionTurnoutType#1",
+      "project_named_call_tokens": {
+        "PrintTurnoutType": 2,
+        "SetLables": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::TemplateMatching#1",
+      "project_named_call_tokens": {
+        "PrintTurnoutType": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::LineExtractionByRansac#1",
+      "project_named_call_tokens": {
+        "GetLineParameter": 3,
+        "DistanceBetweenPointAndLine2D": 2,
+        "SetEndingPnts3D": 1,
+        "GetCenterPt": 1,
+        "GetAngle": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::LineExtractionByRansac#2",
+      "project_named_call_tokens": {
+        "GetLineParameter": 3,
+        "DistanceBetweenPointAndLine2D": 1,
+        "SetEndingPnts3D": 1,
+        "GetCenterPt": 1,
+        "GetAngle": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::LineExtractionWithFixedAngle#1",
+      "project_named_call_tokens": {
+        "Get2DLineParameterWithAngleAndPt": 1,
+        "DistanceBetweenPointAndLine2D": 1,
+        "GetMinMaxXY": 1,
+        "SetEndingPnts": 1,
+        "GetCenterPt": 1,
+        "GetAngle": 1,
+        "GetLineParameter": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::LineExtractionWithFixedAngleForLoopCross#1",
+      "project_named_call_tokens": {
+        "Get2DLineParameterWithAngleAndPt": 1,
+        "DistanceBetweenPointAndLine2D": 1,
+        "SetEndingPnts3D": 1,
+        "GetCenterPt": 1,
+        "GetAngle": 1,
+        "GetLineParameter": 1,
+        "DistanceBetweenPoints2D": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::ComputeGMMfeature#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::ClusteringByGMM#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::SegmentPoints#1",
+      "project_named_call_tokens": {
+        "PointGrowing": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::PointGrowing#1",
+      "project_named_call_tokens": {
+        "DistanceBetweenPoints2D": 1,
+        "PointGrowing": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::GetMinMaxXY#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::ReCount#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::ComputeArea#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::ComputeInnerAngle#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::ComputeIntersectionPoint3D#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::ComputeFootOfPerpendicular#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::DistanceBetweenPoints2D#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::DistanceBetweenPoints2D#2",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::DistanceBetweenPoints3D#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::DistanceBetweenPoints3D#2",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::DistanceBetweenPointAndLine2D#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::DistanceBetweenPointAndLine2D#2",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::DistanceBetweenPointAndLine3D#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::DistanceBetweenPointAndLine3DHgt#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::DistanceBetweenPointAndPlane#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::GetNeighborIdx#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::GetDirectionMode#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::KalmanPredict#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::KalmanUpdate#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::GetPntsInsidePolygon#1",
+      "project_named_call_tokens": {
+        "pnpoly2": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::ExtractPlaneByRANSAC#1",
+      "project_named_call_tokens": {
+        "SetPoint3D": 3,
+        "GetPlaneParameters3p": 1,
+        "DistanceBetweenPointAndPlane": 2,
+        "GetPlaneParametersEigen": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::GetPlaneParameters3p#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::GetPlaneParametersEigen#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::GetLnsFromVtx#1",
+      "project_named_call_tokens": {
+        "ReCount": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::PrintTurnoutType#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::PrintVtx#1",
+      "project_named_call_tokens": {
+        "ReCount": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::PrintPts#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::PrintLines#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::updateView#1",
+      "project_named_call_tokens": {
+        "updateView": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::updateView#2",
+      "project_named_call_tokens": {
+        "ReCount": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::GetLayers#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "RailwayExtraction::ComputeGrade#1",
+      "project_named_call_tokens": {
+        "DetermineGradeSection": 1,
+        "ComputeGradeParameters": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::DetermineGradeSection#1",
+      "project_named_call_tokens": {
+        "DouglasPeuckerVertical": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::DouglasPeuckerVertical#1",
+      "project_named_call_tokens": {
+        "GetLineParameter": 1,
+        "DistanceBetweenPointAndLine2D": 1,
+        "DouglasPeuckerVertical": 2
+      }
+    },
+    {
+      "definition": "RailwayExtraction::ComputeGradeParameters#1",
+      "project_named_call_tokens": {
+        "ResetGradeSect": 1,
+        "DistanceBetweenPoints2D": 2,
+        "GetLineParameter": 1,
+        "DistanceBetweenPointAndLine2D": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::AddPointTofootOfPependicularOnRailVtx#1",
+      "project_named_call_tokens": {
+        "GetLineParameter": 1,
+        "ComputeFootOfPerpendicular": 1,
+        "DistanceBetweenPoints2D": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::GetAngle#1",
+      "project_named_call_tokens": {
+        "bIsNan": 1
+      }
+    },
+    {
+      "definition": "RailwayExtraction::ReserverVectors#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::openToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {
+        "listFiles": 1,
+        "loadFile": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::setInitalLocationToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {
+        "updateInputs": 1,
+        "disableRetryButton": 1,
+        "getLocation": 1,
+        "OnRailextractionSetinit": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::railwayTrackingToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {
+        "OnRailextractionSetinit": 1,
+        "OnRailextractionTrackingRailway": 2,
+        "UpdateProgress": 2,
+        "ReserverVectors": 1,
+        "Setinitiallocation": 1,
+        "updateView": 1,
+        "updateTrackedLayers": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::saveRailVectorToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {
+        "saveRailVectorAtIndex": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::saveRailVectorAtIndex#1",
+      "project_named_call_tokens": {
+        "saveRailVector": 2
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::saveRailVectorWithIndexAtIndex#1",
+      "project_named_call_tokens": {
+        "saveRailVectorWithIndex": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::savePointsToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::exitToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::showPointCloud#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::toolStripCameraTop_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::toolStripCameraDown_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::toolStripCameraLeft_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::toolStripCameraRight_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::toolStripCameraFront_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::toolStripCameraBack_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::toolStripCameraIsometric_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::VTKMouseMove#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::GenerateGrid#1",
+      "project_named_call_tokens": {
+        "showPointCloud": 1,
+        "generateGrid": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::LoadPointCloud#1",
+      "project_named_call_tokens": {
+        "GenerateGrid": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::InitLocationPick#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::ReceivedPoints#1",
+      "project_named_call_tokens": {
+        "GetAngle": 1,
+        "OnRailextractionSetinit": 2,
+        "updateInputs": 1,
+        "getLocation": 1,
+        "InitLocationPick": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::GetAngle#1",
+      "project_named_call_tokens": {
+        "bIsNan": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::openPTSFileToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {
+        "TXTFileReader": 1,
+        "ReadData": 1,
+        "RailwayExtraction": 1,
+        "readMaxMinFromTXTReader": 1,
+        "generateGrid": 1,
+        "updateView": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::eCEFLASToUTMToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {
+        "LASFileReader": 1,
+        "ReadData": 1,
+        "showPointCloud": 1,
+        "DataConvertor": 1,
+        "ConvertECEFToUTM": 1,
+        "SaveConvertedPoints": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::uTMPTSToECEFPTSToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {
+        "TXTFileReader": 1,
+        "ReadData": 1,
+        "showPointCloud": 1,
+        "DataConvertor": 1,
+        "ConvertUTMToECEF": 1,
+        "SaveConvertedPoints": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::dataConversionToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::selectInitialLocationToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {
+        "InitLocationPick": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::listFiles#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::loadFile#1",
+      "project_named_call_tokens": {
+        "get": 1,
+        "updateView": 2,
+        "updateTrackedLayers": 1,
+        "LASFileReader": 1,
+        "ReadData": 2,
+        "TXTFileReader": 1,
+        "RailwayExtraction": 1,
+        "put": 1,
+        "updateMaxMinFromReader": 1,
+        "readMaxMinFromTXTReader": 1,
+        "generateGrid": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::updateTrackedLayers#1",
+      "project_named_call_tokens": {
+        "GetLayers": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::filesTreeView_NodeMouseDoubleClick#1",
+      "project_named_call_tokens": {
+        "loadFile": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::exportGWADToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {
+        "GetLayers": 1,
+        "ComputeGrade": 1,
+        "DistanceBetweenPoints3D": 1,
+        "IsEqual": 2
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::setParametersToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {
+        "getExtractionParameters": 1,
+        "updateValues": 1,
+        "getValues": 1,
+        "updateExtractionParameters": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::computeGradeToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {
+        "GetLayers": 1,
+        "ComputeGrade": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::setPointCloudColorToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {
+        "updateView": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::exportOptionsToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::setBackgroundColorToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::toolIntensity_Click#1",
+      "project_named_call_tokens": {
+        "updateView": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::layersTreeView_EnabledChanged#1",
+      "project_named_call_tokens": {
+        "updateView": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::layersTreeView_AfterCheck#1",
+      "project_named_call_tokens": {
+        "updateView": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::renameToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::SaveVectorToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {
+        "saveRailVectorAtIndex": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::saveRailVectorWithIndexToolStripMenuItem_Click#1",
+      "project_named_call_tokens": {
+        "saveRailVectorWithIndexAtIndex": 1
+      }
+    },
+    {
+      "definition": "PCLProject::MainForm::layersTreeView_NodeMouseClick#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::MainForm::UpdateProgress#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TXTFileReader::TXTFileReader#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TXTFileReader::~TXTFileReader#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TXTFileReader::ReadData#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TXTFileReader::ReadData#2",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TXTFileReader::ReadDataCSV#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TXTFileReader::LoadedData#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TXTFileReader::saveRailVector#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TXTFileReader::saveRailVector#2",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TXTFileReader::saveRailVectorWithIndex#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LASFileReader::LASFileReader#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LASFileReader::~LASFileReader#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LASFileReader::ReadData#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LASFileReader::ReadData#2",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LASFileReader::LoadedData#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LASFileReader::DecreaseDensity#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LASFileReader::Transform#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LASFileReader::maxPoint#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LASFileReader::minPoint#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "DataConvertor::DataConvertor#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "DataConvertor::~DataConvertor#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "DataConvertor::ConvertECEFToUTM#1",
+      "project_named_call_tokens": {
+        "Ecef_to_geodetic": 1,
+        "LatLonToUTMXY": 1
+      }
+    },
+    {
+      "definition": "DataConvertor::ConvertECEFToUTM#2",
+      "project_named_call_tokens": {
+        "Ecef_to_geodetic": 1,
+        "LatLonToUTMXY": 1
+      }
+    },
+    {
+      "definition": "DataConvertor::ConvertUTMToECEF#1",
+      "project_named_call_tokens": {
+        "UTMXYToLatLon": 1,
+        "Geodetic_to_ecef": 1
+      }
+    },
+    {
+      "definition": "DataConvertor::ConvertUTMToECEF#2",
+      "project_named_call_tokens": {
+        "UTMXYToLatLon": 1,
+        "Geodetic_to_ecef": 1
+      }
+    },
+    {
+      "definition": "DataConvertor::Ecef_to_geodetic#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "DataConvertor::Geodetic_to_ecef#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "DataConvertor::SaveConvertedPoints#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "DataConvertor::SaveConvertedPoints#2",
+      "project_named_call_tokens": {
+        "SaveConvertedPoints": 1
+      }
+    },
+    {
+      "definition": "DataConvertor::SaveConvertedPoints#3",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "UTM::DegToRad#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "UTM::RadToDeg#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "UTM::ArcLengthOfMeridian#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "UTM::UTMCentralMeridian#1",
+      "project_named_call_tokens": {
+        "DegToRad": 1
+      }
+    },
+    {
+      "definition": "UTM::FootpointLatitude#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "UTM::MapLatLonToXY#1",
+      "project_named_call_tokens": {
+        "ArcLengthOfMeridian": 1
+      }
+    },
+    {
+      "definition": "UTM::MapXYToLatLon#1",
+      "project_named_call_tokens": {
+        "FootpointLatitude": 1
+      }
+    },
+    {
+      "definition": "UTM::LatLonToUTMXY#1",
+      "project_named_call_tokens": {
+        "MapLatLonToXY": 1,
+        "DegToRad": 2,
+        "UTMCentralMeridian": 1
+      }
+    },
+    {
+      "definition": "UTM::UTMXYToLatLon#1",
+      "project_named_call_tokens": {
+        "UTMCentralMeridian": 1,
+        "MapXYToLatLon": 1
+      }
+    },
+    {
+      "definition": "PCLProject::DataConverstionForm::sourceButton_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::DataConverstionForm::destinationButton_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::DataConverstionForm::utmConvertButton_Click#1",
+      "project_named_call_tokens": {
+        "CheckErrors": 1,
+        "LASFileReader": 1,
+        "ReadData": 2,
+        "TXTFileReader": 2,
+        "ReadDataCSV": 1,
+        "UpdateAllFilesProgress": 3,
+        "DataConvertor": 1,
+        "ConvertECEFToUTM": 1,
+        "SaveConvertedPoints": 1
+      }
+    },
+    {
+      "definition": "PCLProject::DataConverstionForm::ecefConvertButton_Click#1",
+      "project_named_call_tokens": {
+        "CheckErrors": 1,
+        "LASFileReader": 1,
+        "ReadData": 2,
+        "TXTFileReader": 2,
+        "ReadDataCSV": 1,
+        "DataConvertor": 1,
+        "UpdateAllFilesProgress": 3,
+        "ConvertUTMToECEF": 1,
+        "SaveConvertedPoints": 1
+      }
+    },
+    {
+      "definition": "PCLProject::DataConverstionForm::UpdateProgress#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::DataConverstionForm::UpdateAllFilesProgress#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::DataConverstionForm::CheckErrors#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LIDARPT::bIsNan#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LIDARPT::FLOOR_double#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LIDARPT::pnpoly#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LIDARPT::pnpoly2#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LiDPOINT::LiDPOINT#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LiDPOINT::LiDPOINT#2",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LiDPOINT::~LiDPOINT#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LiDPOINT::SetXYZ#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LiDPOINT::SetXYZ#2",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LiDPOINT::IsEqual#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LiDPOINT::operator-#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LiDPOINT::operator+#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LiDPOINT::operator/#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT2D::POINT2D#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT2D::POINT2D#2",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT2D::IsEqual#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT2D::operator*#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT2D::operator/#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT2D::operator-#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT2D::operator+#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT2D::isEqual#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT3D::POINT3D#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT3D::POINT3D#2",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT3D::SetPoint3D#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT3D::ChangeSign#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT3D::Normalize#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT3D::operator=#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT3D::operator-#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT3D::operator+#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT3D::operator*#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT3D::operator/#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT3D::IsEqual#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT3D::DotProduct#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "POINT3D::CrossProduct#1",
+      "project_named_call_tokens": {
+        "POINT3D": 1
+      }
+    },
+    {
+      "definition": "Line3D::Line3D#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "Line3D::GetAngle#1",
+      "project_named_call_tokens": {
+        "bIsNan": 1
+      }
+    },
+    {
+      "definition": "Line3D::GetLineParameter#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "Line3D::Get2DLineParameterWithAngleAndPt#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "Line3D::GetCenterPt#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "Line3D::SwapEnding#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "Line3D::SetEndingByMode#1",
+      "project_named_call_tokens": {
+        "SwapEnding": 8
+      }
+    },
+    {
+      "definition": "Line3D::SetEndByReferencePt#1",
+      "project_named_call_tokens": {
+        "SwapEnding": 1
+      }
+    },
+    {
+      "definition": "Line3D::ExtendEndingPts#1",
+      "project_named_call_tokens": {
+        "GetCenterPt": 1
+      }
+    },
+    {
+      "definition": "Line3D::IsVertex#1",
+      "project_named_call_tokens": {
+        "IsEqual": 2,
+        "SwapVertex": 1
+      }
+    },
+    {
+      "definition": "Line3D::SwapVertex#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "Line3D::GetTopologyUsingCrossProduct#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "Line3D::SetEndingPnts#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "Line3D::SetEndingPnts3D#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "Line3D::SetEndingPntsByCenterAndLength#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "Line3D::GetUnitVec#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "Line3D::GetBufferVtxOfLine#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "GMMPara::GMMPara#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "GMMPara::operator=#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TrackWindow::TrackWindow#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TrackWindow::ResetTrackWindow#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TrackWindow::GenerateVtxUsingCenterAndAngle#1",
+      "project_named_call_tokens": {
+        "GetLineParameter": 1,
+        "GetAngle": 1,
+        "GetBufferVtxOfLine": 1
+      }
+    },
+    {
+      "definition": "TrackWindow::SetTrackWindowMemPnts#1",
+      "project_named_call_tokens": {
+        "pnpoly": 1
+      }
+    },
+    {
+      "definition": "TrackWindow::GetMaxMinOfMemPnts#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TrackWindow::GetSideVtx#1",
+      "project_named_call_tokens": {
+        "GetLineParameter": 3,
+        "GetBufferVtxOfLine": 3
+      }
+    },
+    {
+      "definition": "TrackSegment::SetTrkGauge#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TrackSegment::GetNeighborVtxBND#1",
+      "project_named_call_tokens": {
+        "GetLineParameter": 5,
+        "GetBufferVtxOfLine": 5
+      }
+    },
+    {
+      "definition": "TrackSegment::TrackSegment#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TrackSegment::GetCenterOfTwoTracks#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TrackSegment::GetDistanceBetweenTwoCenter#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TrackSegment::DuplicatePolyPair#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TrackSegment::SwapWnd#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "SwitchBox::GenerateRgnsUsingCenterPt#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "BinaryString::BinaryString#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "BinaryString::SetBinaryString#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "BinaryString::SetLables#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "TrackStack::TrackStack#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "ToePt::ToePt#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PlnPara::operator=#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LIDARPT::HigherZValue#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "LIDARPT::LargePts#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "GradeSect::GradeSect#1",
+      "project_named_call_tokens": {
+        "SetPoint3D": 2
+      }
+    },
+    {
+      "definition": "GradeSect::ResetGradeSect#1",
+      "project_named_call_tokens": {
+        "SetPoint3D": 2
+      }
+    },
+    {
+      "definition": "PointXYZDouble::PointXYZDouble#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PointXYZDouble::PointXYZDouble#2",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PointXYZDouble::PointXYZDouble#3",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PointXYZDouble::operator==#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PointXYZDouble::IsEqual#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PointXYZDouble::isNull#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "HashMap::put#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "HashMap::get#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::ExtractionParameterForm::okayButton_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::ExtractionParameterForm::cancelButton_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::ExtractionParameterForm::getValues#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::ExtractionParameterForm::updateValues#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::InitialLocationForm::okayButton_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::InitialLocationForm::pickAgainButton_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::InitialLocationForm::cancelButton_Click#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::InitialLocationForm::updateInputs#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::InitialLocationForm::updateInputs#2",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::InitialLocationForm::getLocation#1",
+      "project_named_call_tokens": {}
+    },
+    {
+      "definition": "PCLProject::InitialLocationForm::disableRetryButton#1",
+      "project_named_call_tokens": {}
+    }
+  ],
+  "open_limitations": [
+    "LIM-001",
+    "LIM-002",
+    "LIM-003",
+    "LIM-004",
+    "LIM-005",
+    "LIM-006",
+    "LIM-007",
+    "LIM-008",
+    "LIM-009",
+    "LIM-010",
+    "LIM-011",
+    "LIM-012",
+    "LIM-013",
+    "LIM-014",
+    "LIM-015",
+    "LIM-016",
+    "LIM-017",
+    "LIM-018",
+    "LIM-019",
+    "LIM-020",
+    "LIM-021",
+    "LIM-022",
+    "LIM-023",
+    "LIM-024",
+    "LIM-025",
+    "LIM-026",
+    "LIM-027",
+    "LIM-028",
+    "LIM-029",
+    "LIM-030",
+    "LIM-031",
+    "LIM-032",
+    "LIM-033",
+    "LIM-034",
+    "LIM-035",
+    "LIM-036",
+    "LIM-037",
+    "LIM-038",
+    "LIM-039"
+  ],
+  "next_work": [
+    "Review every limitation with the user before choosing corrections.",
+    "Agree real MLS inputs, coordinate units/CRS, sampling and experiment metrics.",
+    "Validate real-data outcomes and, if available, the matched original Windows executable."
+  ]
+}

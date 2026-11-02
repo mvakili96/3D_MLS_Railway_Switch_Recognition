@@ -165,7 +165,9 @@ until continuation reaches a natural stop. Undefined/nonfinite paths stop before
 unsafe source operations and do not trigger automatic recognition. Empty-layer
 invocations return immediately. The [toe increment](PYTHON_TOES.md) now follows
 recognition with its own source gates and missing-reference diagnostics. Branch
-work remains pending.
+scheduling is implemented in [the orchestration increment](PYTHON_ORCHESTRATION.md).
+The subsequent [reconstruction audit](RECONSTRUCTION_AUDIT.md) completes the
+computational scope review while retaining all limitation IDs.
 
 At completion of this increment, the suite passed **198 test methods**, including **64** comparing original
 C++ extracts. Nine new native comparison methods check every catalogue field and

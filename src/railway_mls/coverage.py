@@ -59,7 +59,7 @@ def cpp_header_inventory(text: str) -> tuple[tuple[dict, ...], tuple[dict, ...]]
                 }
             )
     pattern = re.compile(
-        r"(?m)^[ \t]*((?:[^\n;{}]*?\s+)?(operator\s*[=+*/-]|~?\w+)\s*\([^;{}]*\))\s*\{"
+        r"(?m)^[ \t]*((?:[^\n;{}]*?[\s*&])?(operator\s*(?:==|[=+*/-])|~?\w+)\s*\([^;{}]*\))\s*\{"
     )
     counts, definitions = Counter(), []
     for match in pattern.finditer(code):
@@ -128,6 +128,26 @@ def cpp_free_definitions(text: str, owner: str) -> tuple[dict, ...]:
     return tuple(result)
 
 
+def cpp_function_calls(text: str, definition: dict) -> tuple[str, ...]:
+    """Lexical call tokens in one inventoried body, in source order.
+
+    Comments and strings are blanked, and balanced braces bound the body. This
+    checks reviewed call-site witnesses; it does not resolve overloads, pointers,
+    templates, macros, virtual dispatch or reachability under runtime conditions.
+    """
+    code = _cpp_code(text)
+    start = sum(len(line) for line in code.splitlines(keepends=True)[:definition["line"] - 1])
+    opening = code.find("{", start)
+    if opening < 0:
+        raise ValueError("missing source function body")
+    depth = 1
+    for position in range(opening + 1, len(code)):
+        depth += (code[position] == "{") - (code[position] == "}")
+        if depth == 0:
+            return tuple(re.findall(r"\b([A-Za-z_]\w*)\s*\(", code[opening + 1:position]))
+    raise ValueError("unbalanced source function body")
+
+
 def source_coverage() -> dict:
     """Read the packaged audit; it describes dispositions, not verified parity."""
     return json.loads(resources.files("railway_mls").joinpath("source_coverage.json").read_text())
@@ -149,7 +169,7 @@ def coverage_summary() -> dict:
         "engine_ui_definition_count": sum(
             len(file["definitions"])
             for file in audit["definition_files"]
-            if file.get("kind") not in ("inline_header", "legacy_io", "coordinate_conversion")
+            if file.get("kind") == "engine_ui"
         ),
         "legacy_io_definition_count": sum(
             len(file["definitions"]) for file in audit["definition_files"] if file.get("kind") == "legacy_io"
@@ -163,6 +183,10 @@ def coverage_summary() -> dict:
             if file.get("kind") == "inline_header"
         ),
         "header_type_count": len(audit.get("header_types", [])),
+        "support_definition_count": sum(
+            len(file["definitions"]) for file in audit["definition_files"]
+            if file.get("kind") == "support_boundary"
+        ),
         "excluded_header_definitions": audit.get("excluded_header_definitions", []),
         "dispositions": counts,
         "project_file_count": len(audit["files"]),
@@ -184,7 +208,12 @@ def coverage_summary() -> dict:
         "pending_file_workflows": [
             item for item in audit["files"] if "pending" in item["disposition"]
         ],
-        "complete_reconstruction": False,
+        "complete_reconstruction": audit.get("complete_reconstruction", False),
+        "reconstruction_review_status": audit.get("reconstruction_review", {}).get("review_status", "pending"),
+        "reconstruction_scope": audit.get("reconstruction_review", {}).get("scope"),
+        "whole_application_parity_verified": False,
+        "real_data_validation_complete": False,
+        "limitations_review_complete": False,
     }
 
 
@@ -245,7 +274,7 @@ def check_source_coverage(repo: str | Path) -> tuple[str, ...]:
         try:
             actual = (
                 cpp_header_inventory(path.read_text())[0]
-                if file.get("kind") == "inline_header"
+                if file.get("kind") == "inline_header" or file.get("definition_style") == "inline_header"
                 else cpp_free_definitions(path.read_text(), file["owner"])
                 if file.get("definition_style") == "free_functions"
                 else cpp_definitions(path.read_text(), file["owner"])
@@ -288,4 +317,15 @@ def check_source_coverage(repo: str | Path) -> tuple[str, ...]:
             (item["name"], item["kind"]) for item in audit["header_types"]
         ]:
             errors.append("type inventory differs: LIDARPT.h")
+    if "reconstruction_review" in audit:
+        reference = audit["reconstruction_review"]
+        try:
+            text = resources.files("railway_mls").joinpath(reference["resource"]).read_text()
+            if source_text_hash(text) != reference["sha256"]:
+                errors.append("reconstruction review resource changed")
+            from .reconstruction import check_reconstruction_review
+
+            errors.extend(check_reconstruction_review(repo))
+        except (FileNotFoundError, ValueError, KeyError, TypeError) as error:
+            errors.append(f"cannot check reconstruction review: {error}")
     return tuple(errors)

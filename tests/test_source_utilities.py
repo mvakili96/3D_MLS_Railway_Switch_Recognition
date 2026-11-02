@@ -423,7 +423,8 @@ class SourceUtilityContractTests(unittest.TestCase):
             },
             set(),
         )
-        self.assertFalse(summary["complete_reconstruction"])
+        self.assertTrue(summary["complete_reconstruction"])
+        self.assertFalse(summary["limitations_review_complete"])
 
     def test_utilities_demo_reports_real_outputs_and_distinguishes_nan_from_absent_caches(self):
         process = subprocess.run(

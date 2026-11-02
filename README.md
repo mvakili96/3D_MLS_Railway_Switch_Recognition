@@ -11,7 +11,9 @@ recognition, toe detection and endpoint refinement, branch scheduling and
 bidirectional orchestration, plane fitting, switch-box detection, grade/curve
 analysis and source GWAD row/text generation. An integrated in-memory pipeline,
 synthetic workflow, diagnostic outputs and explicit source coverage audit are
-available. The current
+available. The [computational reconstruction audit](docs/RECONSTRUCTION_AUDIT.md)
+is complete; all retained limitations remain open for review and real-data
+validation is pending. The current
 unpacked C++ code is the source of truth: preserve its computational behavior and
 document proposed corrections separately.
 
@@ -29,6 +31,8 @@ document proposed corrections separately.
   and staged implementation plan.
 - [docs/LIMITATIONS.md](docs/LIMITATIONS.md): persistent limitations register and
   required review after full reconstruction, including the toe-reference issue.
+- [docs/RECONSTRUCTION_AUDIT.md](docs/RECONSTRUCTION_AUDIT.md): completed scope
+  review, call-path evidence, numerical input adapters and validation boundaries.
 - `src/railway_mls/`: installable Python foundation, configuration and synthetic CLI.
 - `tests/`: component/integration checks and comparisons with original C++ extracts.
 - [docs/PYTHON_FOUNDATION.md](docs/PYTHON_FOUNDATION.md): implemented behavior,
@@ -96,6 +100,7 @@ python -m railway_mls grade-demo
 python -m railway_mls pipeline-demo
 python -m railway_mls pipeline-demo --scenario components --output outputs/components-001
 python -m railway_mls source-audit --repo .
+python -m railway_mls reconstruction-audit --repo .
 python -m railway_mls utilities-demo
 python -m railway_mls header-demo
 python -m railway_mls loop-cross-demo
@@ -186,11 +191,12 @@ and extent fallback, and reports empty/unsafe and equal-key sort limitations.
 Neither helper is added to loading or tracking.
 
 The installed `railway-mls` command supports the same nineteen demos, cloud inspection,
-explicit file conversion and source audit. The audit inventories 246 definitions
-(124 engine/UI, 77 header, 18 reader and 27 conversion), hashes 41 project and 51 bundled
+explicit file conversion and both audits. The audit inventories 265 definitions
+(124 engine/UI, 77 header, 18 reader, 27 conversion and 19 support boundaries), hashes 41 project and 51 bundled
 dependency files, plus 14 frozen PCL extracts and 19 selected PCL/Eigen hashes.
-No scoped definition remains pending; full call-path review remains outstanding. The former standalone
-and partially mapped utility gaps are implemented.
+The completed computational scope review records 15 workflows and 29 active/inactive
+call-site witnesses. No scoped definition remains pending. All 39 limitation
+families remain open; whole-application equivalence and real MLS validation are pending.
 Tests use `unittest`; when a C++ compiler is available they also compile temporary
 extracts of the original
 source for direct behavior comparisons. The stage guides linked above document

@@ -473,6 +473,18 @@ class TrackingCppTests(unittest.TestCase):
     def test_head_retry_accumulation_matches_original_loop(self):
         self.compare_loop(config=ExtractionConfig(min_track_points=1290), steps=1)
 
+    def test_negative_window_threshold_promotes_to_unsigned_and_exhausts_retries(self):
+        result = self.compare_loop(config=ExtractionConfig(min_points=-1), steps=1)
+        self.assertEqual(result.status, "insufficient_window_points")
+        self.assertEqual(len(result.steps[0].attempts), 6)
+        self.assertEqual(result.accepted_steps, 0)
+
+    def test_negative_head_threshold_promotes_to_unsigned_and_exhausts_retries(self):
+        result = self.compare_loop(config=ExtractionConfig(min_track_points=-1), steps=1)
+        self.assertEqual(result.status, "insufficient_head_points")
+        self.assertEqual(len(result.steps[0].attempts), 6)
+        self.assertEqual(result.accepted_steps, 0)
+
     def test_trajectory_stop_preserves_source_partial_side_effects(self):
         result = self.compare_loop(
             config=ExtractionConfig(track_window_length=0.2, skip_rate=10), steps=1

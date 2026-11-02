@@ -101,9 +101,10 @@ input/state fingerprints and optional detailed/draw traces. The picked-seed
 midpoint/float32-angle/mode prefix is source-tested. See
 [docs/PYTHON_PIPELINE.md](docs/PYTHON_PIPELINE.md).
 
-The packaged audit inventories 246 definitions: 124 in RailwayExtraction.cpp and
+The packaged audit inventories 265 definitions: 124 in RailwayExtraction.cpp and
 MainForm.cpp, 77 uncommented inline definitions in LIDARPT.h and 18 in the reader
-files, plus 27 in DataConvertor.cpp, UTM.cpp and DataConverstionForm.cpp. It also maps all
+files, plus 27 in DataConvertor.cpp, UTM.cpp and DataConverstionForm.cpp and 19 in
+PointXYZDouble.h, HashMap.h and the two numerical input forms. It also maps all
 19 named header types, with dispositions for 41 project files and hashes
 for 51 bundled dependency files. Definitions retain explicit ported, unused-ported,
 pending, inactive, stub and presentation dispositions. It is not an exhaustive
@@ -111,8 +112,11 @@ general C++ call-graph audit or a numerical coverage percentage. Loop/cross
 components are now standalone ports with inactive scheduling. Legacy readers and
 exports, explicit coordinate conversion and both unused PCL point helpers are
 implemented with explicit numerical/input policies. No scoped definition remains
-pending; full call-path/reconstruction review remains. Complete
-reconstruction is not declared. Keep all limitation IDs open for the later review.
+pending. The [computational reconstruction audit](docs/RECONSTRUCTION_AUDIT.md)
+completes the agreed scope review with 15 workflows, all 41 file decisions and
+29 active/inactive call-site witnesses. `complete_reconstruction` now denotes
+that computational scope; whole-application/native parity, real-data validation
+and the limitations review remain incomplete. Keep all limitation IDs open.
 
 Eight formerly pending/partial standalone utility contracts are implemented:
 paired GMM, previous-height erasure, bounds, literal index cycling, inner angle,
@@ -156,10 +160,10 @@ hashes are frozen independently of the unchanged source baseline. See
 [docs/PYTHON_PCL_HELPERS.md](docs/PYTHON_PCL_HELPERS.md) and LIM-038. No native
 filtering/translation is inserted into loading or tracking.
 
-Verification passed 513 test methods, including 200 methods comparing against
+Verification passed 532 test methods, including 206 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. Database integration, full call-path/reconstruction review and full-reference/real-data checks
-will accompany later increments.
+been built. Database integration, the separate limitations review and
+full-reference/real-data checks remain later work.
 
 ## Specification checklist
 
@@ -214,6 +218,7 @@ The unpacked version adds second seed coordinates, bidirectional tracking orches
 | File adapters and legacy vectors | `LASFileReader.cpp`; `TXTFileReader.cpp`; `MainForm.cpp:149,172,443,577` | Implemented: reader selection, precision/bounds/callbacks, cache/grid bridge, legacy vector formats and explicit input/output policies |
 | Coordinate conversion | `DataConvertor.cpp`; `UTM.cpp`; `DataConverstionForm.cpp`; `MainForm.cpp:466,504` | Implemented: literal ECEF/geodetic/UTM formulas, accumulated buffer state, all overloads, exports/callbacks and numerical menu/batch bindings |
 | Unused PCL wrappers | `LASFileReader.cpp:113,129` | Implemented standalone: float32 voxel-centroid filtering, double-centroid/float32 affine output, metadata/density, extent fallback and explicit sort/integer policies; no automatic scheduling |
+| Reconstruction scope and numerical boundaries | All 41 project files; parameter/seed forms, PointXYZDouble/HashMap | Completed: 15 reviewed workflows, 29 call-site witnesses, 265 definition call-token inventories, source parameter casts/unsigned retries, scalar point helpers and explicit seed-form normalization; all limitations remain open |
 
 The implementation inventory should cover all source computation, including orchestration inside the UI. Preserve active behavior and explicitly account for separately invoked computational features such as grade analysis and switch-box detection. Record inactive routines without enabling them merely because they appear in the source or paper. Recreating Windows Forms is a separate product task; its computational orchestration must still be ported.
 

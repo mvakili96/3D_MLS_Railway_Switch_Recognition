@@ -13,6 +13,51 @@ from numpy.typing import ArrayLike, NDArray
 POINT_EQUAL_TOLERANCE = 1e-5
 
 
+@dataclass(eq=False)
+class PointXYZDouble:
+    """Scalar native point value, separate from POINT3D tags and row identity.
+
+    Equality ignores metadata and uses the strict source tolerance. A cloud row
+    index still supplies pointer identity; this scalar equality never deduplicates
+    or changes cloud membership. Native alignment/union storage are not emulated.
+    """
+
+    x: float = 0.0
+    y: float = 0.0
+    z: float = 0.0
+    class_code: int = 0
+    segment_id: int = -1
+    intensity: int = 0
+
+    def __post_init__(self):
+        self.x, self.y, self.z = float(self.x), float(self.y), float(self.z)
+
+    @classmethod
+    def from_point(cls, point: PointXYZDouble) -> PointXYZDouble:
+        """The pointer constructor copies coordinates and all three metadata fields."""
+        return cls(point.x, point.y, point.z, point.class_code, point.segment_id, point.intensity)
+
+    @property
+    def data(self) -> tuple[float, float, float, float]:
+        """Initialized homogeneous-coordinate view; source constructors set data[3]=1."""
+        return self.x, self.y, self.z, 1.0
+
+    def is_equal(self, other: PointXYZDouble) -> bool:
+        return (
+            abs(self.x - other.x) < POINT_EQUAL_TOLERANCE
+            and abs(self.y - other.y) < POINT_EQUAL_TOLERANCE
+            and abs(self.z - other.z) < POINT_EQUAL_TOLERANCE
+        )
+
+    def __eq__(self, other):
+        if not isinstance(other, PointXYZDouble):
+            return NotImplemented
+        return self.is_equal(other)
+
+    def is_null(self) -> bool:
+        return self.x == 0 and self.y == 0 and self.z == 0
+
+
 @dataclass(frozen=True)
 class Point3D:
     """A value point corresponding to POINT3D; coordinates must be explicit.

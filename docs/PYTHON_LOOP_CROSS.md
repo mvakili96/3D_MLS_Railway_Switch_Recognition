@@ -17,8 +17,9 @@ commented out. That increment inventoried 201 definitions and 19 named header
 types. The later [legacy I/O increment](PYTHON_LEGACY_IO.md) expands to 219.
 The [coordinate increment](PYTHON_COORDINATES.md) expands to 246 and implements
 explicit conversion. The [PCL helper increment](PYTHON_PCL_HELPERS.md) implements
-the unused point filters; call-path review remains outstanding;
-`complete_reconstruction` is still false.
+the unused point filters. The subsequent [reconstruction audit](RECONSTRUCTION_AUDIT.md)
+expands the inventory to 265 and completes the computational scope/call-path
+review. Whole-application and real-data validation remain open.
 
 ## Detection API and ordered filtering
 

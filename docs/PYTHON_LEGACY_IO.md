@@ -21,13 +21,14 @@ now reflect those bodies. No point exporter is invented for the empty handler.
 
 Both readers' actual loading paths are implemented. Two unused PCL wrappers,
 `DecreaseDensity` (0.1 float voxel-centroid filtering) and `Transform` (centroid
-translation, rotation commented out), remain `native_filter_pending`. They are
+translation, rotation commented out), were `native_filter_pending` at this increment. They are
 not part of either loading path. Coordinate-conversion workflows and call-path
 review remained pending at this increment. The later
 [coordinate increment](PYTHON_COORDINATES.md) ports conversion and expands the
 audit to 246. The [PCL helper increment](PYTHON_PCL_HELPERS.md) implements both
-standalone wrappers; full call-path review remains outstanding. No
-full-reconstruction claim is made.
+standalone wrappers. The subsequent [reconstruction audit](RECONSTRUCTION_AUDIT.md)
+adds 19 support definitions for a total of 265 and completes the computational
+scope/call-path review; native whole-application and real-data validation remain open.
 
 ## Dependencies and commands
 

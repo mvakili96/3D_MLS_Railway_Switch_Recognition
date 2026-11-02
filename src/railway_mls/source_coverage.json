@@ -7,6 +7,7 @@
     "All 27 definitions in DataConvertor.cpp, UTM.cpp and DataConverstionForm.cpp, including free projection functions and computational UI actions",
     "All top-level project .cpp/.h files have file-level dispositions",
     "All 77 active inline definitions and 19 named top-level types in LIDARPT.h have explicit dispositions; commented Rotation3D/InverseRotation3D remain excluded",
+    "All 19 support definitions in PointXYZDouble.h, HashMap.h, ExtractionParameterForm.cpp and InitialLocationForm.cpp have explicit dispositions; numeric adapters are separate from presentation",
     "Jama/etc are dependencies: only reached numerical behavior is ported, not whole libraries"
   ],
   "files": [
@@ -43,12 +44,12 @@
     {
       "path": "ExtractionParameterForm.cpp",
       "sha256": "9ccdab7a018f194faa58c4b197c0d6c1f26a03d885b2744d6d4789cf848f5c25",
-      "disposition": "presentation_or_infrastructure"
+      "disposition": "parameter_boundary_and_presentation"
     },
     {
       "path": "ExtractionParameterForm.h",
       "sha256": "0ef2a5b7fb7c7f7bbe71ac42d5ee76ece7d05c5704d49080fc860bd8b484d487",
-      "disposition": "presentation_or_infrastructure"
+      "disposition": "parameter_boundary_and_presentation"
     },
     {
       "path": "HashMap.cpp",
@@ -63,12 +64,12 @@
     {
       "path": "InitialLocationForm.cpp",
       "sha256": "c974597cc92c9f8def174a18a46b397583aea549ec1a36c3c91ab4e83c2f26b8",
-      "disposition": "presentation_or_infrastructure"
+      "disposition": "parameter_boundary_and_presentation"
     },
     {
       "path": "InitialLocationForm.h",
       "sha256": "a6799fab0d683abd0c2d1091a6ee10675362ab0390169748a23293a96835b4e8",
-      "disposition": "presentation_or_infrastructure"
+      "disposition": "parameter_boundary_and_presentation"
     },
     {
       "path": "LASFileReader.cpp",
@@ -497,9 +498,9 @@
           "signature": "void RailwayExtraction::updateExtractionParameters(ExtractionParameters parameters)",
           "disposition": "ported",
           "python": [
-            "railway_mls.config:ExtractionConfig"
+            "railway_mls.config:ExtractionConfig.with_source_parameters"
           ],
-          "note": "Immutable configuration replaces the native parameter getter/setter interface."
+          "note": "Explicit immutable source-parameter update preserves grid/skip and truncates four double inputs to int32; invalid native casts are guarded."
         },
         {
           "id": "RailwayExtraction::getExtractionParameters#1",
@@ -508,9 +509,9 @@
           "signature": "ExtractionParameters RailwayExtraction::getExtractionParameters()",
           "disposition": "ported",
           "python": [
-            "railway_mls.config:ExtractionConfig"
+            "railway_mls.config:ExtractionConfig.to_source_parameters"
           ],
-          "note": "Immutable configuration replaces the native parameter getter/setter interface."
+          "note": "Return all ten source double fields; native integer members are promoted."
         },
         {
           "id": "RailwayExtraction::~RailwayExtraction#1",
@@ -2361,7 +2362,7 @@
           "owner": "LiDPOINT",
           "name": "LiDPOINT",
           "signature": "LiDPOINT()",
-          "line": 178,
+          "line": 179,
           "python": [
             "railway_mls.points:LegacyLiDPoint"
           ],
@@ -2373,7 +2374,7 @@
           "owner": "LiDPOINT",
           "name": "LiDPOINT",
           "signature": "LiDPOINT(double _x, double _y, double _z)",
-          "line": 191,
+          "line": 192,
           "python": [
             "railway_mls.points:LegacyLiDPoint"
           ],
@@ -2385,7 +2386,7 @@
           "owner": "LiDPOINT",
           "name": "~LiDPOINT",
           "signature": "~LiDPOINT()",
-          "line": 207,
+          "line": 208,
           "python": [
             "railway_mls.points:LegacyLiDPoint"
           ],
@@ -2469,7 +2470,7 @@
           "owner": "POINT2D",
           "name": "POINT2D",
           "signature": "POINT2D()",
-          "line": 262,
+          "line": 263,
           "python": [
             "railway_mls.points:Point2D"
           ],
@@ -2481,7 +2482,7 @@
           "owner": "POINT2D",
           "name": "POINT2D",
           "signature": "POINT2D(double _x, double _y)",
-          "line": 267,
+          "line": 268,
           "python": [
             "railway_mls.points:Point2D"
           ],
@@ -2565,7 +2566,7 @@
           "owner": "POINT3D",
           "name": "POINT3D",
           "signature": "POINT3D()",
-          "line": 333,
+          "line": 335,
           "python": [
             "railway_mls.points:Point3D"
           ],
@@ -2577,7 +2578,7 @@
           "owner": "POINT3D",
           "name": "POINT3D",
           "signature": "POINT3D(double _x, double _y, double _z)",
-          "line": 338,
+          "line": 339,
           "python": [
             "railway_mls.points:Point3D"
           ],
@@ -2721,7 +2722,7 @@
           "owner": "Line3D",
           "name": "Line3D",
           "signature": "Line3D()",
-          "line": 437,
+          "line": 438,
           "python": [
             "railway_mls.geometry:Line3D"
           ],
@@ -2925,7 +2926,7 @@
           "owner": "GMMPara",
           "name": "GMMPara",
           "signature": "GMMPara()",
-          "line": 792,
+          "line": 793,
           "python": [
             "railway_mls.models:GMMParameters"
           ],
@@ -2949,7 +2950,7 @@
           "owner": "TrackWindow",
           "name": "TrackWindow",
           "signature": "TrackWindow()",
-          "line": 828,
+          "line": 829,
           "python": [
             "railway_mls.models:TrackWindow"
           ],
@@ -3045,7 +3046,7 @@
           "owner": "TrackSegment",
           "name": "TrackSegment",
           "signature": "TrackSegment()",
-          "line": 1020,
+          "line": 1021,
           "python": [
             "railway_mls.models:TrackSegment"
           ],
@@ -3117,7 +3118,7 @@
           "owner": "BinaryString",
           "name": "BinaryString",
           "signature": "BinaryString()",
-          "line": 1086,
+          "line": 1087,
           "python": [
             "railway_mls.models:BinaryString"
           ],
@@ -3153,7 +3154,7 @@
           "owner": "TrackStack",
           "name": "TrackStack",
           "signature": "TrackStack()",
-          "line": 1161,
+          "line": 1162,
           "python": [
             "railway_mls.models:TrackStack"
           ],
@@ -3165,7 +3166,7 @@
           "owner": "ToePt",
           "name": "ToePt",
           "signature": "ToePt()",
-          "line": 1177,
+          "line": 1178,
           "python": [
             "railway_mls.models:ToePoint"
           ],
@@ -3213,7 +3214,7 @@
           "owner": "GradeSect",
           "name": "GradeSect",
           "signature": "GradeSect()",
-          "line": 1265,
+          "line": 1266,
           "python": [
             "railway_mls.models:GradeSection"
           ],
@@ -3231,6 +3232,246 @@
           ],
           "disposition": "ported_inline",
           "note": "All endpoint/tag/membership/scalar defaults and reset."
+        }
+      ]
+    },
+    {
+      "path": "PointXYZDouble.h",
+      "owner": "PointXYZDouble",
+      "kind": "support_boundary",
+      "definition_style": "inline_header",
+      "definitions": [
+        {
+          "id": "PointXYZDouble::PointXYZDouble#1",
+          "owner": "PointXYZDouble",
+          "name": "PointXYZDouble",
+          "signature": "inline PointXYZDouble()",
+          "line": 24,
+          "disposition": "boundary_ported",
+          "python": [
+            "railway_mls.points:PointXYZDouble",
+            "railway_mls.points:PointXYZDouble.from_point"
+          ],
+          "note": "Default/XYZ/pointer-copy constructors; homogeneous coordinate 1 and metadata defaults/copy retained. Native union alignment is outside Python storage."
+        },
+        {
+          "id": "PointXYZDouble::PointXYZDouble#2",
+          "owner": "PointXYZDouble",
+          "name": "PointXYZDouble",
+          "signature": "inline PointXYZDouble(double _x, double _y, double _z)",
+          "line": 33,
+          "disposition": "boundary_ported",
+          "python": [
+            "railway_mls.points:PointXYZDouble",
+            "railway_mls.points:PointXYZDouble.from_point"
+          ],
+          "note": "Default/XYZ/pointer-copy constructors; homogeneous coordinate 1 and metadata defaults/copy retained. Native union alignment is outside Python storage."
+        },
+        {
+          "id": "PointXYZDouble::PointXYZDouble#3",
+          "owner": "PointXYZDouble",
+          "name": "PointXYZDouble",
+          "signature": "inline PointXYZDouble(const PointXYZDouble *p)",
+          "line": 42,
+          "disposition": "boundary_ported",
+          "python": [
+            "railway_mls.points:PointXYZDouble",
+            "railway_mls.points:PointXYZDouble.from_point"
+          ],
+          "note": "Default/XYZ/pointer-copy constructors; homogeneous coordinate 1 and metadata defaults/copy retained. Native union alignment is outside Python storage."
+        },
+        {
+          "id": "PointXYZDouble::operator==#1",
+          "owner": "PointXYZDouble",
+          "name": "operator==",
+          "signature": "bool operator == (PointXYZDouble &rhs)",
+          "line": 51,
+          "disposition": "boundary_ported",
+          "python": [
+            "railway_mls.points:PointXYZDouble.__eq__"
+          ],
+          "note": "Strict 1e-5 XYZ tolerance, independent of metadata and pointer/row identity."
+        },
+        {
+          "id": "PointXYZDouble::IsEqual#1",
+          "owner": "PointXYZDouble",
+          "name": "IsEqual",
+          "signature": "bool IsEqual(PointXYZDouble rhs)",
+          "line": 62,
+          "disposition": "boundary_ported",
+          "python": [
+            "railway_mls.points:PointXYZDouble.is_equal"
+          ],
+          "note": "Strict source XYZ comparison, including nonfinite comparison behavior."
+        },
+        {
+          "id": "PointXYZDouble::isNull#1",
+          "owner": "PointXYZDouble",
+          "name": "isNull",
+          "signature": "bool isNull()",
+          "line": 71,
+          "disposition": "unused_helper_ported",
+          "python": [
+            "railway_mls.points:PointXYZDouble.is_null"
+          ],
+          "note": "Exact zero XYZ test; not used for automatic point filtering."
+        }
+      ]
+    },
+    {
+      "path": "HashMap.h",
+      "owner": "HashMap",
+      "kind": "support_boundary",
+      "definition_style": "inline_header",
+      "definitions": [
+        {
+          "id": "HashMap::put#1",
+          "owner": "HashMap",
+          "name": "put",
+          "signature": "void put(string key, RailwayExtraction *value)",
+          "line": 14,
+          "disposition": "io_cache_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyFileSession.load_file"
+          ],
+          "note": "Exact string keys overwrite stored engine entries; explicit Python session ownership."
+        },
+        {
+          "id": "HashMap::get#1",
+          "owner": "HashMap",
+          "name": "get",
+          "signature": "RailwayExtraction *get(string key)",
+          "line": 18,
+          "disposition": "io_cache_ported",
+          "python": [
+            "railway_mls.legacy_io:LegacyFileSession.load_file"
+          ],
+          "note": "setdefault preserves null insertion on a cache miss; no key canonicalization."
+        }
+      ]
+    },
+    {
+      "path": "ExtractionParameterForm.cpp",
+      "owner": "PCLProject::ExtractionParameterForm",
+      "kind": "support_boundary",
+      "definition_style": "qualified",
+      "definitions": [
+        {
+          "id": "PCLProject::ExtractionParameterForm::okayButton_Click#1",
+          "name": "okayButton_Click",
+          "line": 3,
+          "signature": "System::Void PCLProject::ExtractionParameterForm::okayButton_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows dialog result only."
+        },
+        {
+          "id": "PCLProject::ExtractionParameterForm::cancelButton_Click#1",
+          "name": "cancelButton_Click",
+          "line": 8,
+          "signature": "System::Void PCLProject::ExtractionParameterForm::cancelButton_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows dialog result only."
+        },
+        {
+          "id": "PCLProject::ExtractionParameterForm::getValues#1",
+          "name": "getValues",
+          "line": 13,
+          "signature": "ExtractionParameters PCLProject::ExtractionParameterForm::getValues()",
+          "disposition": "boundary_ported",
+          "python": [
+            "railway_mls.config:ExtractionParameters"
+          ],
+          "note": "Ten double input values; .NET locale-sensitive text parsing is replaced by explicit numeric inputs."
+        },
+        {
+          "id": "PCLProject::ExtractionParameterForm::updateValues#1",
+          "name": "updateValues",
+          "line": 42,
+          "signature": "void PCLProject::ExtractionParameterForm::updateValues(ExtractionParameters parameters)",
+          "disposition": "boundary_ported",
+          "python": [
+            "railway_mls.config:ExtractionConfig.to_source_parameters"
+          ],
+          "note": "Numeric field mapping preserved; .NET display formatting is presentation."
+        }
+      ]
+    },
+    {
+      "path": "InitialLocationForm.cpp",
+      "owner": "PCLProject::InitialLocationForm",
+      "kind": "support_boundary",
+      "definition_style": "qualified",
+      "definitions": [
+        {
+          "id": "PCLProject::InitialLocationForm::okayButton_Click#1",
+          "name": "okayButton_Click",
+          "line": 5,
+          "signature": "System::Void PCLProject::InitialLocationForm::okayButton_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows dialog result only."
+        },
+        {
+          "id": "PCLProject::InitialLocationForm::pickAgainButton_Click#1",
+          "name": "pickAgainButton_Click",
+          "line": 9,
+          "signature": "System::Void PCLProject::InitialLocationForm::pickAgainButton_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows dialog retry only; caller supplies another explicit seed."
+        },
+        {
+          "id": "PCLProject::InitialLocationForm::cancelButton_Click#1",
+          "name": "cancelButton_Click",
+          "line": 13,
+          "signature": "System::Void PCLProject::InitialLocationForm::cancelButton_Click(System::Object ^ sender, System::EventArgs ^ e)",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows dialog result only."
+        },
+        {
+          "id": "PCLProject::InitialLocationForm::updateInputs#1",
+          "name": "updateInputs",
+          "line": 17,
+          "signature": "System::Void PCLProject::InitialLocationForm::updateInputs(double x, double y, float angle, int mode)",
+          "disposition": "boundary_ported",
+          "python": [
+            "railway_mls.orchestration:initial_location_dialog_defaults"
+          ],
+          "note": "Active struct overload truncates/wraps angle and clamps mode to 1..4; explicit numeric XYZ avoid .NET text round trips. The inactive XY overload remains a UI-only interface."
+        },
+        {
+          "id": "PCLProject::InitialLocationForm::updateInputs#2",
+          "name": "updateInputs",
+          "line": 25,
+          "signature": "System::Void PCLProject::InitialLocationForm::updateInputs(InitialLocation location)",
+          "disposition": "boundary_ported",
+          "python": [
+            "railway_mls.orchestration:initial_location_dialog_defaults"
+          ],
+          "note": "Active struct overload truncates/wraps angle and clamps mode to 1..4; explicit numeric XYZ avoid .NET text round trips. The inactive XY overload remains a UI-only interface."
+        },
+        {
+          "id": "PCLProject::InitialLocationForm::getLocation#1",
+          "name": "getLocation",
+          "line": 43,
+          "signature": "InitialLocation PCLProject::InitialLocationForm::getLocation()",
+          "disposition": "boundary_ported",
+          "python": [
+            "railway_mls.models:InitialLocation"
+          ],
+          "note": "Explicit primary XYZ/angle/mode; unassigned second coordinates remain None. Locale parsing and manual dialog edits are external inputs."
+        },
+        {
+          "id": "PCLProject::InitialLocationForm::disableRetryButton#1",
+          "name": "disableRetryButton",
+          "line": 61,
+          "signature": "System::Void PCLProject::InitialLocationForm::disableRetryButton()",
+          "disposition": "presentation",
+          "python": [],
+          "note": "Windows button state only."
         }
       ]
     }
@@ -3422,9 +3663,9 @@
       "line": 1294,
       "source": "LIDARPT.h",
       "python": [
-        "railway_mls.config:ExtractionConfig"
+        "railway_mls.config:ExtractionParameters"
       ],
-      "note": "Ten UI parameters mapped to core configuration; defaults come from source engine, not the uninitialized native aggregate."
+      "note": "Ten explicit double inputs without guessed native defaults; config source-parameter adapters retain four engine int conversions and promote them on readback."
     }
   ],
   "excluded_header_definitions": [
@@ -3439,7 +3680,7 @@
       "reason": "definition is inside a block comment"
     }
   ],
-  "complete_reconstruction": false,
+  "complete_reconstruction": true,
   "pcl_helper_reference": {
     "resource": "pcl_reference.json",
     "sha256": "b27b3b2b5a17e7fae240375e917d93154798a02eacee00c8357b5218e9e192c9",
@@ -3448,5 +3689,11 @@
     "extract_count": 14,
     "dependency_file_count": 19,
     "scope": "Frozen selected PCL bodies and PCL/Eigen hashes. Local ignored dependency files are checked if present; installed runtime does not require the installers or Eigen."
+  },
+  "reconstruction_review": {
+    "resource": "reconstruction_audit.json",
+    "sha256": "a727ba5af2765a7ea1ea9785bb97dccefd1ed35b11aac7a6534550cf9408a443",
+    "review_status": "complete",
+    "scope": "Computational reconstruction of the frozen unpacked project, including standalone uncommented algorithm helpers and numerical input/output boundaries; presentation and whole dependency libraries are excluded."
   }
 }

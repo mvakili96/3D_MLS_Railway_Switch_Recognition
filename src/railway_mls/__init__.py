@@ -1,6 +1,6 @@
 """Source-faithful Python foundations for railway recognition from 3D MLS."""
 
-from .config import ExtractionConfig
+from .config import ExtractionConfig, ExtractionParameters
 from .geometry import (
     BoundaryLine, Line3D, direction_mode, distance_to_line_3d, inner_angle,
     intersection_point_3d, lines_from_vertices, min_max_xy, recount,
@@ -34,7 +34,7 @@ from .observations import (
     determine_observation,
     observation_from_support,
 )
-from .points import LegacyLiDPoint, Point2D, Point3D, PointCloud, PointSelection
+from .points import LegacyLiDPoint, Point2D, Point3D, PointCloud, PointSelection, PointXYZDouble
 from .sampling import MsvcRand, RecordedRand
 from .pcl_helpers import PclHeader, PclXYZCloud, VoxelDownsample, PclCentering, decrease_density, center_point_cloud
 from .coordinates import (
@@ -90,6 +90,7 @@ from .orchestration import (
     reverse_layer_vectors,
     reverse_seed,
     tag_rail_vector,
+    initial_location_dialog_defaults,
 )
 from .planes import (
     PlaneParameters,
@@ -119,6 +120,7 @@ from .pipeline import (
 )
 from .artifacts import pipeline_summary, write_pipeline_outputs
 from .coverage import check_source_coverage, coverage_summary, source_coverage
+from .reconstruction import check_reconstruction_review, reconstruction_review, reconstruction_summary
 from .loop_cross import LoopCrossDetection, LoopCrossValidation, detect_loop_cross, validate_loop_cross
 
 __version__ = "0.1.0"
@@ -141,6 +143,7 @@ __all__ = [
     "PipelineFinding", "PipelineOptions", "PipelineResult", "PipelineStage",
     "initial_location_from_picks", "run_pipeline", "pipeline_summary", "write_pipeline_outputs",
     "check_source_coverage", "coverage_summary", "source_coverage",
+    "check_reconstruction_review", "reconstruction_review", "reconstruction_summary",
     "GradeSection", "GradeAnalysis", "GradeDivision", "GradeParameters", "GradeReportRow",
     "GradeSplit", "GWADExport", "GWADRow", "build_gwad_rows", "compute_grade",
     "compute_grade_parameters", "compute_layer_grades", "determine_grade_sections",
@@ -150,6 +153,7 @@ __all__ = [
     "BinaryString",
     "Bounds3D",
     "ExtractionConfig",
+    "ExtractionParameters", "PointXYZDouble", "initial_location_dialog_defaults",
     "GMMParameters",
     "GaugeAdjustment",
     "GridIndex",

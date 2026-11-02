@@ -506,10 +506,11 @@ class CoordinateContractTests(unittest.TestCase):
                 report["engine_ui_definition_count"],
                 report["coordinate_definition_count"],
             ),
-            (246, 124, 27),
+            (265, 124, 27),
         )
         self.assertEqual(report["pending_definitions"], [])
-        self.assertFalse(report["complete_reconstruction"])
+        self.assertTrue(report["complete_reconstruction"])
+        self.assertFalse(report["whole_application_parity_verified"])
         self.assertEqual(check_source_coverage(Path(__file__).resolve().parents[1]), ())
 
     def test_free_function_inventory_excludes_commented_and_string_lookalikes(self):
