@@ -55,6 +55,8 @@ document proposed corrections separately.
   formulas, point-tag behavior, grade reports and GWAD output structure.
 - [docs/PYTHON_PIPELINE.md](docs/PYTHON_PIPELINE.md): unified API/CLI, supplied-state
   provenance, JSON/CSV artifacts, source audit and explicitly pending scope.
+- [docs/PYTHON_UTILITIES.md](docs/PYTHON_UTILITIES.md): standalone paired GMM/height
+  filtering, scalar geometry, index cycling and endpoint-only boundary state.
 
 The original application uses Windows Forms/C++/CLI, PCL, VTK, Boost and LAS
 libraries. Project files contain machine-specific paths. Retaining them documents
@@ -84,6 +86,7 @@ python -m railway_mls grade-demo
 python -m railway_mls pipeline-demo
 python -m railway_mls pipeline-demo --scenario components --output outputs/components-001
 python -m railway_mls source-audit --repo .
+python -m railway_mls utilities-demo
 python -m unittest discover -s tests -v
 ```
 
@@ -136,9 +139,15 @@ reproducibility metadata. `--output` creates a new diagnostic directory;
 known issues report `completed_with_limitations`, without implying source parity
 or accuracy. Existing limitations stay open.
 
-The installed `railway-mls` command supports the same thirteen demos and source
+`utilities-demo` exercises eight source utility contracts, including empty bounds,
+paired GMM/height filtering, literal scalar geometry and polygon boundaries with
+absent caches. These contracts are source-tested; loop/cross scheduling remains
+inactive.
+
+The installed `railway-mls` command supports the same fourteen demos and source
 audit. The audit inventories 124 definitions, hashes 41 project and 51 bundled
-dependency files, and explicitly lists pending/partially mapped source contracts.
+dependency files, and explicitly lists pending source scope. The former standalone
+and partially mapped utility gaps are implemented.
 Tests use `unittest`; when a C++ compiler is available they also compile temporary
 extracts of the original
 source for direct behavior comparisons. The stage guides linked above document
@@ -164,9 +173,10 @@ repository refer to its separate history.
 
 ## Development direction
 
-Continue from the integrated pipeline and coverage audit to the explicitly listed
-standalone/helper contracts and legacy data/conversion/export interfaces. Keep
-those scope gaps separate from the source limitations already reproduced.
+Continue from the integrated pipeline and completed utility contracts to the
+remaining header/call-path review and legacy data/conversion/export interfaces.
+Inactive loop/cross workflows remain recorded without enabling their scheduling.
+Keep scope gaps separate from the source limitations already reproduced.
 Include computational orchestration that currently lives in the GUI. Keep inactive source paths inactive
 and preserve defaults, templates, ordering, precision and reproducible quirks.
 

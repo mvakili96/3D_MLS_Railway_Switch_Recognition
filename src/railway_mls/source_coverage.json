@@ -665,18 +665,22 @@
           "name": "ComputeGMMParaAndCluster",
           "line": 1172,
           "signature": "void RailwayExtraction::ComputeGMMParaAndCluster(TrackSegment nextSeg, vector<GMMPara> &nextParas1, vector<GMMPara> &nextParas2, vector<PointXYZDouble*> &HeadPts1, vector<PointXYZDouble*> &HeadPts2)",
-          "disposition": "unused_helper_pending",
-          "python": [],
-          "note": "No active project-owned caller found in this snapshot. Standalone exact API remains unported; related primitives do not close this gap."
+          "disposition": "unused_helper_ported",
+          "python": [
+            "railway_mls.gmm:classify_segment"
+          ],
+          "note": "Both three-component fits precede both clustering calls; empty/partial results and replacement heads are retained. Python returns values instead of exposing aliased native output-reference buffers."
         },
         {
           "id": "RailwayExtraction::DeleteSegPntsCmpWithPreHgt#1",
           "name": "DeleteSegPntsCmpWithPreHgt",
           "line": 1208,
           "signature": "void RailwayExtraction::DeleteSegPntsCmpWithPreHgt(TrackSegment &nextSeg, double aveHgtOfTrack1, double aveHgtOfTrack2, double aveHgtOfGround1, double aveHgtOfGround2, double ThHgtOfTrack, double ThHgtOfGround)",
-          "disposition": "unused_helper_pending",
-          "python": [],
-          "note": "No active project-owned caller found in this snapshot. Standalone exact API remains unported; related primitives do not close this gap."
+          "disposition": "unused_helper_ported",
+          "python": [
+            "railway_mls.heads:filter_segment_by_previous_heights"
+          ],
+          "note": "Four ordered strict erasure loops mutate memberships only; NaN bounds erase nothing. This is not added to active head extraction."
         },
         {
           "id": "RailwayExtraction::GenerateTrkSegAssignMemPts#1",
@@ -762,7 +766,7 @@
           "signature": "void RailwayExtraction::ValidateLoopCross(vector<LoopCross> &loopcross)",
           "disposition": "inactive_pending",
           "python": [],
-          "note": "Loop/cross workflow calls are commented out; intersection is reached only by that inactive workflow. Do not enable implicitly."
+          "note": "Loop/cross workflow calls are commented out. Workflow reconstruction remains pending; do not enable implicitly."
         },
         {
           "id": "RailwayExtraction::DetectLoopCross#1",
@@ -771,7 +775,7 @@
           "signature": "void RailwayExtraction::DetectLoopCross(TrackSegment Seg, vector<PointXYZDouble*> Pts, double HgtOfGround, double HgtOfTrack, Line3D refLn, vector<LoopCross> &LC)",
           "disposition": "inactive_pending",
           "python": [],
-          "note": "Loop/cross workflow calls are commented out; intersection is reached only by that inactive workflow. Do not enable implicitly."
+          "note": "Loop/cross workflow calls are commented out. Workflow reconstruction remains pending; do not enable implicitly."
         },
         {
           "id": "RailwayExtraction::DetectSwitchBox#1",
@@ -910,22 +914,22 @@
           "name": "GetMinMaxXY",
           "line": 3574,
           "signature": "void RailwayExtraction::GetMinMaxXY(vector<PointXYZDouble*> pnts, double &minX, double &maxX, double &minY, double &maxY)",
-          "disposition": "ported_reached_behavior",
+          "disposition": "ported",
           "python": [
-            "railway_mls.fitting:_bounds"
+            "railway_mls.geometry:min_max_xy"
           ],
-          "note": "Nonempty bounds reached by fitting are ported; the standalone empty-input sentinel API remains pending."
+          "note": "Standalone source-order bounds, empty sentinels and first-tie zero signs; fitting delegates to the same helper."
         },
         {
           "id": "RailwayExtraction::ReCount#1",
           "name": "ReCount",
           "line": 3585,
           "signature": "int RailwayExtraction::ReCount(int totnum, int curnum)",
-          "disposition": "ported_reached_behavior",
+          "disposition": "ported",
           "python": [
-            "railway_mls.initialization:initialize_tracks"
+            "railway_mls.geometry:recount"
           ],
-          "note": "Reached next-vertex wrap is composed into boundary construction; no general modulo replacement is claimed."
+          "note": "Literal int32 index cycling, including one-add negative branch; undefined integer division/overflow raise explicitly."
         },
         {
           "id": "RailwayExtraction::ComputeArea#1",
@@ -943,18 +947,22 @@
           "name": "ComputeInnerAngle",
           "line": 3641,
           "signature": "double RailwayExtraction::ComputeInnerAngle(POINT3D sp, POINT3D mp, POINT3D ep)",
-          "disposition": "unused_helper_pending",
-          "python": [],
-          "note": "No active project-owned caller found in this snapshot. Standalone exact API remains unported; related primitives do not close this gap."
+          "disposition": "unused_helper_ported",
+          "python": [
+            "railway_mls.geometry:inner_angle"
+          ],
+          "note": "Normalized XY arms and clamped dot product retain source IEEE degeneracy and ignore Z."
         },
         {
           "id": "RailwayExtraction::ComputeIntersectionPoint3D#1",
           "name": "ComputeIntersectionPoint3D",
           "line": 3692,
           "signature": "POINT3D RailwayExtraction::ComputeIntersectionPoint3D(double A1, double B1, double C1, double A2, double B2, double C2)",
-          "disposition": "inactive_pending",
-          "python": [],
-          "note": "Loop/cross workflow calls are commented out; intersection is reached only by that inactive workflow. Do not enable implicitly."
+          "disposition": "inactive_ported",
+          "python": [
+            "railway_mls.geometry:intersection_point_3d"
+          ],
+          "note": "Standalone literal XY intersection with source A2==1 Y branch, Z=0 and IEEE division; inactive loop/cross scheduling remains unchanged."
         },
         {
           "id": "RailwayExtraction::ComputeFootOfPerpendicular#1",
@@ -1038,9 +1046,11 @@
           "name": "DistanceBetweenPointAndLine3D",
           "line": 3860,
           "signature": "double RailwayExtraction::DistanceBetweenPointAndLine3D(POINT3D _p, Line3D _ls)",
-          "disposition": "unused_helper_pending",
-          "python": [],
-          "note": "No active project-owned caller found in this snapshot. Standalone exact API remains unported; related primitives do not close this gap."
+          "disposition": "unused_helper_ported",
+          "python": [
+            "railway_mls.geometry:distance_to_line_3d"
+          ],
+          "note": "The stored unit vector must be supplied explicitly, including stale/nonunit values; no automatic normalization or invented cache is used."
         },
         {
           "id": "RailwayExtraction::DistanceBetweenPointAndLine3DHgt#1",
@@ -1157,11 +1167,11 @@
           "name": "GetLnsFromVtx",
           "line": 4296,
           "signature": "void RailwayExtraction::GetLnsFromVtx(vector<POINT3D> pts, vector<Line3D> &Lns)",
-          "disposition": "ported_reached_behavior",
+          "disposition": "ported",
           "python": [
-            "railway_mls.initialization:initialize_tracks"
+            "railway_mls.geometry:lines_from_vertices"
           ],
-          "note": "Boundary endpoints are ported; initialized Python caches differ from unused uninitialized native fields (LIM-010)."
+          "note": "Cyclic endpoint-only BoundaryLine output, zero endpoint tags and absent native caches. Initialization/tracking use this same helper."
         },
         {
           "id": "RailwayExtraction::PrintTurnoutType#1",

@@ -8,7 +8,7 @@ from operator import index
 
 import numpy as np
 
-from .geometry import Line3D, distance_2d, line_parameters_from_angle
+from .geometry import Line3D, distance_2d, line_parameters_from_angle, min_max_xy
 from .points import Point3D, PointSelection
 from .sampling import MsvcRand, RandSource
 
@@ -39,8 +39,8 @@ class LineFitResult:
 
 
 def _bounds(points: PointSelection) -> tuple[np.ndarray, np.ndarray]:
-    xy = points.xyz[:, :2]
-    return np.minimum(xy.min(axis=0), 1e100), np.maximum(xy.max(axis=0), -1e100)
+    min_x, max_x, min_y, max_y = min_max_xy(points)
+    return np.array((min_x, min_y)), np.array((max_x, max_y))
 
 
 def _bounded_line(
@@ -96,8 +96,7 @@ def fit_rail_head_line(
         return RailHeadLineFit(None, empty, 0, "too_few_points")
     random = rng if rng is not None else MsvcRand()
     xyz = points.xyz
-    minimum = np.minimum(xyz[:, :2].min(axis=0), 1e100)
-    maximum = np.maximum(xyz[:, :2].max(axis=0), -1e100)
+    minimum, maximum = _bounds(points)
     best_line = None
     best_support = empty
     maximum_count = 0

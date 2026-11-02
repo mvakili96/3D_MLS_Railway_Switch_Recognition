@@ -103,16 +103,22 @@ midpoint/float32-angle/mode prefix is source-tested. See
 
 The packaged source audit inventories 124 definitions in RailwayExtraction.cpp
 and MainForm.cpp, plus file-level dispositions for 41 project files and hashes
-for 51 bundled dependency files. Definitions retain explicit ported, partially
-mapped, pending, inactive, stub and presentation dispositions. It is not an
-exhaustive header/call-graph audit or a numerical coverage percentage. Exact
-standalone unused helpers, partial utility contracts, inactive loop/cross workflow
-and legacy I/O/conversion/export scope remain visible; complete reconstruction
-is not declared. Keep all limitation IDs open for the agreed later review.
+for 51 bundled dependency files. Definitions retain explicit ported, unused-ported,
+pending, inactive, stub and presentation dispositions. It is not an exhaustive
+header/call-graph audit or a numerical coverage percentage. Inactive loop/cross
+workflows and legacy I/O/conversion/export scope remain visible; complete
+reconstruction is not declared. Keep all limitation IDs open for the later review.
 
-Verification passed 343 test methods, including 109 methods comparing against
+Eight formerly pending/partial standalone utility contracts are implemented:
+paired GMM, previous-height erasure, bounds, literal index cycling, inner angle,
+stored-vector 3D distance, endpoint-only polygon boundaries and inactive literal
+intersection. Active initialization/tracking now retain absent boundary caches
+using the same source helper. Four integrated scenario summaries retain their
+earlier results. See [docs/PYTHON_UTILITIES.md](docs/PYTHON_UTILITIES.md) and LIM-033.
+
+Verification passed 367 test methods, including 124 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. Remaining data/helper contracts and full-reference/real-data checks
+been built. Remaining data/inactive workflows and full-reference/real-data checks
 will accompany later increments.
 
 ## Specification checklist
@@ -162,7 +168,7 @@ The unpacked version adds second seed coordinates, bidirectional tracking orches
 | Switch-box detection | `RailwayExtraction.cpp:2494,3912,4104,4133,4204,4242`; `LIDARPT.h:1056` | Implemented: toe-adjacent candidates, pnpoly2, plane fits/JAMA refit, grouping/gates, labels and engine/layer appends |
 | Grade analysis and GWAD | `RailwayExtraction.cpp:5035–5189`; `LIDARPT.h:1254`; `MainForm.cpp:724–800,824–836` | Implemented: grade struct/division/parameters/reports, all-layer menu action, GWAD row computation and finite TSV formatting |
 | Integrated runner and audit | Existing engine/UI stages; `MainForm.cpp:349–439` seed picks | Implemented: unified API, 4 synthetic scenarios, supplied-state provenance, JSON/CSV artifacts, deterministic RNG metadata, picked seed and explicit source dispositions |
-| Standalone/partial utilities | `RailwayExtraction.cpp:1172,1208,3574,3585,3641,3860,4296` | Pending exact unused GMM/height-filter/angle/3D-distance APIs and standalone contracts for bounds/wrap/boundary helpers; reached behavior is mapped explicitly |
+| Standalone utilities | `RailwayExtraction.cpp:1172,1208,3574,3585,3641,3692,3860,4296` | Implemented: paired GMM/height erasure, empty bounds, literal int32 cycling, inner angle, stored-vector 3D distance, endpoint-only boundaries and inactive intersection |
 | Loop/cross-region routines | `RailwayExtraction.cpp:2342,2404` | Present in source, but initialization/tracking/validation calls are commented out at approximately lines 512, 827 and 1016 |
 | File adapters and coordinate conversion | `LASFileReader.cpp`; `TXTFileReader.cpp`; `DataConvertor.cpp`; `UTM.cpp` | Input density, precision, output schemas and explicit coordinate metadata |
 

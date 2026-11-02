@@ -1,4 +1,4 @@
-"""Active paired rail-head extraction from RailwayExtraction.cpp:1042–1155."""
+"""Active paired head extraction and the standalone previous-height filter."""
 
 from __future__ import annotations
 
@@ -40,6 +40,33 @@ def filter_height_band(points: PointSelection, current_height: float) -> PointSe
         raise ValueError("previous rail height must be finite")
     z = points.xyz[:, 2]
     return points.where((z <= current_height + 0.1) & (z >= current_height - 2.5 * 0.1))
+
+
+def filter_segment_by_previous_heights(
+    segment: TrackSegment,
+    track_heights: tuple[float, float],
+    ground_heights: tuple[float, float],
+    track_threshold: float,
+    ground_threshold: float,
+) -> tuple[PointSelection, PointSelection]:
+    """DeleteSegPntsCmpWithPreHgt: mutate memberships, retaining labels/order.
+
+    Both upper-bound erasures precede both lower-bound erasures. Comparisons are
+    literal strict >/< tests: equality is retained and NaN bounds delete nothing.
+    This unused helper is separate from active ExtractTrkPts' fixed height band.
+    """
+    windows = segment.track1, segment.track2
+    if any(window.members is None for window in windows):
+        raise ValueError("assign both window memberships before height filtering")
+    if len(track_heights) != 2 or len(ground_heights) != 2:
+        raise ValueError("provide two track heights and two ground heights")
+    upper = tuple(float(height) + float(track_threshold) for height in track_heights)
+    lower = tuple(float(height) - float(ground_threshold) for height in ground_heights)
+    for window, limit in zip(windows, upper):
+        window.members = window.members.where(~(window.members.xyz[:, 2] > limit))
+    for window, limit in zip(windows, lower):
+        window.members = window.members.where(~(window.members.xyz[:, 2] < limit))
+    return segment.track1.members, segment.track2.members
 
 
 def _refine_candidates(candidates: PointSelection, fit: RailHeadLineFit) -> PointSelection:

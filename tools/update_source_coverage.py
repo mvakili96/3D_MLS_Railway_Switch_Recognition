@@ -69,18 +69,16 @@ mapped(
 mapped("LineExtractionWithFixedAngle", "railway_mls.fitting:fit_fixed_angle")
 mapped("ComputeGMMfeature ClusteringByGMM", "railway_mls.gmm:classify_window")
 mapped("SegmentPoints PointGrowing", "railway_mls.grouping:group_points")
-mapped("GetMinMaxXY", "railway_mls.fitting:_bounds")
-ENGINE["GetMinMaxXY"] = rule(
-    "ported_reached_behavior",
-    ("railway_mls.fitting:_bounds",),
-    "Nonempty bounds reached by fitting are ported; the standalone empty-input sentinel API remains pending.",
+mapped(
+    "GetMinMaxXY",
+    "railway_mls.geometry:min_max_xy",
+    "Standalone source-order bounds, empty sentinels and first-tie zero signs; fitting delegates to the same helper.",
 )
 mapped(
     "ReCount",
-    "railway_mls.initialization:initialize_tracks",
-    "Reached next-vertex wrap is composed into boundary construction; no general modulo replacement is claimed.",
+    "railway_mls.geometry:recount",
+    "Literal int32 index cycling, including one-add negative branch; undefined integer division/overflow raise explicitly.",
 )
-ENGINE["ReCount"]["disposition"] = "ported_reached_behavior"
 mapped("ComputeArea", "railway_mls.geometry:polygon_area")
 mapped("ComputeFootOfPerpendicular", "railway_mls.geometry:perpendicular_foot")
 mapped("DistanceBetweenPoints2D", "railway_mls.geometry:distance_2d")
@@ -101,10 +99,9 @@ mapped("GetPlaneParameters3p", "railway_mls.planes:plane_from_three_points")
 mapped("GetPlaneParametersEigen", "railway_mls.planes:plane_from_eigen")
 mapped(
     "GetLnsFromVtx",
-    "railway_mls.initialization:initialize_tracks",
-    "Boundary endpoints are ported; initialized Python caches differ from unused uninitialized native fields (LIM-010).",
+    "railway_mls.geometry:lines_from_vertices",
+    "Cyclic endpoint-only BoundaryLine output, zero endpoint tags and absent native caches. Initialization/tracking use this same helper.",
 )
-ENGINE["GetLnsFromVtx"]["disposition"] = "ported_reached_behavior"
 mapped(
     "GetLayers",
     "railway_mls.orchestration:TrackingEngine",
@@ -116,21 +113,39 @@ mapped(
     "Each native routine has its own public counterpart in grades; XYZ-only endpoint assignment and source curve algebra are retained.",
 )
 mapped("AddPointTofootOfPependicularOnRailVtx", "railway_mls.orchestration:tag_rail_vector")
-for name in (
-    "ComputeGMMParaAndCluster",
-    "DeleteSegPntsCmpWithPreHgt",
-    "ComputeInnerAngle",
-    "DistanceBetweenPointAndLine3D",
+for name, target, note in (
+    (
+        "ComputeGMMParaAndCluster",
+        "railway_mls.gmm:classify_segment",
+        "Both three-component fits precede both clustering calls; empty/partial results and replacement heads are retained. Python returns values instead of exposing aliased native output-reference buffers.",
+    ),
+    (
+        "DeleteSegPntsCmpWithPreHgt",
+        "railway_mls.heads:filter_segment_by_previous_heights",
+        "Four ordered strict erasure loops mutate memberships only; NaN bounds erase nothing. This is not added to active head extraction.",
+    ),
+    (
+        "ComputeInnerAngle",
+        "railway_mls.geometry:inner_angle",
+        "Normalized XY arms and clamped dot product retain source IEEE degeneracy and ignore Z.",
+    ),
+    (
+        "DistanceBetweenPointAndLine3D",
+        "railway_mls.geometry:distance_to_line_3d",
+        "The stored unit vector must be supplied explicitly, including stale/nonunit values; no automatic normalization or invented cache is used.",
+    ),
 ):
-    ENGINE[name] = rule(
-        "unused_helper_pending",
-        note="No active project-owned caller found in this snapshot. Standalone exact API remains unported; related primitives do not close this gap.",
-    )
-for name in ("DetectLoopCross", "ValidateLoopCross", "ComputeIntersectionPoint3D"):
+    ENGINE[name] = rule("unused_helper_ported", (target,), note)
+for name in ("DetectLoopCross", "ValidateLoopCross"):
     ENGINE[name] = rule(
         "inactive_pending",
-        note="Loop/cross workflow calls are commented out; intersection is reached only by that inactive workflow. Do not enable implicitly.",
+        note="Loop/cross workflow calls are commented out. Workflow reconstruction remains pending; do not enable implicitly.",
     )
+ENGINE["ComputeIntersectionPoint3D"] = rule(
+    "inactive_ported",
+    ("railway_mls.geometry:intersection_point_3d",),
+    "Standalone literal XY intersection with source A2==1 Y branch, Z=0 and IEEE division; inactive loop/cross scheduling remains unchanged.",
+)
 ENGINE["TemplateMatching"] = rule(
     "inactive_ported",
     ("railway_mls.recognition:template_matching",),

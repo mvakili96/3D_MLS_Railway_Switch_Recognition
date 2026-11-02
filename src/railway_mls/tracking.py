@@ -12,7 +12,7 @@ import numpy as np
 from .config import ExtractionConfig
 from .fitting import LineFitResult, fit_line_ransac
 from .gauge import GaugeAdjustment, adjust_two_lines_with_observation
-from .geometry import Line3D, direction_mode, distance_2d, line_parameters
+from .geometry import Line3D, direction_mode, distance_2d, line_parameters, lines_from_vertices
 from .heads import TrackHeadResult, extract_track_points
 from .initialization import InitializationResult
 from .kalman import KalmanPrediction, KalmanState, KalmanUpdate, kalman_predict, kalman_update
@@ -429,10 +429,7 @@ class SequentialTracker:
             boundaries = (
                 self.layer.turnout_boundaries if window.turnout else self.layer.updated_boundaries
             )
-            boundaries.extend(
-                Line3D(begin, window.vertices[(i + 1) % len(window.vertices)])
-                for i, begin in enumerate(window.vertices)
-            )
+            boundaries.extend(lines_from_vertices(window.vertices))
         self.layer.track_segments.append(_snapshot(candidate))
         # DuplicatePolyPair does not copy distFromSp; preserve the previous value.
         old_distance = current.distance_from_start

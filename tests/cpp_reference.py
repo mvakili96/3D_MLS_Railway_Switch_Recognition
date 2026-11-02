@@ -31,6 +31,10 @@ are never printed or substituted by the native plane-component oracle.
 Grade comparisons compile the original struct, all four grade routines and the
 computational GWAD UI loop. Marker/offset/report diagnostics copy existing locals;
 managed names/dialogs are replaced by supplied names and an in-memory stream.
+Utility comparisons include the actual paired GMM/height-erasure wrappers, bounds,
+index cycling, angle, 3D distance and inactive intersection bodies. Boundary tests
+print initialized endpoints/tags/membership counts only; they never read absent
+line caches. GMM iteration diagnostics copy nIter before parameters are written.
 """
 
 from pathlib import Path
@@ -262,6 +266,13 @@ public:
     double DistanceBetweenPoints2D(PointXYZDouble*, PointXYZDouble*);
     double DistanceBetweenPointAndLine3DHgt(PointXYZDouble*, Line3D);
     void ComputeGMMfeature(vector<PointXYZDouble*>, vector<GMMPara>&, int);
+    vector<int> referenceGmmIterations;
+    void ComputeGMMParaAndCluster(TrackSegment, vector<GMMPara>&, vector<GMMPara>&,
+                                vector<PointXYZDouble*>&, vector<PointXYZDouble*>&);
+    void DeleteSegPntsCmpWithPreHgt(TrackSegment&, double, double, double, double, double, double);
+    double ComputeInnerAngle(POINT3D, POINT3D, POINT3D);
+    double DistanceBetweenPointAndLine3D(POINT3D, Line3D);
+    POINT3D ComputeIntersectionPoint3D(double, double, double, double, double, double);
     void ClusteringByGMM(vector<PointXYZDouble*>, vector<GMMPara>, vector<vector<PointXYZDouble*>>&);
     bool LineExtractionByRansac(vector<PointXYZDouble*>, double, Line3D&);
     bool LineExtractionByRansac(vector<PointXYZDouble*>, double, Line3D&, double&, vector<PointXYZDouble*>&);
@@ -307,6 +318,11 @@ public:
                     "double RailwayExtraction::DistanceBetweenPoints2D(PointXYZDouble*",
                     "double RailwayExtraction::DistanceBetweenPointAndLine3DHgt(",
                     "void RailwayExtraction::ComputeGMMfeature(",
+                    "void RailwayExtraction::ComputeGMMParaAndCluster(",
+                    "void RailwayExtraction::DeleteSegPntsCmpWithPreHgt(",
+                    "double RailwayExtraction::ComputeInnerAngle(",
+                    "double RailwayExtraction::DistanceBetweenPointAndLine3D(",
+                    "POINT3D RailwayExtraction::ComputeIntersectionPoint3D(",
                     "void RailwayExtraction::ClusteringByGMM(",
                     "bool RailwayExtraction::LineExtractionByRansac(vector<PointXYZDouble*> pnts, double ThDist, Line3D &_line)",
                     "void RailwayExtraction::ExtractTrkPts(",
@@ -349,6 +365,8 @@ public:
                     "std::vector<TrackLayer *> RailwayExtraction::GetLayers()",
                 )
             )
+            gmm = function(extraction, "void RailwayExtraction::ComputeGMMfeature(")
+            functions = functions.replace(gmm, gmm.replace("paras.clear();", "referenceGmmIterations.push_back(nIter);\nparas.clear();"))
             grade = function(extraction, "vector<GradeSect> RailwayExtraction::ComputeGrade(")
             modified = grade.replace("{", "{\nlastGradeReport.clear();", 1)
             report_markers = (
@@ -615,6 +633,10 @@ void printVertices(vector<POINT3D> points) { for (auto p : points) printPoint(p)
 double readScalar() {
     string token; cin >> token; return stod(token);
 }
+POINT3D readScalarPoint() {
+    double x=readScalar(), y=readScalar(), z=readScalar();
+    return POINT3D(x,y,z);
+}
 void readRandom() {
     size_t count; cin >> count; random_draws.resize(count); random_cursor = 0;
     for (auto &value : random_draws) cin >> value;
@@ -777,7 +799,63 @@ int main() {
     string operation;
     cin >> operation;
     RailwayExtraction engine;
-    if (operation == "picked_seed") {
+    if (operation == "utility_recount") {
+        int total,current; cin >> total >> current;
+        cout << "RESULT " << engine.ReCount(total,current);
+    } else if (operation == "utility_angle") {
+        POINT3D first=readScalarPoint(), middle=readScalarPoint(), last=readScalarPoint();
+        cout << "RESULT " << engine.ComputeInnerAngle(first,middle,last);
+    } else if (operation == "utility_distance3d") {
+        POINT3D point=readScalarPoint(); Line3D line;
+        line.BeginPt=readScalarPoint(); line.EndPt=readScalarPoint(); line.m_UnitVec=readScalarPoint();
+        cout << "RESULT " << engine.DistanceBetweenPointAndLine3D(point,line);
+    } else if (operation == "utility_intersection") {
+        double a1=readScalar(),b1=readScalar(),c1=readScalar(),a2=readScalar(),b2=readScalar(),c2=readScalar();
+        auto point=engine.ComputeIntersectionPoint3D(a1,b1,c1,a2,b2,c2);
+        cout << "RESULT "; printPoint(point); cout << point.PtType;
+    } else if (operation == "utility_boundaries") {
+        auto points=readTypedVector(); vector<Line3D> lines(2);
+        engine.GetLnsFromVtx(points,lines); cout << "RESULT " << lines.size() << ' ';
+        for (auto &line : lines) {
+            printPoint(line.BeginPt); cout << line.BeginPt.PtType << ' ';
+            printPoint(line.EndPt); cout << line.EndPt.PtType << ' ' << line.MemPts.size() << ' ';
+        }
+    } else if (operation == "utility_bounds" || operation == "utility_height_filter" || operation == "utility_segment_gmm") {
+        size_t count; cin >> count; Cloud cloud; cloud.points.resize(count);
+        for (auto &point : cloud.points) {
+            point.x=readScalar(); point.y=readScalar(); point.z=readScalar();
+            cin >> point.ClassCode >> point.SegmentID >> point.Intensity;
+        }
+        auto first=readSelection(cloud);
+        if (operation == "utility_bounds") {
+            double minX,maxX,minY,maxY; engine.GetMinMaxXY(first,minX,maxX,minY,maxY);
+            cout << "RESULT " << minX << ' ' << maxX << ' ' << minY << ' ' << maxY;
+        } else {
+            auto second=readSelection(cloud); TrackSegment segment;
+            segment.m_Track1.MemPnts=first; segment.m_Track2.MemPnts=second;
+            vector<PointXYZDouble*> heads1=first, heads2=second;
+            if (operation == "utility_height_filter") {
+                double track1=readScalar(),track2=readScalar(),ground1=readScalar(),ground2=readScalar();
+                double thresholdTrack=readScalar(),thresholdGround=readScalar();
+                engine.DeleteSegPntsCmpWithPreHgt(segment,track1,track2,ground1,ground2,thresholdTrack,thresholdGround);
+                heads1=segment.m_Track1.MemPnts; heads2=segment.m_Track2.MemPnts;
+                cout << "RESULT ";
+            } else {
+                vector<GMMPara> parameters1(5),parameters2(7);
+                engine.ComputeGMMParaAndCluster(segment,parameters1,parameters2,heads1,heads2);
+                cout << "RESULT ";
+                for (auto parameters : {parameters1,parameters2}) {
+                    cout << parameters.size() << ' ';
+                    for (auto parameter : parameters) cout << parameter.mu << ' ' << parameter.sigma << ' ' << parameter.alpha << ' ';
+                }
+                for (auto iterations : engine.referenceGmmIterations) cout << iterations << ' ';
+            }
+            printSelection(heads1,cloud); printSelection(heads2,cloud);
+            cout << cloud.points.size() << ' ';
+            for (auto point : cloud.points) cout << point.ClassCode << ' ' << point.SegmentID << ' ' << point.Intensity << ' ';
+            cout << random_cursor;
+        }
+    } else if (operation == "picked_seed") {
         POINT3D first=readPoint(), second=readPoint();
         auto seed=engine.PickedSeed(first.x,first.y,first.z,second.x,second.y,second.z);
         cout << "\nRESULT "; for (auto value : seed) cout << value << ' ';

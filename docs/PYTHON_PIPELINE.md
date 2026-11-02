@@ -175,16 +175,17 @@ checkout; unknown definitions raise until explicitly classified. A successful
 audit establishes inventory consistency, not correctness of every mapping or
 parity with the Windows executable. `complete_reconstruction` remains false.
 
-The audit explicitly leaves these gaps visible:
+The standalone/partial utility gaps from the initial audit are now implemented:
+paired GMM, previous-height erasure, bounds, cycling, inner angle, stored-vector
+3D distance, endpoint-only boundaries and inactive intersection. See
+[the utility guide](PYTHON_UTILITIES.md). No selected definition remains
+`unused_helper_pending` or `ported_reached_behavior`.
 
-- Standalone unused `ComputeGMMParaAndCluster`, `DeleteSegPntsCmpWithPreHgt`,
-  `ComputeInnerAngle` and `DistanceBetweenPointAndLine3D`. Related primitives
-  already exist, but their exact standalone contracts have not been reconstructed.
-- `GetMinMaxXY`'s empty-input sentinel contract, general `ReCount` and standalone
-  `GetLnsFromVtx` state/cache contract have only their reached behavior mapped.
-- Inactive `DetectLoopCross`, `ValidateLoopCross` and its intersection helper;
-  they are recorded without enabling their commented-out scheduling. The inactive
-  raw-count matcher and fixed-angle loop/cross fitter are already standalone ports.
+The audit still leaves these gaps visible:
+
+- Inactive `DetectLoopCross` and `ValidateLoopCross` workflows; they are recorded
+  without enabling their commented-out scheduling. Their intersection helper,
+  raw-count matcher and fixed-angle loop/cross fitter are standalone ports.
 - Legacy reader/bounds adapters, subsampling, coordinate conversion and legacy
   point/vector export actions (LIM-014). Numerical UI actions are mapped separately
   from display/dialog callbacks; Windows Forms/VTK presentation is out of scope.

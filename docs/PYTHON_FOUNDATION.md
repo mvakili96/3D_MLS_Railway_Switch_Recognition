@@ -59,6 +59,9 @@ particular, `Line3D.update_parameters()` explicitly recomputes coefficients and
 angle after endpoint edits, just as the source calls its recomputation methods.
 The Python line center and unit vector are calculated on access; later tracking
 code must explicitly model any source dependency on cached intermediate values.
+The later [utility increment](PYTHON_UTILITIES.md) adds endpoint-only
+`BoundaryLine` values with absent caches, and the standalone 3D distance helper
+requires the stored unit vector explicitly rather than silently deriving one.
 
 ## Data and state contracts
 
