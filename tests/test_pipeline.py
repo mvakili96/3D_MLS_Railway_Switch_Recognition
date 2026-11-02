@@ -361,7 +361,7 @@ class SourceCoverageTests(unittest.TestCase):
         self.assertNotIn("ported_reached_behavior", dispositions)
         self.assertIn("conversion_ported", dispositions)
         self.assertNotIn("io_or_conversion_pending", dispositions)
-        self.assertIn("native_filter_pending", dispositions)
+        self.assertNotIn("native_filter_pending", dispositions)
 
     def test_parser_ignores_comments_strings_and_preserves_overloads_and_destructor(self):
         source = """// void Owner::fake() {}

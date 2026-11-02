@@ -16,7 +16,8 @@ initialization/tracking/validation calls at source lines 512, 827 and 1016 remai
 commented out. That increment inventoried 201 definitions and 19 named header
 types. The later [legacy I/O increment](PYTHON_LEGACY_IO.md) expands to 219.
 The [coordinate increment](PYTHON_COORDINATES.md) expands to 246 and implements
-explicit conversion. Unused PCL point filters and call-path review remain outstanding;
+explicit conversion. The [PCL helper increment](PYTHON_PCL_HELPERS.md) implements
+the unused point filters; call-path review remains outstanding;
 `complete_reconstruction` is still false.
 
 ## Detection API and ordered filtering

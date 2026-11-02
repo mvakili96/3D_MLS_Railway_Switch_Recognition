@@ -109,8 +109,9 @@ for 51 bundled dependency files. Definitions retain explicit ported, unused-port
 pending, inactive, stub and presentation dispositions. It is not an exhaustive
 general C++ call-graph audit or a numerical coverage percentage. Loop/cross
 components are now standalone ports with inactive scheduling. Legacy readers and
-exports and explicit coordinate conversion are implemented; two unused PCL point
-helpers remain pending. Complete
+exports, explicit coordinate conversion and both unused PCL point helpers are
+implemented with explicit numerical/input policies. No scoped definition remains
+pending; full call-path/reconstruction review remains. Complete
 reconstruction is not declared. Keep all limitation IDs open for the later review.
 
 Eight formerly pending/partial standalone utility contracts are implemented:
@@ -147,9 +148,17 @@ pi/ellipsoid literals, automatic-zone edges and initialized nonfinite behavior
 remain literal. See [docs/PYTHON_COORDINATES.md](docs/PYTHON_COORDINATES.md) and
 LIM-037. No conversion is inserted into tracking.
 
-Verification passed 487 test methods, including 184 methods comparing against
+The two unused PointXYZ helpers now preserve fixed 0.1f voxel centroids, checked
+source index arithmetic/extent fallback and double-centroid affine translation
+with float32 output. Density, metadata, initialized IEEE/empty states and native
+tie-order replay remain explicit. Fourteen PCL bodies and 19 selected PCL/Eigen
+hashes are frozen independently of the unchanged source baseline. See
+[docs/PYTHON_PCL_HELPERS.md](docs/PYTHON_PCL_HELPERS.md) and LIM-038. No native
+filtering/translation is inserted into loading or tracking.
+
+Verification passed 513 test methods, including 200 methods comparing against
 compiled extracts of the original C++. The complete original application has not
-been built. Remaining native filters, database integration, call-path review and full-reference/real-data checks
+been built. Database integration, full call-path/reconstruction review and full-reference/real-data checks
 will accompany later increments.
 
 ## Specification checklist
@@ -204,7 +213,7 @@ The unpacked version adds second seed coordinates, bidirectional tracking orches
 | Loop/cross-region routines | `RailwayExtraction.cpp:2342,2404` | Implemented as standalone detection/validation; initialization/tracking/validation calls remain commented out at lines 512, 827 and 1016 |
 | File adapters and legacy vectors | `LASFileReader.cpp`; `TXTFileReader.cpp`; `MainForm.cpp:149,172,443,577` | Implemented: reader selection, precision/bounds/callbacks, cache/grid bridge, legacy vector formats and explicit input/output policies |
 | Coordinate conversion | `DataConvertor.cpp`; `UTM.cpp`; `DataConverstionForm.cpp`; `MainForm.cpp:466,504` | Implemented: literal ECEF/geodetic/UTM formulas, accumulated buffer state, all overloads, exports/callbacks and numerical menu/batch bindings |
-| Unused PCL wrappers | `LASFileReader.cpp:113,129` | Pending: float32 voxel-centroid filtering and centroid translation; no implicit native filtering is inserted |
+| Unused PCL wrappers | `LASFileReader.cpp:113,129` | Implemented standalone: float32 voxel-centroid filtering, double-centroid/float32 affine output, metadata/density, extent fallback and explicit sort/integer policies; no automatic scheduling |
 
 The implementation inventory should cover all source computation, including orchestration inside the UI. Preserve active behavior and explicitly account for separately invoked computational features such as grade analysis and switch-box detection. Record inactive routines without enabling them merely because they appear in the source or paper. Recreating Windows Forms is a separate product task; its computational orchestration must still be ported.
 

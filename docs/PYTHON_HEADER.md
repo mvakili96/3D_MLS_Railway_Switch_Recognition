@@ -117,6 +117,7 @@ All limitations remain open, including LIM-034. The later
 [loop/cross increment](PYTHON_LOOP_CROSS.md) ports its two inactive bodies as
 standalone calls; [legacy I/O](PYTHON_LEGACY_IO.md) implements readers/exports and
 expands the audit to 219; [coordinate conversion](PYTHON_COORDINATES.md) expands
-it to 246. Unused PCL filters, whole-application comparison, real-data
+it to 246. The [PCL helper increment](PYTHON_PCL_HELPERS.md) implements the unused
+point filters. Complete review, whole-application comparison, real-data
 accuracy and MLS-scale profiling remain separate work. Inventory consistency
 does not establish native application equivalence or published performance.

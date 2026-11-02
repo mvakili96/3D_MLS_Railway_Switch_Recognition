@@ -19,7 +19,8 @@ The audit now covers **246 definitions**: the prior 124 engine/UI, 77 inline
 header and 18 reader definitions, plus 11 converter, nine UTM and seven conversion
 dialog definitions. All 19 header types and 41 project/51 numerical dependency
 hashes remain recorded. Conversion-only dialog/control handlers are explicitly
-presentation. The two unused PCL voxel/centroid wrappers remain pending.
+presentation. The later [PCL helper increment](PYTHON_PCL_HELPERS.md) ports the two
+unused voxel/centroid wrappers; full call-path/reconstruction review remains.
 `complete_reconstruction` remains false until the remaining work and call-path
 review are complete. Inventory consistency is not whole-application equivalence.
 
@@ -153,7 +154,7 @@ dispatch/naming and file fixtures; managed GUI execution is not claimed.
 Tests cover core-cloud boundaries, callback failures, snapshots, rounded text,
 flush timing, overwrite policies, CLI validation and expanded inventory parsing.
 Component agreement does not establish global geodetic accuracy or matched
-Windows/libm behavior. Remaining PCL helpers, complete call-path review,
+Windows/libm behavior. The PCL helpers are now implemented; complete call-path review,
 whole-application/native reference, real data and profiling remain separate work.
 See **LIM-037** in [the limitations register](LIMITATIONS.md). All earlier IDs
 remain open for the requested review after full reconstruction.

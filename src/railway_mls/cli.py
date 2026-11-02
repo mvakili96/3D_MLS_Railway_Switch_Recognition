@@ -56,6 +56,41 @@ from .synthetic import loop_cross_scene
 from .legacy_io import LegacyTextReader, format_rail_vector, load_point_cloud
 from .conversion import CoordinateConverter, format_converted_points, write_converted_points
 from .coordinates import CONVERTER_PI, geodetic_to_ecef
+from .pcl_helpers import PclHeader, PclXYZCloud, decrease_density, center_point_cloud
+
+
+def _pcl_cloud_json(cloud) -> dict:
+    return {"xyz": cloud.xyz.tolist(), "width": cloud.width, "height": cloud.height,
+            "is_dense": cloud.is_dense, "header": asdict(cloud.header),
+            "sensor_origin": cloud.sensor_origin.tolist(),
+            "sensor_orientation_xyzw": cloud.sensor_orientation.tolist()}
+
+
+def _pcl_helpers_demo() -> dict:
+    cloud = PclXYZCloud([[.01,.02,.03],[.03,.04,.05],[.21,.02,.03],
+                         [.23,.04,.05],[.01,.22,.03],[.03,.24,.05]],
+                        width=6, height=1, header=PclHeader(7,12345,"synthetic"),
+                        sensor_origin=(10,20,30,1))
+    voxel = decrease_density(cloud)
+    centered = center_point_cloud(cloud)
+    fallback = decrease_density(PclXYZCloud([[0,0,0],[1000,1000,1000]]))
+    empty = PclXYZCloud(np.empty((0,3)))
+    empty_voxel, empty_center = decrease_density(empty), center_point_cloud(empty)
+    tied = decrease_density(PclXYZCloud([[.09,0,0],*[[1e-9,0,0]]*31]))
+    return strict_json_value({
+        "status": "ok", "data": "generated PointXYZ helper fixtures",
+        "automatic_processing_active": False, "input_count": len(cloud),
+        "voxel": {"status": voxel.status, "output": _pcl_cloud_json(voxel.cloud),
+                  "groups": voxel.groups, "reference_comparable": voxel.reference_comparable},
+        "centering": {"status": centered.status, "centroid": centered.centroid,
+                      "count": centered.centroid_count, "matrix": centered.matrix,
+                      "output": _pcl_cloud_json(centered.cloud)},
+        "extent_fallback": {"status": fallback.status, "output_count": len(fallback.cloud)},
+        "empty_voxel": {"status": empty_voxel.status, "output_available": empty_voxel.cloud is not None},
+        "empty_center": {"status": empty_center.status, "centroid": empty_center.centroid},
+        "native_sort_ties": {"status": tied.status, "sort_sensitive_voxels": tied.sort_sensitive_voxels,
+                             "reference_comparable": tied.reference_comparable},
+    })
 
 
 def _conversion_demo() -> dict:
@@ -768,6 +803,7 @@ def _observation_demo(seed: int) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="3D MLS railway Python foundation")
     commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("pcl-helpers-demo", help="exercise source float32 voxel and double-centroid PointXYZ helpers")
     commands.add_parser("conversion-demo", help="exercise source coordinate formulas, buffer state and converted PTS output")
     convert_parser = commands.add_parser("convert-cloud", help="explicit legacy ECEF/UTM conversion with source formulas")
     convert_parser.add_argument("source")
@@ -875,6 +911,9 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command == "pcl-helpers-demo":
+        print(json.dumps(_pcl_helpers_demo(), indent=2, allow_nan=False))
+        return 0
     if arguments.command == "conversion-demo":
         print(json.dumps(_conversion_demo(), indent=2, allow_nan=False))
         return 0

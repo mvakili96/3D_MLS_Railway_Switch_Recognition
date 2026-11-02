@@ -66,11 +66,11 @@ engine/layer side effects together. **Status: open; review first.**
 | **LIM-008 — Equal-key sorting.** Native `std::sort` does not specify equal-height or equal-component-size order. | Python uses documented stable ties. Native exact-order comparisons use appropriate distinct-key fixtures; tied membership/height checks have narrower claims. | Compare the target compiler/runtime's permutations and resulting random-index selections, grouping choices and outputs. [Heads](PYTHON_GMM_HEADS.md#random-draws-and-ordering), [grouping](PYTHON_FITTING_MDL.md#grouping-and-point-identity). |
 | **LIM-009 — Random state and floating-point environment.** Unknown earlier native draws, point order and arithmetic near thresholds affect model choices. | Owned MSVC recurrence/default seed and recorded raw streams are available. Component extracts receive identical draws; a seed alone does not recover an unknown original session. | Save complete configuration, cloud order and draw streams for matched experiments. Investigate threshold/tie discrepancies with explicit numerical tolerances and exact identity comparisons. [Details](PYTHON_GMM_HEADS.md#random-draws-and-ordering). |
 | **LIM-010 — Python boundaries and native uninitialized fields.** Some invalid counts, ownership, dimensions or nonfinite query inputs have no supported native result. Default geometry fields and native output-reference interfaces need explicit contracts. | Python rejects invalid API inputs or exposes unavailable fields as `None`. Endpoint-only boundary caches now remain absent in initialization/tracking; native comparisons read only defined endpoints/tags. New scalar 3D distance requires an explicit stored vector, and returned utility vectors do not expose aliased native output buffers. | Audit every newly implemented consumer before reading absent fields or assuming native reference aliasing. Retain explicit boundary contracts and identify comparisons that exclude undefined native values. [Utilities](PYTHON_UTILITIES.md), [initialization](PYTHON_KALMAN_INITIALIZATION.md), [toes](PYTHON_TOES.md). |
-| **LIM-011 — Whole-application equivalence.** Original Windows application has not been built/executed for full comparisons. | Current suite: 487 test methods, including 184 using compiled source extracts. Eighteen demos, cloud inspection/conversion and a source audit are available. Complete UTM/converter bodies are source-tested, including callback-visible state. Legacy I/O tests use data/decoded-record shims; real Python LAS/LAZ decoding is tested separately. Managed batch UI is not compiled. Unsafe native reads/casts are excluded; orchestration callbacks still isolate control flow. | Complete call-path/reference review, then compare matched whole-path intermediate/final results where a usable reference exists. Keep component, controlled-callback/decoder and full-binary claims separate. |
+| **LIM-011 — Whole-application equivalence.** Original Windows application has not been built/executed for full comparisons. | Current suite: 513 test methods, including 200 using compiled source extracts. Nineteen demos, cloud inspection/conversion and a source audit are available. PCL helper comparisons compile frozen original arithmetic/sort/filter bodies against bundled Eigen, with PointXYZ/field-trait shims and supplied native sort order. Converter bodies are source-tested; codec, managed UI and whole-binary claims remain separate. Unsafe reads/casts/overflow are excluded. | Complete call-path/reference review, then compare matched whole-path intermediate/final results where a usable reference exists. Keep component, controlled-callback/decoder/dependency and full-binary claims separate. |
 | **LIM-012 — Real-data/published evaluation.** Suitable raw inputs, annotations and reference outputs are not yet supplied. | Synthetic fixtures validate specified behavior only; published accuracy/recall and robustness are not reproduced. Historical evaluation-snapshot questions are deferred and do not replace the chosen source baseline. | Run recorded real-data experiments, error analysis and metric calculations once data is available. [Validation plan](../PYTHON_PORT_PLAN.md#validation-levels). |
 | **LIM-013 — Runtime and memory at MLS scale.** Local grouping can have quadratic scans; full step diagnostics retain reference arrays. | Sparse grid lookup and array operations are implemented; no representative real-cloud profiling has been completed. | Measure runtime/memory by stage and cloud/window size. Preserve neighbor/DFS/sample order when optimizing; assess optional diagnostic retention. [Grouping](PYTHON_FITTING_MDL.md), [tracking](PYTHON_TRACKING.md). |
 | **LIM-014 — Data adapters, units and precision.** Legacy readers have format-dependent thinning; count-prefixed text/CSV, CRS conversion and rounded exports need explicit contracts. | Legacy readers/vector exporters and explicit ECEF/geodetic/UTM conversion/exports are implemented. Source degree/radian, zone/hemisphere, ellipsoid/pi, sampling and three-decimal contracts are retained. Optional decoder equivalence, runtime/error policies, global geodetic accuracy and database integration remain unverified. Tracking performs no implicit frame conversion. | Review source-codec/format compatibility, sampling/density, rounded exports, bounds/labels, coordinate frames and database schema. [Coordinates](PYTHON_COORDINATES.md), LIM-037, [I/O guide](PYTHON_LEGACY_IO.md), LIM-036, [data contract](../PYTHON_PORT_PLAN.md#data-contract-to-prepare-now). |
-| **LIM-015 — Remaining scope.** Inventory consistency is distinct from complete reconstruction. | Dispositions cover 246 definitions: 124 engine/UI, 77 inline header, 18 reader and 27 coordinate conversion definitions, plus 19 named header types. 41 project and 51 dependency files retain their hashes. Existing numerical/I/O/state contracts and explicit conversion/menu/batch workflows are implemented or have policies. Automatic loop/cross scheduling stays inactive. Unused PCL voxel/centroid wrappers and complete call-path review remain pending. Commented rotations stay excluded; dependency math is ported only where reached. | Complete agreed remaining workflows and call-path/reference review before declaring reconstruction complete. Keep implementation scope distinct from defects or undefined behavior. [Coordinates](PYTHON_COORDINATES.md), [I/O](PYTHON_LEGACY_IO.md), [pipeline audit](PYTHON_PIPELINE.md#explicit-coverage-audit), [plan](../PYTHON_PORT_PLAN.md#computational-inventory). |
+| **LIM-015 — Remaining scope.** Inventory consistency is distinct from complete reconstruction. | Dispositions cover 246 definitions and 19 named header types, with no scoped pending definitions/file workflows. Both unused PCL helpers are standalone ports. The 41 project/51 dependency hashes and baseline ID remain unchanged; 14 frozen PCL extracts/19 selected PCL/Eigen hashes are added separately. Automatic loop/cross scheduling and unused helper calls stay inactive. Complete call-path/reconstruction review remains outstanding. Commented rotations stay excluded; whole dependency libraries are not claimed ported. | Finish the agreed reconstruction review before declaring implementation scope complete. Keep this review distinct from retained defects, platform policies, undefined behavior and later real-data validation. [PCL helpers](PYTHON_PCL_HELPERS.md), [coordinates](PYTHON_COORDINATES.md), [pipeline audit](PYTHON_PIPELINE.md#explicit-coverage-audit), [plan](../PYTHON_PORT_PLAN.md#computational-inventory). |
 
 ## Preserved source behavior and findings awaiting later decisions
 
@@ -265,7 +265,7 @@ matched Windows reader/runtime, decoder/backend versions, metadata and sampling;
 inspect header bounds, source macros, line lengths/locale and round-trip loss.
 Review indexed markers/vector assumptions, cache/error lifecycle and output
 overwrite/partial-write requirements with consumers. The coordinate workflows
-are now implemented separately under LIM-037; unused PCL helpers remain pending.
+are now implemented separately under LIM-037, and standalone PCL helpers under LIM-038.
 Establish units/CRS and database adapters
 before real-data evaluation. No existing limitation is closed by I/O completion.
 **Status: open.**
@@ -311,6 +311,50 @@ Decide any buffer clear, normalized units/zones, different projection library,
 guard/recovery, metadata schema or southern-batch correction as a separate
 behavior change. Retain the source baseline and all earlier limitations.
 **Status: open.**
+
+### LIM-038: PCL float precision, voxel indices/ties and centroid metadata
+
+**Evidence:** `LASFileReader.cpp:113–148`, the selected bundled PCL 1.8/Eigen
+sources frozen in `pcl_reference.json` and [the helper guide](PYTHON_PCL_HELPERS.md).
+
+**Triggers and impact:** both helper inputs are PointXYZ float32, unlike the
+core's double-precision labeled points. Voxel size/inverse, bounds and centroid
+accumulation round as float32; linear keys use checked native int32/int64 paths.
+The safe large-extent branch copies the entire input, including invalid rows and
+organization. Empty/all-invalid bounds retain sentinels and reach an unsafe
+extent cast; intermediate extent, division or index arithmetic can overflow
+before the advertised fallback. Equal-key std::sort order is unspecified and
+can change float32 sums. Dense metadata with nonfinite values is contradictory;
+Eigen scalar/SIMD NaN bound rules can change the reached path. The source's
+unqualified floor overload and explicit float32 minimum-bound cast also matter
+at large coordinate spans. Centering accumulates double XYZ but writes float32;
+rotation is commented out. Empty centroids retain (1,0,0,0), and non-dense invalid
+rows remain unchanged. Dense nonfinite rows execute off-diagonal 0*NaN/Inf.
+Sensor pose is copied, not translated with the points.
+
+**Current handling:** both helpers are standalone with explicit PointXYZ state
+and core bridges; no labels/intensity are invented or transferred. Native unsafe
+integer paths return diagnostic statuses without an output cloud. Dense
+nonfinite voxel input has an explicit unsupported portable boundary. Initialized
+centering IEEE values and empty metadata remain visible. Default voxel equal-key
+order is stable input order; potentially sensitive groups are flagged as
+non-comparable unless a valid native sorted-row permutation is supplied. This
+replay is conditional on the caller's trace, not proof of the historical MSVC
+sort. Exact finite bits, double matrix/centroid values and metadata are tested
+against frozen source routines with the bundled Eigen. Point/trait shims, current
+compiler overload rules, NaN payloads, allocator/runtime behavior and the complete
+Eigen/Boost/stdlib include/ABI graph are outside whole-binary parity claims.
+Selected dependencies are checked locally when present; frozen extracts/notices
+ship without requiring the large ignored installation bundle. Native helper
+comparison tests explicitly skip without a compiler or bundled Eigen.
+
+**Post-reconstruction review:** compare the matched Windows PCL/Eigen/compiler
+environment, tie permutations, coordinate ranges, floor overloads, density flags,
+centroid narrowing and sensor-pose consumers. Profile real clouds separately.
+Decide any stable-sort normalization, double centroid accumulation for voxels,
+repaired integer fallback, empty filter result, metadata update or automatic
+helper scheduling as a separate behavior change. Keep the original source and
+all earlier limitation IDs open for the agreed review. **Status: open.**
 
 ## Resolution history
 

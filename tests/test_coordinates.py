@@ -508,9 +508,7 @@ class CoordinateContractTests(unittest.TestCase):
             ),
             (246, 124, 27),
         )
-        self.assertEqual(
-            {v["name"] for v in report["pending_definitions"]}, {"DecreaseDensity", "Transform"}
-        )
+        self.assertEqual(report["pending_definitions"], [])
         self.assertFalse(report["complete_reconstruction"])
         self.assertEqual(check_source_coverage(Path(__file__).resolve().parents[1]), ())
 

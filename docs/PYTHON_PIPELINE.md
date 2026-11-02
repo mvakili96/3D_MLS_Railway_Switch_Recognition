@@ -187,14 +187,16 @@ The inactive loop/cross detection and validation bodies are also implemented as
 intersection. No `inactive_pending` definitions remain. Their automatic calls
 stay disabled, preserving the source's commented scheduling.
 
-The two unused native PCL point filters remain implementation gaps. Explicit
+The two unused native PCL point helpers are now [standalone ports](PYTHON_PCL_HELPERS.md).
+No scoped definition/file workflow remains pending. Explicit
 [coordinate conversion](PYTHON_COORDINATES.md) and [legacy I/O](PYTHON_LEGACY_IO.md)
 are implemented without inserting frame changes or filtering into tracking.
-Their 18 reader and 27 conversion definitions expand the audit to 246. Numerical
+Their 18 reader and 27 conversion definitions keep the audit at 246. Fourteen PCL
+body extracts and 19 selected PCL/Eigen dependency hashes are frozen separately. Numerical
 UI actions are mapped separately from display/dialog callbacks; Windows Forms/VTK
 presentation is out of scope. Complete call-path review remains outstanding.
 
-These scope gaps are distinct from undefined-source behavior in implemented
+The remaining review is distinct from undefined-source behavior in implemented
 components. The [limitations register](LIMITATIONS.md) remains open for the agreed
 post-reconstruction review. Real inputs, a usable native reference and profiling
 are still needed for evaluation.

@@ -272,7 +272,9 @@ READERS = {
     "maxPoint": rule("io_ported", ("railway_mls.legacy_io:LegacyLasReader.read_bounds",), "Original LAS header maxima, not sampled-cloud maxima."),
 }
 for name in ("DecreaseDensity", "Transform"):
-    READERS[name] = rule("native_filter_pending", note="Unused wrappers around PCL float32 voxel-centroid filtering or centroid translation. They are not called by either reader and are reserved for a separate dependency-level numerical port.")
+    target = "decrease_density" if name == "DecreaseDensity" else "center_point_cloud"
+    READERS[name] = rule("unused_helper_ported", ("railway_mls.pcl_helpers:" + target,),
+                         "Standalone PointXYZ/PCL 1.8 helper; float32 voxel accumulation or double-centroid/float32 affine output. Native integer guards, tie-order replay and density/metadata contracts are explicit. Neither helper is inserted into readers/tracking.")
 for name in (
     "exitToolStripMenuItem_Click",
     "showPointCloud",
@@ -316,7 +318,7 @@ for path in sorted(source.iterdir()):
     elif path.stem == "TXTFileReader":
         disposition = "io_ported"
     elif path.stem == "LASFileReader":
-        disposition = "reader_io_ported_native_filters_pending"
+        disposition = "reader_io_and_native_helpers_ported"
     elif path.stem in (
         "DataConvertor",
         "UTM",
@@ -410,6 +412,15 @@ audit = {
         for name in ("Rotation3D", "InverseRotation3D")
     ],
     "complete_reconstruction": False,
+}
+reference = root / "src/railway_mls/pcl_reference.json"
+license_path = reference.with_name("PCL_LICENSE.txt")
+helper = json.loads(reference.read_text())
+audit["pcl_helper_reference"] = {
+    "resource": reference.name, "sha256": source_text_hash(reference.read_text()),
+    "license_resource": license_path.name, "license_sha256": source_text_hash(license_path.read_text()),
+    "extract_count": len(helper["extracts"]), "dependency_file_count": len(helper["sources"]),
+    "scope": "Frozen selected PCL bodies and PCL/Eigen hashes. Local ignored dependency files are checked if present; installed runtime does not require the installers or Eigen.",
 }
 destination = root / "src/railway_mls/source_coverage.json"
 destination.write_text(json.dumps(audit, indent=2) + "\n")

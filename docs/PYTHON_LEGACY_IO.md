@@ -25,7 +25,8 @@ translation, rotation commented out), remain `native_filter_pending`. They are
 not part of either loading path. Coordinate-conversion workflows and call-path
 review remained pending at this increment. The later
 [coordinate increment](PYTHON_COORDINATES.md) ports conversion and expands the
-audit to 246; the two PCL helpers and call-path review remain pending. No
+audit to 246. The [PCL helper increment](PYTHON_PCL_HELPERS.md) implements both
+standalone wrappers; full call-path review remains outstanding. No
 full-reconstruction claim is made.
 
 ## Dependencies and commands
