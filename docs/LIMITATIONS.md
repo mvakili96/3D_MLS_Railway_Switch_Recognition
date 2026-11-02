@@ -66,11 +66,11 @@ engine/layer side effects together. **Status: open; review first.**
 | **LIM-008 — Equal-key sorting.** Native `std::sort` does not specify equal-height or equal-component-size order. | Python uses documented stable ties. Native exact-order comparisons use appropriate distinct-key fixtures; tied membership/height checks have narrower claims. | Compare the target compiler/runtime's permutations and resulting random-index selections, grouping choices and outputs. [Heads](PYTHON_GMM_HEADS.md#random-draws-and-ordering), [grouping](PYTHON_FITTING_MDL.md#grouping-and-point-identity). |
 | **LIM-009 — Random state and floating-point environment.** Unknown earlier native draws, point order and arithmetic near thresholds affect model choices. | Owned MSVC recurrence/default seed and recorded raw streams are available. Component extracts receive identical draws; a seed alone does not recover an unknown original session. | Save complete configuration, cloud order and draw streams for matched experiments. Investigate threshold/tie discrepancies with explicit numerical tolerances and exact identity comparisons. [Details](PYTHON_GMM_HEADS.md#random-draws-and-ordering). |
 | **LIM-010 — Python boundaries and native uninitialized fields.** Some invalid counts, ownership, dimensions or nonfinite query inputs have no supported native result. Default geometry fields and native output-reference interfaces need explicit contracts. | Python rejects invalid API inputs or exposes unavailable fields as `None`. Endpoint-only boundary caches now remain absent in initialization/tracking; native comparisons read only defined endpoints/tags. New scalar 3D distance requires an explicit stored vector, and returned utility vectors do not expose aliased native output buffers. | Audit every newly implemented consumer before reading absent fields or assuming native reference aliasing. Retain explicit boundary contracts and identify comparisons that exclude undefined native values. [Utilities](PYTHON_UTILITIES.md), [initialization](PYTHON_KALMAN_INITIALIZATION.md), [toes](PYTHON_TOES.md). |
-| **LIM-011 — Whole-application equivalence.** Original Windows application has not been built/executed for full comparisons. | Current suite: 513 test methods, including 200 using compiled source extracts. Nineteen demos, cloud inspection/conversion and a source audit are available. PCL helper comparisons compile frozen original arithmetic/sort/filter bodies against bundled Eigen, with PointXYZ/field-trait shims and supplied native sort order. Converter bodies are source-tested; codec, managed UI and whole-binary claims remain separate. Unsafe reads/casts/overflow are excluded. | Complete call-path/reference review, then compare matched whole-path intermediate/final results where a usable reference exists. Keep component, controlled-callback/decoder/dependency and full-binary claims separate. |
+| **LIM-011 — Whole-application equivalence.** Original Windows application has not been built/executed for full comparisons. | Current suite: 532 test methods, including 206 using compiled source extracts. Nineteen demos, cloud inspection/conversion and both audits are available. PCL helper comparisons compile frozen original arithmetic/sort/filter bodies against bundled Eigen, with PointXYZ/field-trait shims and supplied native sort order. Parameter/point/seed boundaries and negative-count retry behavior are also source-tested. Codec, managed UI and whole-binary claims remain separate; unsafe reads/casts/overflow are excluded. | Computational call-path review is complete; compare matched whole-path intermediate/final results where a usable native reference exists. Keep component, controlled-callback/decoder/dependency and full-binary claims separate. |
 | **LIM-012 — Real-data/published evaluation.** Suitable raw inputs, annotations and reference outputs are not yet supplied. | Synthetic fixtures validate specified behavior only; published accuracy/recall and robustness are not reproduced. Historical evaluation-snapshot questions are deferred and do not replace the chosen source baseline. | Run recorded real-data experiments, error analysis and metric calculations once data is available. [Validation plan](../PYTHON_PORT_PLAN.md#validation-levels). |
 | **LIM-013 — Runtime and memory at MLS scale.** Local grouping can have quadratic scans; full step diagnostics retain reference arrays. | Sparse grid lookup and array operations are implemented; no representative real-cloud profiling has been completed. | Measure runtime/memory by stage and cloud/window size. Preserve neighbor/DFS/sample order when optimizing; assess optional diagnostic retention. [Grouping](PYTHON_FITTING_MDL.md), [tracking](PYTHON_TRACKING.md). |
 | **LIM-014 — Data adapters, units and precision.** Legacy readers have format-dependent thinning; count-prefixed text/CSV, CRS conversion and rounded exports need explicit contracts. | Legacy readers/vector exporters and explicit ECEF/geodetic/UTM conversion/exports are implemented. Source degree/radian, zone/hemisphere, ellipsoid/pi, sampling and three-decimal contracts are retained. Optional decoder equivalence, runtime/error policies, global geodetic accuracy and database integration remain unverified. Tracking performs no implicit frame conversion. | Review source-codec/format compatibility, sampling/density, rounded exports, bounds/labels, coordinate frames and database schema. [Coordinates](PYTHON_COORDINATES.md), LIM-037, [I/O guide](PYTHON_LEGACY_IO.md), LIM-036, [data contract](../PYTHON_PORT_PLAN.md#data-contract-to-prepare-now). |
-| **LIM-015 — Remaining scope.** Inventory consistency is distinct from complete reconstruction. | Dispositions cover 246 definitions and 19 named header types, with no scoped pending definitions/file workflows. Both unused PCL helpers are standalone ports. The 41 project/51 dependency hashes and baseline ID remain unchanged; 14 frozen PCL extracts/19 selected PCL/Eigen hashes are added separately. Automatic loop/cross scheduling and unused helper calls stay inactive. Complete call-path/reconstruction review remains outstanding. Commented rotations stay excluded; whole dependency libraries are not claimed ported. | Finish the agreed reconstruction review before declaring implementation scope complete. Keep this review distinct from retained defects, platform policies, undefined behavior and later real-data validation. [PCL helpers](PYTHON_PCL_HELPERS.md), [coordinates](PYTHON_COORDINATES.md), [pipeline audit](PYTHON_PIPELINE.md#explicit-coverage-audit), [plan](../PYTHON_PORT_PLAN.md#computational-inventory). |
+| **LIM-015 — Reconstruction scope and validation.** Inventory consistency is distinct from numerical equivalence. | The [reconstruction audit](RECONSTRUCTION_AUDIT.md) records the completed computational scope review: 265 definitions, 19 named LIDARPT types, all 41 project files, 15 workflows and 29 active/inactive call-site witnesses. The original 41 project/51 dependency hashes and baseline ID remain unchanged; 14 PCL extracts/19 selected PCL/Eigen hashes stay separate. Commented scheduling/rotations remain excluded and whole dependency libraries are not claimed ported. | Implementation scope review is complete; whole-application/native and real-data validation remain open. Review every limitation with the user before selecting corrections. Neither completion metadata nor passing inventory checks close this ID or establish native/published-result equivalence. [Audit scope and evidence](RECONSTRUCTION_AUDIT.md). |
 
 ## Preserved source behavior and findings awaiting later decisions
 
@@ -355,6 +355,59 @@ Decide any stable-sort normalization, double centroid accumulation for voxels,
 repaired integer fallback, empty filter result, metadata update or automatic
 helper scheduling as a separate behavior change. Keep the original source and
 all earlier limitation IDs open for the agreed review. **Status: open.**
+
+### LIM-039: Numerical input adapters and reconstruction review evidence
+
+**Evidence:** `RailwayExtraction.cpp:46–85`, integer member declarations at
+`RailwayExtraction.h:81–84`, `PointXYZDouble.h:23–75`,
+`InitialLocationForm.cpp:26–59`, the VTK picking paths in
+`VTKWindowController.cpp`/`VMouseInteractorStyle.h`, and the
+[reconstruction audit](RECONSTRUCTION_AUDIT.md).
+
+**Triggers and handling:** the ten source extraction parameter fields are
+doubles, but the engine stores point-count and intensity thresholds in four
+signed integers. `ExtractionConfig.with_source_parameters` explicitly truncates
+these values toward zero; nonfinite/out-of-int32 conversions are guarded instead
+of executing undefined native casts. It retains the original config's grid size
+and skip rate. Direct Python config construction remains an explicit typed input
+interface; use the adapter when reproducing source parameter updates.
+
+Negative point-count thresholds participate in unsigned `vector.size()`
+comparisons in C++. For supported int-indexed clouds, their promoted values
+exceed attainable counts: the initial shortage gate is true and all five retry
+success gates are false. Python retains that exhaustion behavior; original-loop
+tests compare both count thresholds, stops, labels and RNG use. It does not
+reinterpret a negative threshold as disabling a check. Clouds requiring native
+indices beyond signed-int range are outside the validated native input domain.
+
+`initial_location_dialog_defaults` models the active form's integer angle wrap
+and invalid-mode reset. Direct seeds do not pass through a dialog. It returns
+only primary XYZ/angle/mode and leaves second coordinates unavailable, as the
+native getter does not assign them. Python numeric values avoid .NET locale and
+text-format round trips. Screen picking/camera behavior is excluded; Python picks
+must already be in the input cloud's world coordinates. VTK's display translation
+is not automatically applied to those inputs.
+
+`PointXYZDouble` scalar equality ignores metadata and uses strict 1e-5 XYZ
+tolerance; exact null, default metadata and pointer-copy values are available.
+Scalar equality does not replace point-pointer/cloud-row identity. Native union
+layout, alignment, mutation of homogeneous padding and null-pointer dereferences
+are outside the Python value interface.
+
+The packaged review records 15 computational workflows, explicit file scope,
+29 lexical call-site witnesses and 265 function token inventories. The scanner
+blanks comments/strings but does not resolve overloads, templates, preprocessing,
+indirect dispatch or runtime reachability. External names can collide with
+project method names. Checks reject inventory/resource/call-token drift and
+missing evidence references; they do not rerun tests or certify every mapping.
+Original-wrapper scheduling tests retain controlled callbacks, and whole Windows
+execution and real MLS measurements remain unverified.
+
+**Post-reconstruction review:** decide whether GUI text/locale and screen picking
+need a separate interface, compare matched Windows input conversion behavior if
+needed, and review all existing limitations before choosing corrections. The
+completed computational scope review does not close any limitation.
+**Status: open.**
 
 ## Resolution history
 

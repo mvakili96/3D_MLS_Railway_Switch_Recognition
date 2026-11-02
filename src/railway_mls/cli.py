@@ -47,6 +47,7 @@ from .pipeline import PipelineOptions, run_pipeline
 from .artifacts import pipeline_summary, strict_json_value, write_pipeline_outputs
 from .heads import filter_segment_by_previous_heights
 from .coverage import check_source_coverage, coverage_summary
+from .reconstruction import reconstruction_summary
 from .synthetic import pipeline_scene
 from .points import LegacyLiDPoint, Point2D
 from .geometry import source_float_round
@@ -825,6 +826,8 @@ def main(argv: list[str] | None = None) -> int:
     commands.add_parser("utilities-demo", help="exercise standalone source utilities and explicit boundary cache state")
     audit_parser = commands.add_parser("source-audit", help="check frozen native source and explicit coverage dispositions")
     audit_parser.add_argument("--repo", default=".", help="original source repository root (default: current directory)")
+    review_parser = commands.add_parser("reconstruction-audit", help="check reviewed computational scope, call sites and open limitation IDs")
+    review_parser.add_argument("--repo", default=".", help="source checkout including tests/docs (default: current directory)")
     pipeline_parser = commands.add_parser("pipeline-demo", help="run the integrated synthetic workflow and report limitations")
     pipeline_parser.add_argument("--scenario", choices=("straight", "turnout", "components", "missing-references"), default="straight")
     pipeline_parser.add_argument("--seed", type=int, default=1)
@@ -963,6 +966,12 @@ def main(argv: list[str] | None = None) -> int:
         errors = check_source_coverage(arguments.repo)
         print(json.dumps({"status": "ok" if not errors else "drift", "errors": errors,
                           **coverage_summary()}, indent=2, allow_nan=False))
+        return 1 if errors else 0
+    if arguments.command == "reconstruction-audit":
+        errors = check_source_coverage(arguments.repo)
+        print(json.dumps({"status": "ok" if not errors else "drift", "errors": errors,
+                          **reconstruction_summary(), "source_coverage": coverage_summary()},
+                         indent=2, allow_nan=False))
         return 1 if errors else 0
     if arguments.command == "pipeline-demo":
         if arguments.max_steps is not None and arguments.max_steps < 0:

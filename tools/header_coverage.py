@@ -161,8 +161,8 @@ TYPES = {
     ),
     "GradeSect": ("models:GradeSection", "All endpoint/tag/membership/scalar defaults and reset."),
     "ExtractionParameters": (
-        "config:ExtractionConfig",
-        "Ten UI parameters mapped to core configuration; defaults come from source engine, not the uninitialized native aggregate.",
+        "config:ExtractionParameters",
+        "Ten explicit double inputs without guessed native defaults; config source-parameter adapters retain four engine int conversions and promote them on readback.",
     ),
 }
 

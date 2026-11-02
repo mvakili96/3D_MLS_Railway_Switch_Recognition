@@ -252,7 +252,8 @@ class PipelineIntegrationTests(unittest.TestCase):
         self.assertIsNone(result.input_metadata["coordinate_units"])
         self.assertEqual(result.status, "completed_with_limitations")
         self.assertFalse(result.reference_comparable)
-        self.assertFalse(result.coverage["complete_reconstruction"])
+        self.assertTrue(result.coverage["complete_reconstruction"])
+        self.assertFalse(result.coverage["real_data_validation_complete"])
 
 
 class PipelineArtifactTests(unittest.TestCase):

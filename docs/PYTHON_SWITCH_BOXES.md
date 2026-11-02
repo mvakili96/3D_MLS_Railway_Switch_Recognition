@@ -167,5 +167,6 @@ Raw integration checks execute the actual postpass before branch scheduling,
 verify engine/layer persistence and repeated appends, and check limit/branch gates.
 The new demo works without the database. Original Windows-binary, real-data
 accuracy and performance validation remain pending. Grade/curve analysis is now
-available in [the grade increment](PYTHON_GRADES.md). Next finish the remaining
-computational inventory and pipeline/interfaces audit.
+available in [the grade increment](PYTHON_GRADES.md). The subsequent
+[reconstruction audit](RECONSTRUCTION_AUDIT.md) completes the computational
+scope/call-path review; retained limitations remain open.

@@ -9,7 +9,7 @@ from hashlib import sha256
 import json
 from pathlib import Path
 
-from railway_mls.coverage import SOURCE_DIRECTORY, cpp_definitions, cpp_free_definitions, source_text_hash
+from railway_mls.coverage import SOURCE_DIRECTORY, cpp_definitions, cpp_free_definitions, cpp_header_inventory, source_text_hash
 from header_coverage import header_entries
 
 
@@ -32,11 +32,10 @@ mapped(
     "railway_mls.config:ExtractionConfig",
     "Source defaults plus explicit Python engine ownership; native rendering/lifetimes are excluded.",
 )
-mapped(
-    "updateExtractionParameters getExtractionParameters",
-    "railway_mls.config:ExtractionConfig",
-    "Immutable configuration replaces the native parameter getter/setter interface.",
-)
+mapped("updateExtractionParameters", "railway_mls.config:ExtractionConfig.with_source_parameters",
+       "Explicit immutable source-parameter update preserves grid/skip and truncates four double inputs to int32; invalid native casts are guarded.")
+mapped("getExtractionParameters", "railway_mls.config:ExtractionConfig.to_source_parameters",
+       "Return all ten source double fields; native integer members are promoted.")
 mapped(
     "updateMaxMin",
     "railway_mls.spatial:Bounds3D",
@@ -325,6 +324,8 @@ for path in sorted(source.iterdir()):
         "DataConverstionForm",
     ):
         disposition = "coordinate_conversion_ported"
+    elif path.stem in ("ExtractionParameterForm", "InitialLocationForm"):
+        disposition = "parameter_boundary_and_presentation"
     elif path.stem in ("RailwayExtraction", "MainForm", "LIDARPT", "PointXYZDouble"):
         disposition = "audited_core_or_state"
     else:
@@ -389,6 +390,42 @@ for filename, owner, rules in (
     definition_files.append(item)
 inline_entries, header_types = header_entries((source / "LIDARPT.h").read_text())
 definition_files.append({"path": "LIDARPT.h", "kind": "inline_header", "definitions": inline_entries})
+for filename, owner, rules, style in (
+    ("PointXYZDouble.h", "PointXYZDouble", {
+        "PointXYZDouble": rule("boundary_ported", ("railway_mls.points:PointXYZDouble", "railway_mls.points:PointXYZDouble.from_point"),
+                               "Default/XYZ/pointer-copy constructors; homogeneous coordinate 1 and metadata defaults/copy retained. Native union alignment is outside Python storage."),
+        "operator==": rule("boundary_ported", ("railway_mls.points:PointXYZDouble.__eq__",), "Strict 1e-5 XYZ tolerance, independent of metadata and pointer/row identity."),
+        "IsEqual": rule("boundary_ported", ("railway_mls.points:PointXYZDouble.is_equal",), "Strict source XYZ comparison, including nonfinite comparison behavior."),
+        "isNull": rule("unused_helper_ported", ("railway_mls.points:PointXYZDouble.is_null",), "Exact zero XYZ test; not used for automatic point filtering."),
+    }, "inline_header"),
+    ("HashMap.h", "HashMap", {
+        "put": rule("io_cache_ported", ("railway_mls.legacy_io:LegacyFileSession.load_file",), "Exact string keys overwrite stored engine entries; explicit Python session ownership."),
+        "get": rule("io_cache_ported", ("railway_mls.legacy_io:LegacyFileSession.load_file",), "setdefault preserves null insertion on a cache miss; no key canonicalization."),
+    }, "inline_header"),
+    ("ExtractionParameterForm.cpp", "PCLProject::ExtractionParameterForm", {
+        "okayButton_Click": rule("presentation", note="Windows dialog result only."),
+        "cancelButton_Click": rule("presentation", note="Windows dialog result only."),
+        "getValues": rule("boundary_ported", ("railway_mls.config:ExtractionParameters",), "Ten double input values; .NET locale-sensitive text parsing is replaced by explicit numeric inputs."),
+        "updateValues": rule("boundary_ported", ("railway_mls.config:ExtractionConfig.to_source_parameters",), "Numeric field mapping preserved; .NET display formatting is presentation."),
+    }, "qualified"),
+    ("InitialLocationForm.cpp", "PCLProject::InitialLocationForm", {
+        "okayButton_Click": rule("presentation", note="Windows dialog result only."),
+        "pickAgainButton_Click": rule("presentation", note="Windows dialog retry only; caller supplies another explicit seed."),
+        "cancelButton_Click": rule("presentation", note="Windows dialog result only."),
+        "updateInputs": rule("boundary_ported", ("railway_mls.orchestration:initial_location_dialog_defaults",), "Active struct overload truncates/wraps angle and clamps mode to 1..4; explicit numeric XYZ avoid .NET text round trips. The inactive XY overload remains a UI-only interface."),
+        "getLocation": rule("boundary_ported", ("railway_mls.models:InitialLocation",), "Explicit primary XYZ/angle/mode; unassigned second coordinates remain None. Locale parsing and manual dialog edits are external inputs."),
+        "disableRetryButton": rule("presentation", note="Windows button state only."),
+    }, "qualified"),
+):
+    inventory = (cpp_header_inventory((source / filename).read_text())[0]
+                 if style == "inline_header" else cpp_definitions((source / filename).read_text(), owner))
+    entries = []
+    for entry in inventory:
+        if entry["name"] not in rules:
+            raise ValueError(f"Review unclassified definition: {entry['id']}")
+        entries.append({**entry, **rules[entry["name"]]})
+    definition_files.append({"path": filename, "owner": owner, "kind": "support_boundary",
+                             "definition_style": style, "definitions": entries})
 baseline = sha256(
     "\n".join(f"{f['path']}:{f['sha256']}" for f in (*files, *dependencies)).encode()
 ).hexdigest()
@@ -401,6 +438,7 @@ audit = {
         "All 27 definitions in DataConvertor.cpp, UTM.cpp and DataConverstionForm.cpp, including free projection functions and computational UI actions",
         "All top-level project .cpp/.h files have file-level dispositions",
         "All 77 active inline definitions and 19 named top-level types in LIDARPT.h have explicit dispositions; commented Rotation3D/InverseRotation3D remain excluded",
+        "All 19 support definitions in PointXYZDouble.h, HashMap.h, ExtractionParameterForm.cpp and InitialLocationForm.cpp have explicit dispositions; numeric adapters are separate from presentation",
         "Jama/etc are dependencies: only reached numerical behavior is ported, not whole libraries",
     ],
     "files": files,
@@ -422,6 +460,16 @@ audit["pcl_helper_reference"] = {
     "extract_count": len(helper["extracts"]), "dependency_file_count": len(helper["sources"]),
     "scope": "Frozen selected PCL bodies and PCL/Eigen hashes. Local ignored dependency files are checked if present; installed runtime does not require the installers or Eigen.",
 }
+review_path = root / "src/railway_mls/reconstruction_audit.json"
+if review_path.is_file():
+    review = json.loads(review_path.read_text())
+    if review["baseline_id"] != baseline:
+        raise ValueError("Reconstruction review must be repeated for the changed source baseline")
+    audit["reconstruction_review"] = {
+        "resource": review_path.name, "sha256": source_text_hash(review_path.read_text()),
+        "review_status": review["review_status"], "scope": review["scope"],
+    }
+    audit["complete_reconstruction"] = review["review_status"] == "complete"
 destination = root / "src/railway_mls/source_coverage.json"
 destination.write_text(json.dumps(audit, indent=2) + "\n")
 print(

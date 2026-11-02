@@ -237,6 +237,11 @@ class SequentialTracker:
 
     def _step(self) -> TrackingStep:
         settings, current = self.config, self.current
+        # Native vector.size() promotes a negative int threshold to size_t.
+        # For supported int-indexed vectors it exceeds every attainable count:
+        # the initial '<' gate is true and every strict '>' retry gate is false.
+        minimum_points = settings.min_points if settings.min_points >= 0 else float("inf")
+        minimum_heads = settings.min_track_points if settings.min_track_points >= 0 else float("inf")
         first, second = current.track1, current.track2
         if not self.steps:
             mode = direction_mode(first.member_line.end, first.member_line.begin)
@@ -292,14 +297,14 @@ class SequentialTracker:
         if not predict(base, "initial"):
             return finish("nonfinite_prediction")
         if any(
-            len(window.members) < settings.min_points
+            len(window.members) < minimum_points
             for window in (candidate.track1, candidate.track2)
         ):
             for multiplier in range(2, 7):
                 if not predict(base + (multiplier - 1) * base, "point_retry"):
                     return finish("nonfinite_prediction")
                 if all(
-                    len(window.members) > settings.min_points
+                    len(window.members) > minimum_points
                     for window in (candidate.track1, candidate.track2)
                 ):
                     break
@@ -310,7 +315,7 @@ class SequentialTracker:
         attempts[-1] = replace(attempts[-1], extraction=extraction)
         if extraction.next_heights is None:
             return finish("undefined_source_head_extraction")
-        if any(len(points) < settings.min_track_points for points in extraction.heads):
+        if any(len(points) < minimum_heads for points in extraction.heads):
             for multiplier in range(2, 7):
                 if not predict(base + (multiplier - 1) * base, "head_retry"):
                     return finish("nonfinite_prediction")
@@ -320,7 +325,7 @@ class SequentialTracker:
                 attempts[-1] = replace(attempts[-1], extraction=extraction)
                 if extraction.next_heights is None:
                     return finish("undefined_source_head_extraction")
-                if all(len(points) > settings.min_track_points for points in extraction.heads):
+                if all(len(points) > minimum_heads for points in extraction.heads):
                     break
             else:
                 return finish("insufficient_head_points")

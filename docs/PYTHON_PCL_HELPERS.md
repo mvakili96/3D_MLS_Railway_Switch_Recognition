@@ -12,11 +12,12 @@ coordinate conversion or tracking. The runtime still needs only NumPy.
 | PCL `VoxelGrid<PointXYZ>`, fixed default settings | Float32 bounds/key operations, checked integer arithmetic, voxel sorting and float32 centroid accumulation |
 | PCL `compute3DCentroid`, affine `transformPointCloud` | Sequential double centroid, double identity/translation expression, float32 output |
 
-The same 246 selected definitions now have **no pending definition or file
-dispositions**. The inventory has not expanded. `complete_reconstruction` remains
-false for the agreed full call-path/reconstruction review. Inventory consistency
-does not prove coverage of every source call or equivalence with the Windows app.
-All limitation IDs remain open, including **LIM-038**.
+This increment completed the former pending helper gaps. The subsequent
+[reconstruction audit](RECONSTRUCTION_AUDIT.md) expands the inventory to 265
+definitions with no pending definition/file dispositions and completes the
+agreed computational scope review. Inventory consistency does not prove numerical
+equivalence with the Windows app. All limitation IDs remain open, including
+**LIM-038** and the subsequent boundary/review entry **LIM-039**.
 
 ## Explicit PointXYZ state and bridges
 

@@ -426,7 +426,7 @@ class LegacyIOContractTests(unittest.TestCase):
                 report["engine_ui_definition_count"],
                 report["legacy_io_definition_count"],
             ),
-            (246, 124, 18),
+            (265, 124, 18),
         )
         self.assertEqual(report["pending_definitions"], [])
         self.assertEqual(check_source_coverage(Path(__file__).resolve().parents[1]), ())

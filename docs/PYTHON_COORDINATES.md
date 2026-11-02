@@ -15,14 +15,15 @@ decoder extra described in [the I/O guide](PYTHON_LEGACY_IO.md).
 | `MainForm.cpp:466,504` | `source_menu_conversion`, with explicit input and optional save path |
 | `DataConverstionForm.cpp:50,150` | `convert_legacy_files` |
 
-The audit now covers **246 definitions**: the prior 124 engine/UI, 77 inline
+This increment expanded the audit to **246 definitions**: the prior 124 engine/UI, 77 inline
 header and 18 reader definitions, plus 11 converter, nine UTM and seven conversion
 dialog definitions. All 19 header types and 41 project/51 numerical dependency
 hashes remain recorded. Conversion-only dialog/control handlers are explicitly
 presentation. The later [PCL helper increment](PYTHON_PCL_HELPERS.md) ports the two
-unused voxel/centroid wrappers; full call-path/reconstruction review remains.
-`complete_reconstruction` remains false until the remaining work and call-path
-review are complete. Inventory consistency is not whole-application equivalence.
+unused voxel/centroid wrappers. The subsequent [reconstruction audit](RECONSTRUCTION_AUDIT.md)
+adds 19 support definitions for a total of 265 and completes the computational
+scope/call-path review. Whole-application equivalence and real-data validation
+remain unverified, and all limitation IDs remain open.
 
 ## Units, constants and raw helpers
 

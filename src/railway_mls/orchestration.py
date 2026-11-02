@@ -8,7 +8,7 @@ from operator import index
 
 import numpy as np
 
-from .config import ExtractionConfig
+from .config import ExtractionConfig, source_int32
 from .geometry import Line3D, distance_2d, perpendicular_foot
 from .initialization import InitializationResult, initialize_tracks
 from .models import InitialLocation, SwitchBox, ToePoint, TrackLayer, TrackStack
@@ -21,6 +21,19 @@ from .grades import GradeAnalysis, compute_layer_grades
 
 # This is the scheduler's exclusion list, independent of DetectToePnts support.
 SKIPPED_BRANCH_TYPES = frozenset((2, 3, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19))
+
+
+def initial_location_dialog_defaults(location: InitialLocation) -> InitialLocation:
+    """Active InitialLocationForm overload, accepted without manual edits.
+
+    Normalize the truncated integer angle and invalid mode exactly as the form
+    does. The form only returns primary XYZ/angle/mode; second coordinates are
+    uninitialized in getLocation, represented by None. Numeric XYZ avoid the .NET
+    text/locale round trip. This optional adapter is not added to tracking calls.
+    """
+    angle = source_int32(location.angle) % 360
+    mode = location.mode if 0 < location.mode <= 4 else 1
+    return InitialLocation(Point3D(*location.point.as_array()), float(angle), mode)
 
 
 @dataclass(frozen=True)

@@ -137,7 +137,8 @@ Existing directories/files are rejected without overwriting. Files written befor
 an unexpected filesystem failure may remain in the newly created directory; the
 manifest is written last. Diagnostic CSV uses Python's full float representation,
 empty fields for unavailable values and `nan`/`inf` text for IEEE values. These are
-new diagnostic schemas, not replacements for pending legacy TXT/vector exporters.
+new diagnostic schemas. The separate [legacy TXT/vector exporters](PYTHON_LEGACY_IO.md)
+preserve the source formats.
 No complete raw cloud, intensity or label array is exported.
 
 JSON represents unavailable native fields as ordinary `null`. For IEEE values it
@@ -158,9 +159,10 @@ still required for reproduction. MLS-scale runtime/memory remains unprofiled.
 ## Explicit coverage audit
 
 [source_coverage.json](../src/railway_mls/source_coverage.json) is packaged in the
-wheel. It records **246** definitions: **124** in RailwayExtraction.cpp/MainForm.cpp,
+wheel. It records **265** definitions: **124** in RailwayExtraction.cpp/MainForm.cpp,
 **77** inline definitions in LIDARPT.h, **18** reader and **27** coordinate conversion
-definitions, with owner/name/overload, signature, source line, disposition,
+definitions, plus **19** support definitions in PointXYZDouble.h, HashMap.h and the
+two numerical input forms, with owner/name/overload, signature, source line, disposition,
 Python target(s) and scope notes. All **41** top-level project .cpp/.h files and
 **51** bundled Jama/etc .cpp/.h/.inl files have normalized-newline SHA-256 hashes.
 Dependency hashes freeze the inputs; only reached numerical library behavior is
@@ -174,7 +176,9 @@ It rejects drift instead of updating the baseline during a run. Regenerate only
 after reviewing a change, using `python tools/update_source_coverage.py` from the
 checkout; unknown definitions raise until explicitly classified. A successful
 audit establishes inventory consistency, not correctness of every mapping or
-parity with the Windows executable. `complete_reconstruction` remains false.
+parity with the Windows executable. `complete_reconstruction` now records the
+completed [computational scope review](RECONSTRUCTION_AUDIT.md). Whole-application
+parity, real-data validation and the limitations review retain separate false flags.
 
 The standalone/partial utility gaps from the initial audit are now implemented:
 paired GMM, previous-height erasure, bounds, cycling, inner angle, stored-vector
@@ -191,12 +195,16 @@ The two unused native PCL point helpers are now [standalone ports](PYTHON_PCL_HE
 No scoped definition/file workflow remains pending. Explicit
 [coordinate conversion](PYTHON_COORDINATES.md) and [legacy I/O](PYTHON_LEGACY_IO.md)
 are implemented without inserting frame changes or filtering into tracking.
-Their 18 reader and 27 conversion definitions keep the audit at 246. Fourteen PCL
+Their 18 reader and 27 conversion definitions are included in that inventory. Fourteen PCL
 body extracts and 19 selected PCL/Eigen dependency hashes are frozen separately. Numerical
 UI actions are mapped separately from display/dialog callbacks; Windows Forms/VTK
-presentation is out of scope. Complete call-path review remains outstanding.
+presentation is out of scope. The completed review records 15 workflows, all 41
+file scope decisions, 29 active/inactive call-site witnesses and lexical call
+counts for all 265 selected definitions. `reconstruction-audit --repo PATH`
+checks this packaged evidence, test references and limitation IDs along with the
+existing source audit. It does not run tests or resolve a complete C++ call graph.
 
-The remaining review is distinct from undefined-source behavior in implemented
+The subsequent limitations review is distinct from undefined-source behavior in implemented
 components. The [limitations register](LIMITATIONS.md) remains open for the agreed
 post-reconstruction review. Real inputs, a usable native reference and profiling
 are still needed for evaluation.

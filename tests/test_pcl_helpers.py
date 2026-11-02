@@ -375,11 +375,12 @@ class PclHelperContractTests(unittest.TestCase):
             )
         self.assertEqual(result.initialization.status, "ok")
 
-    def test_audit_has_no_pending_definitions_but_reconstruction_review_remains(self):
+    def test_audit_has_no_pending_definitions_and_validation_remains_explicit(self):
         report = coverage_summary()
         self.assertEqual(report["pending_definitions"], [])
         self.assertEqual(report["pending_file_workflows"], [])
-        self.assertFalse(report["complete_reconstruction"])
+        self.assertTrue(report["complete_reconstruction"])
+        self.assertFalse(report["limitations_review_complete"])
         self.assertEqual(
             (report["pcl_helper_extract_count"], report["pcl_helper_dependency_file_count"]),
             (14, 19),
