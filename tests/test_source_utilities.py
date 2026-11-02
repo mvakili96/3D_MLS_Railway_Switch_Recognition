@@ -421,7 +421,7 @@ class SourceUtilityContractTests(unittest.TestCase):
                 for entry in summary["pending_definitions"]
                 if entry["disposition"] == "inactive_pending"
             },
-            {"DetectLoopCross", "ValidateLoopCross"},
+            set(),
         )
         self.assertFalse(summary["complete_reconstruction"])
 

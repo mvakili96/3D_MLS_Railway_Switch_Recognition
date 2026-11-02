@@ -141,7 +141,7 @@ TYPES = {
     ),
     "LoopCross": (
         "models:LoopCross",
-        "Unavailable line/distance None; inactive workflow remains pending and unscheduled.",
+        "Unavailable line/distance None; standalone detection/validation are implemented and automatic scheduling remains inactive.",
     ),
     "PlnPara": (
         "planes:PlaneParameters",

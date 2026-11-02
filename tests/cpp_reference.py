@@ -35,6 +35,10 @@ Utility comparisons include the actual paired GMM/height-erasure wrappers, bound
 index cycling, angle, 3D distance and inactive intersection bodies. Boundary tests
 print initialized endpoints/tags/membership counts only; they never read absent
 line caches. GMM iteration diagnostics copy nIter before parameters are written.
+Loop/cross comparisons compile both original bodies. A separate detector prefix
+stops before uninitialized failed-fit endpoint reads. Whole detection executes
+only after a replayed prefix establishes initialized fit geometry; raw draws are
+rewound between those two independent comparisons. Diagnostics copy local state.
 """
 
 from pathlib import Path
@@ -228,6 +232,15 @@ public:
     double lastToeSigma;
     int lastToeStage = 0;
     vector<SwitchBox> m_SwitchBoxes, lastSwitchCandidates;
+    void DetectLoopCross(TrackSegment, vector<PointXYZDouble*>, double, double, Line3D, vector<LoopCross>&);
+    void DetectLoopCrossPrefix(TrackSegment, vector<PointXYZDouble*>, double, double, Line3D, vector<LoopCross>&);
+    void ValidateLoopCross(vector<LoopCross>&);
+    vector<PointXYZDouble*> lastLoopLeft,lastLoopRight,lastLoopHeight,lastLoopCandidates,lastLoopSupport;
+    vector<vector<int>> lastLoopGroups;
+    vector<double> lastLoopDuplicate;
+    int lastLoopFitStage=0,lastLoopWinner=-1;
+    bool lastLoopFlag=false,lastLoopHasProjection=false;
+    Line3D lastLoopProjection;
     vector<vector<PointXYZDouble*>> lastSwitchRegions, lastSwitchHeights, lastSwitchGroups, lastSwitchSupport;
     vector<PlnPara> lastSwitchPlanes;
     vector<int> lastPlaneSampleCounts, lastPlaneRefinedCounts;
@@ -359,6 +372,8 @@ public:
                     "double RailwayExtraction::DistanceBetweenPointAndPlane(",
                     "void RailwayExtraction::GetPntsInsidePolygon(",
                     "void RailwayExtraction::DetectSwitchBox(",
+                    "void RailwayExtraction::DetectLoopCross(",
+                    "void RailwayExtraction::ValidateLoopCross(",
                     "vector<GradeSect> RailwayExtraction::ComputeGrade(",
                     "void RailwayExtraction::DetermineGradeSection(",
                     "void RailwayExtraction::DouglasPeuckerVertical(",
@@ -368,6 +383,31 @@ public:
                 )
             )
             gmm = function(extraction, "void RailwayExtraction::ComputeGMMfeature(")
+            detector = function(extraction, "void RailwayExtraction::DetectLoopCross(")
+            modified = detector.replace("GetPntsInsidePolygon(Seg.mrVtxBND, Pts, mrPnts);",
+                                         "GetPntsInsidePolygon(Seg.mrVtxBND, Pts, mrPnts);\nlastLoopLeft=mlPnts;lastLoopRight=mrPnts;")
+            marker = "if (tmpLoopGrdPts[i]->z < HgtOfGround - 2 * HgtBuffer)\n\t\t\tcontinue;"
+            assert marker in modified
+            modified = modified.replace(marker,marker+"\nlastLoopHeight.push_back(tmpLoopGrdPts[i]);")
+            modified = modified.replace("double ang = refLn.Ang + 90;", "lastLoopCandidates=LoopGrdPts;\n double ang = refLn.Ang + 90;")
+            marker = "bool flg = LineExtractionWithFixedAngleForLoopCross(LoopGrdPts, ang, 0.07, loopLn, sptPts);"
+            modified = modified.replace(marker,marker+"\nlastLoopFlag=flg;lastLoopSupport=sptPts;")
+            modified = modified.replace("loopLn.GetCenterPt();", "loopLn.GetCenterPt();\nlastLoopHasProjection=true;lastLoopProjection=loopLn;")
+            marker = "double fdist2 = DistanceBetweenPointAndLine2D(lastLn.CenterPt, loopLn);"
+            modified = modified.replace(marker,marker+"\nlastLoopDuplicate={fdist1,fdist2};")
+            functions = functions.replace(detector,modified)
+            prefix = modified[:modified.index("\n\tdouble tmpZ1")]+"\n}\n"
+            functions += "\n"+prefix.replace("RailwayExtraction::DetectLoopCross(","RailwayExtraction::DetectLoopCrossPrefix(",1)
+            loop_fit = function(extraction, "bool RailwayExtraction::LineExtractionWithFixedAngleForLoopCross(")
+            modified_fit = loop_fit.replace("{", "{\nlastLoopFitStage=0;",1)
+            modified_fit = modified_fit.replace("_line = tmpLn;", "_line = tmpLn;lastLoopFitStage=1;")
+            modified_fit = modified_fit.replace("double fdist = DistanceBetweenPoints2D(_line.BeginPt, _line.EndPt);",
+                                                  "lastLoopFitStage=2;\n double fdist = DistanceBetweenPoints2D(_line.BeginPt, _line.EndPt);")
+            functions = functions.replace(loop_fit,modified_fit)
+            validation = function(extraction,"void RailwayExtraction::ValidateLoopCross(")
+            modified_validation = validation.replace("int max = 0;", "lastLoopGroups=cnts;\nint max = 0;")
+            modified_validation = modified_validation.replace("lpIdx = cnts[i];", "lpIdx = cnts[i];lastLoopWinner=i;")
+            functions = functions.replace(validation,modified_validation)
             functions = functions.replace(gmm, gmm.replace("paras.clear();", "referenceGmmIterations.push_back(nIter);\nparas.clear();"))
             grade = function(extraction, "vector<GradeSect> RailwayExtraction::ComputeGrade(")
             modified = grade.replace("{", "{\nlastGradeReport.clear();", 1)
@@ -584,6 +624,7 @@ int reference_rand() {
                 + header[header.index("struct PlnPara {") : header.index("struct PtSegment {")]
                 + header[header.index("struct BinaryString {") : header.index("struct ToePt {")]
                 + header[header.index("struct ToePt {") : header.index("struct LoopCross {")]
+                + header[header.index("struct LoopCross {") : header.index("struct PlnPara {")]
                 + segments
                 + higher_z
                 + larger
@@ -802,7 +843,37 @@ int main() {
     string operation;
     cin >> operation;
     RailwayExtraction engine;
-    if(operation=="header_duplicate") {
+    if(operation=="loop_validate") {
+        size_t count;cin>>count;vector<LoopCross> values(count);
+        for(size_t i=0;i<count;++i){auto &v=values[i];v.distFromSp=readScalar();
+            v.lc.BeginPt=POINT3D(i,0,0);v.lc.EndPt=POINT3D(i,1,0);v.lc.GetLineParameter();v.lc.GetAngle();v.lc.GetCenterPt();v.lc.GetUnitVec();v.lc.D3D=0;}
+        engine.ValidateLoopCross(values);cout<<"RESULT "<<engine.lastLoopGroups.size()<<' ';
+        for(auto group:engine.lastLoopGroups){cout<<group.size()<<' ';for(auto i:group)cout<<i<<' ';}
+        cout<<engine.lastLoopWinner<<' '<<values.size()<<' ';for(auto v:values)cout<<v.lc.BeginPt.x<<' ';
+    } else if(operation=="loop_detect") {
+        size_t count;cin>>count;Cloud cloud;cloud.points.resize(count);
+        for(auto &p:cloud.points){p.x=readScalar();p.y=readScalar();p.z=readScalar();cin>>p.ClassCode>>p.SegmentID;}
+        auto points=readSelection(cloud);TrackSegment segment;
+        for(auto w:{&segment.m_Track1,&segment.m_Track2}){
+            w->CenterPt=readScalarPoint();w->MemLn=readStateLine(cloud);w->MemLn.GetUnitVec();w->MemLn.D3D=0;
+            w->ori=w->MemLn.Ang;cin>>w->bTurnOut;}
+        segment.distFromSp=readScalar();Line3D reference=readStateLine(cloud);reference.GetUnitVec();reference.D3D=0;
+        double ground=readScalar(),track=readScalar();cin>>engine.m_gLength>>engine.m_gWidth>>engine.m_skip_rate;
+        size_t oldCount;cin>>oldCount;vector<LoopCross> pool(oldCount);
+        for(auto &value:pool){value.lc=readStateLine(cloud);value.lc.GetUnitVec();value.lc.D3D=0;value.distFromSp=readScalar();}
+        readRandom();engine.DetectLoopCrossPrefix(segment,points,ground,track,reference,pool);
+        bool full=segment.m_Track1.bTurnOut||segment.m_Track2.bTurnOut||engine.lastLoopFitStage==2;
+        if(full){random_cursor=0;engine.lastLoopLeft.clear();engine.lastLoopRight.clear();engine.lastLoopHeight.clear();engine.lastLoopCandidates.clear();engine.lastLoopSupport.clear();
+            engine.lastLoopDuplicate.clear();engine.lastLoopFlag=false;engine.lastLoopHasProjection=false;
+            engine.DetectLoopCross(segment,points,ground,track,reference,pool);}
+        cout<<"RESULT "<<full<<' ';
+        for(auto group:{engine.lastLoopLeft,engine.lastLoopRight,engine.lastLoopHeight,engine.lastLoopCandidates,engine.lastLoopSupport})printSelection(group,cloud);
+        cout<<engine.lastLoopFlag<<' '<<engine.lastLoopFitStage<<' '<<random_cursor<<' '<<engine.lastLoopHasProjection<<' ';
+        if(engine.lastLoopHasProjection)printStateLine(engine.lastLoopProjection,cloud);
+        cout<<engine.lastLoopDuplicate.size()<<' ';for(auto value:engine.lastLoopDuplicate)cout<<value<<' ';
+        cout<<pool.size()<<' ';for(auto value:pool){printStateLine(value.lc,cloud);cout<<value.distFromSp<<' ';}
+        for(auto p:cloud.points)cout<<p.ClassCode<<' '<<p.SegmentID<<' ';
+    } else if(operation=="header_duplicate") {
         TrackSegment destination,source;
         auto old=readTypedVector(),values=readTypedVector();
         destination.m_Track1.vtx=old;source.m_Track1.vtx=values;

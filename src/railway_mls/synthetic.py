@@ -18,6 +18,50 @@ class SyntheticScene:
 
 
 @dataclass(frozen=True)
+class SyntheticLoopCrossScene:
+    cloud: PointCloud
+    segment: TrackSegment
+    reference_line: Line3D
+    ground_height: float
+    track_height: float
+    config: ExtractionConfig
+
+
+def loop_cross_scene(*, angle: float = 35.0, along_offset: float = 0.0,
+                     points_per_band: int = 30, config: ExtractionConfig | None = None) -> SyntheticLoopCrossScene:
+    """Supplied rail references and a below-ground transverse line, not tracking.
+
+    Inner strips contain distinct-height points; distractors exercise the unused
+    middle polygon, height rejections, rail exclusion and along-window boundary.
+    """
+    settings = config if config is not None else ExtractionConfig()
+    radians = angle * np.pi / 180
+    along = Point3D(np.cos(radians), np.sin(radians), 0)
+    across = Point3D(-np.sin(radians), np.cos(radians), 0)
+    origin = Point3D(1000, 2000, 0.4)
+    windows = []
+    for rail in range(2):
+        center = origin + across * (rail * settings.track_gauge)
+        line = Line3D(center - along * 0.5, center + along * 0.5)
+        line.update_center()
+        windows.append(TrackWindow(center, line.angle, member_line=line))
+    segment = TrackSegment(*windows, distance_from_start=100.0)
+    segment.update_center()
+    points = []
+    for low, high in ((0.305, 0.495), (settings.track_gauge - 0.495, settings.track_gauge - 0.305)):
+        for lateral in np.linspace(low, high, points_per_band):
+            xy = origin + across * lateral + along * (along_offset + 0.001 * np.sin(len(points) * 0.71))
+            points.append((xy.x, xy.y, 0.05 + len(points) * 1e-7))
+    for lateral, offset, height in ((0.4, 0, 0.10001), (0.4, 0, -0.00001),
+                                     (0.25, 0, 0.05), (settings.track_gauge - 0.25, 0, 0.05),
+                                     (settings.track_gauge / 2, 0, 0.05), (0.4, 0.7, 0.05)):
+        xy = origin + across * lateral + along * offset
+        points.append((xy.x, xy.y, height))
+    cloud = PointCloud(points, class_codes=[9] * len(points), segment_ids=[7] * len(points))
+    return SyntheticLoopCrossScene(cloud, segment, windows[0].member_line, 0.2, 0.4, settings)
+
+
+@dataclass(frozen=True)
 class SyntheticToeScene:
     cloud: PointCloud
     stack: TrackStack

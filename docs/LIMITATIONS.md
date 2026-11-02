@@ -1,6 +1,6 @@
 # Limitations register and post-reconstruction review
 
-Last consolidated: **2026-11-01**. Baseline: the current unpacked C++ source.
+Last consolidated: **2026-11-02**. Baseline: the current unpacked C++ source.
 
 This is the persistent register for known source limitations, Python portability
 choices, and validation gaps. The user has requested that they be retained for
@@ -66,11 +66,11 @@ engine/layer side effects together. **Status: open; review first.**
 | **LIM-008 — Equal-key sorting.** Native `std::sort` does not specify equal-height or equal-component-size order. | Python uses documented stable ties. Native exact-order comparisons use appropriate distinct-key fixtures; tied membership/height checks have narrower claims. | Compare the target compiler/runtime's permutations and resulting random-index selections, grouping choices and outputs. [Heads](PYTHON_GMM_HEADS.md#random-draws-and-ordering), [grouping](PYTHON_FITTING_MDL.md#grouping-and-point-identity). |
 | **LIM-009 — Random state and floating-point environment.** Unknown earlier native draws, point order and arithmetic near thresholds affect model choices. | Owned MSVC recurrence/default seed and recorded raw streams are available. Component extracts receive identical draws; a seed alone does not recover an unknown original session. | Save complete configuration, cloud order and draw streams for matched experiments. Investigate threshold/tie discrepancies with explicit numerical tolerances and exact identity comparisons. [Details](PYTHON_GMM_HEADS.md#random-draws-and-ordering). |
 | **LIM-010 — Python boundaries and native uninitialized fields.** Some invalid counts, ownership, dimensions or nonfinite query inputs have no supported native result. Default geometry fields and native output-reference interfaces need explicit contracts. | Python rejects invalid API inputs or exposes unavailable fields as `None`. Endpoint-only boundary caches now remain absent in initialization/tracking; native comparisons read only defined endpoints/tags. New scalar 3D distance requires an explicit stored vector, and returned utility vectors do not expose aliased native output buffers. | Audit every newly implemented consumer before reading absent fields or assuming native reference aliasing. Retain explicit boundary contracts and identify comparisons that exclude undefined native values. [Utilities](PYTHON_UTILITIES.md), [initialization](PYTHON_KALMAN_INITIALIZATION.md), [toes](PYTHON_TOES.md). |
-| **LIM-011 — Whole-application equivalence.** Original Windows application has not been built/executed for full comparisons. | Current suite: 395 test methods, including 140 using compiled source extracts. Fifteen demos and a source audit are available. Integrated workflows match direct engine composition; inline point/line/neighbor/state contracts are source-tested. Grade/GWAD and switch-box cases use original routines/JAMA; orchestration callbacks isolate control flow. Unsafe native reads are excluded. | Complete call-path/reference review, then compare matched whole-path intermediate/final results where a usable reference exists. Keep component, controlled-callback and full-binary claims separate. |
+| **LIM-011 — Whole-application equivalence.** Original Windows application has not been built/executed for full comparisons. | Current suite: 423 test methods, including 156 using compiled source extracts. Sixteen demos and a source audit are available. Integrated workflows match direct engine composition; inline point/line/neighbor/state and loop/cross contracts are source-tested. Loop/cross failure comparisons stop before unsafe reads; grade/GWAD and switch-box cases use original routines/JAMA; orchestration callbacks isolate control flow. Unsafe native reads are excluded. | Complete call-path/reference review, then compare matched whole-path intermediate/final results where a usable reference exists. Keep component, controlled-callback and full-binary claims separate. |
 | **LIM-012 — Real-data/published evaluation.** Suitable raw inputs, annotations and reference outputs are not yet supplied. | Synthetic fixtures validate specified behavior only; published accuracy/recall and robustness are not reproduced. Historical evaluation-snapshot questions are deferred and do not replace the chosen source baseline. | Run recorded real-data experiments, error analysis and metric calculations once data is available. [Validation plan](../PYTHON_PORT_PLAN.md#validation-levels). |
 | **LIM-013 — Runtime and memory at MLS scale.** Local grouping can have quadratic scans; full step diagnostics retain reference arrays. | Sparse grid lookup and array operations are implemented; no representative real-cloud profiling has been completed. | Measure runtime/memory by stage and cloud/window size. Preserve neighbor/DFS/sample order when optimizing; assess optional diagnostic retention. [Grouping](PYTHON_FITTING_MDL.md), [tracking](PYTHON_TRACKING.md). |
 | **LIM-014 — Data adapters, units and precision.** Legacy readers have format-dependent thinning; count-prefixed text/CSV, CRS conversion and rounded exports need explicit contracts. | Core accepts owned double-precision coordinates with shared labels. Database integration and matched legacy I/O are deferred; no implicit unit/frame conversion is added. | Verify LAS alternating-point loading versus PTS density, export precision, metadata initialization, zone/hemisphere handling and database schema. [Data contract](../PYTHON_PORT_PLAN.md#data-contract-to-prepare-now). |
-| **LIM-015 — Remaining scope.** Inventory consistency is distinct from complete reconstruction. | Dispositions now cover 201 definitions: 124 engine/UI and 77 inline header definitions, plus 19 named header types. 41 project and 51 dependency files are hashed. Eight earlier utility gaps and inline geometry/state contracts are implemented or have explicit undefined-source/input policies. Inactive DetectLoopCross/ValidateLoopCross workflows and legacy I/O/conversion/export remain pending. Commented rotation functions stay excluded; dependency math is ported only where reached. | Complete agreed remaining workflows and call-path/reference review before declaring reconstruction complete. Keep implementation scope distinct from defects or undefined behavior. [Header audit](PYTHON_HEADER.md), [pipeline audit](PYTHON_PIPELINE.md#explicit-coverage-audit), [plan](../PYTHON_PORT_PLAN.md#computational-inventory). |
+| **LIM-015 — Remaining scope.** Inventory consistency is distinct from complete reconstruction. | Dispositions cover 201 definitions: 124 engine/UI and 77 inline header definitions, plus 19 named header types. 41 project and 51 dependency files are hashed. Utility, inline geometry/state and standalone DetectLoopCross/ValidateLoopCross contracts are implemented or have explicit undefined-source/input policies. Automatic loop/cross scheduling stays inactive. Legacy I/O/conversion/export and call-path review remain pending. Commented rotation functions stay excluded; dependency math is ported only where reached. | Complete agreed remaining workflows and call-path/reference review before declaring reconstruction complete. Keep implementation scope distinct from defects or undefined behavior. [Loop/cross](PYTHON_LOOP_CROSS.md), [header audit](PYTHON_HEADER.md), [pipeline audit](PYTHON_PIPELINE.md#explicit-coverage-audit), [plan](../PYTHON_PORT_PLAN.md#computational-inventory). |
 
 ## Preserved source behavior and findings awaiting later decisions
 
@@ -192,7 +192,43 @@ tagged value assignment with matched runtime/capacity histories. Any repaired
 formula, initialized placeholder, new scheduling or different allocation policy
 requires a separate change. All 77 inline definitions and 19 types now have
 explicit dispositions, but lexical coverage is not full-binary equivalence.
-Inactive workflows, I/O and real-data/profiling gaps remain. **Status: open.**
+Automatic loop/cross scheduling remains inactive; I/O and real-data/profiling
+gaps remain. **Status: open.**
+
+### LIM-035: Inactive loop/cross projection, cache and integer phase contracts
+
+**Evidence:** `RailwayExtraction.cpp:2342–2480`, fixed-angle loop/cross fitter,
+commented calls at lines 512/827/1016 and [the loop/cross guide](PYTHON_LOOP_CROSS.md).
+
+**Triggers and impact:** detection projects the fitter's output before checking
+its Boolean. Empty/no-winner/insufficient support can therefore read uninitialized
+endpoints and coefficients. A fully initialized short fit is projected even though
+false, then discarded. Literal intersection, separately cached angle, NaN polygon
+and zero-normal distance arithmetic remain visible. Successful chainage uses the
+reference endpoint; deduplication checks only the last record's stored center and
+coefficients, requiring mean distance strictly greater than one. An empty pool
+can accept initialized nonfinite geometry; NaN duplicate distance suppresses it.
+Validation casts absolute chainage difference to int32 **before** multiplying by
+100, with possible undefined cast or signed overflow. It retains residues 0/1/24
+of the truncated difference, chooses the first largest star neighborhood and
+preserves that group's order, rather than sorting or finding a clique.
+
+**Current handling:** both routines are standalone ports with no automatic
+scheduling or label mutation. Unknown reached fields and unsafe int32 arithmetic
+produce explicit `undefined_source_*` statuses, retaining the current pool and
+actual prior draws. Singleton validation does not read chainage. Initialized
+nonfinite projection retains the source append behavior with diagnostics.
+Native failure comparisons stop before undefined endpoints; full comparisons
+use initialized fit outputs and supplied references. Positive skip rate remains
+the existing fitter's explicit API contract. These checks do not establish
+automatic loop/cross recognition on real MLS data.
+
+**Post-reconstruction review:** characterize failed fits, cache initialization,
+nonfinite/parallel geometry, duplicate spacing, intended fractional phase behavior,
+int32 ranges and group selection with real/reference inputs. Decide any Boolean
+guard, corrected intersection/phase formula, geometry recovery or activation of
+commented scheduling as a separate change. Existing source behavior remains the
+baseline and all earlier IDs remain open. **Status: open.**
 
 ## Resolution history
 

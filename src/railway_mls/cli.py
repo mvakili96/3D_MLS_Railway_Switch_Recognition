@@ -51,6 +51,50 @@ from .synthetic import pipeline_scene
 from .points import LegacyLiDPoint, Point2D
 from .geometry import source_float_round
 from .models import TrackLayer
+from .loop_cross import detect_loop_cross, validate_loop_cross
+from .synthetic import loop_cross_scene
+
+
+def _loop_cross_demo(seed: int) -> dict:
+    scene = loop_cross_scene()
+    random = MsvcRand(seed)
+    pool = []
+    first = detect_loop_cross(scene.segment, scene.cloud.select(), scene.ground_height,
+                              scene.track_height, scene.reference_line,
+                              config=scene.config, rng=random, loop_crosses=pool)
+    repeated = detect_loop_cross(scene.segment, scene.cloud.select(), scene.ground_height,
+                                 scene.track_height, scene.reference_line,
+                                 config=scene.config, rng=random, loop_crosses=pool)
+    validated = validate_loop_cross(pool)
+    sparse_random = MsvcRand(seed)
+    sparse = detect_loop_cross(scene.segment, scene.cloud.select([*range(7), *range(30, 37)]),
+                               scene.ground_height, scene.track_height, scene.reference_line,
+                               config=scene.config, rng=sparse_random)
+    return _finite_json({
+        "stage": "standalone source loop/cross detection and validation",
+        "data": "synthetic inner strips with explicitly initialized rail references",
+        "automatic_scheduling_active": False,
+        "status": first.status,
+        "input_points": len(scene.cloud),
+        "region_counts": [len(group) for group in first.region_points],
+        "polygon_count": len(first.polygon_points),
+        "height_count": len(first.height_points),
+        "candidate_ids": first.candidates.indices.tolist(),
+        "fit": {"status": first.fit.status, "support_count": len(first.fit.support),
+                "iterations": first.fit.iterations},
+        "projected_line": asdict(first.projected_line),
+        "distance_from_start": first.candidate.distance_from_start,
+        "repeat": {"status": repeated.status, "appended": repeated.appended,
+                   "duplicate_distances": repeated.duplicate_distances},
+        "validation": {"status": validated.status, "groups": validated.groups,
+                       "selected_indices": validated.selected_indices},
+        "loop_count": len(pool),
+        "random_draws": random.draw_count,
+        "sparse_fit": {"status": sparse.status, "fit_status": sparse.fit.status,
+                       "appended": sparse.appended, "random_draws": sparse_random.draw_count},
+        "labels_unchanged": bool(np.all(scene.cloud.class_codes == 9)
+                                 and np.all(scene.cloud.segment_ids == 7)),
+    })
 
 
 def _header_demo() -> dict:
@@ -651,6 +695,8 @@ def _observation_demo(seed: int) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="3D MLS railway Python foundation")
     commands = parser.add_subparsers(dest="command", required=True)
+    loop_parser = commands.add_parser("loop-cross-demo", help="exercise inactive source loop/cross components with supplied references")
+    loop_parser.add_argument("--seed", type=int, default=1, help="Microsoft CRT seed (default: 1)")
     commands.add_parser("header-demo", help="exercise source inline geometry, tags and state contracts")
     commands.add_parser("utilities-demo", help="exercise standalone source utilities and explicit boundary cache state")
     audit_parser = commands.add_parser("source-audit", help="check frozen native source and explicit coverage dispositions")
@@ -741,6 +787,9 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command == "loop-cross-demo":
+        print(json.dumps(_loop_cross_demo(arguments.seed), indent=2, allow_nan=False))
+        return 0
     if arguments.command == "header-demo":
         print(json.dumps(_header_demo(), indent=2, allow_nan=False))
         return 0

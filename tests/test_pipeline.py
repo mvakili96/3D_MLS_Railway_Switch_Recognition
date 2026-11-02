@@ -354,7 +354,8 @@ class SourceCoverageTests(unittest.TestCase):
             for file in source_coverage()["definition_files"]
             for entry in file["definitions"]
         }
-        self.assertIn("inactive_pending", dispositions)
+        self.assertIn("inactive_ported", dispositions)
+        self.assertNotIn("inactive_pending", dispositions)
         self.assertIn("unused_helper_ported", dispositions)
         self.assertNotIn("unused_helper_pending", dispositions)
         self.assertNotIn("ported_reached_behavior", dispositions)

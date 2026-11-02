@@ -113,7 +113,8 @@ Coverage metadata and stack fingerprints change intentionally: signature schema
 **2** includes the newly represented cache/neighbor state and is not comparable
 to earlier unversioned stack fingerprints. Cloud input hashing is unchanged.
 
-All limitations remain open, including new LIM-034. Inactive loop/cross workflows,
-legacy data/conversion/export interfaces, whole-application comparison, real-data
+All limitations remain open, including LIM-034. The later
+[loop/cross increment](PYTHON_LOOP_CROSS.md) ports its two inactive bodies as
+standalone calls. Legacy data/conversion/export interfaces, whole-application comparison, real-data
 accuracy and MLS-scale profiling remain separate work. Inventory consistency
 does not establish native application equivalence or published performance.

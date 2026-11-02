@@ -23,8 +23,8 @@ Locations are in `ADE code/PCLProject/PCLProject/PCLProject/RailwayExtraction.cp
 
 These names and `BoundaryLine` are exported from `railway_mls`. The four unused
 helpers are classified `unused_helper_ported`. The intersection is
-`inactive_ported`; `DetectLoopCross` and `ValidateLoopCross` remain
-`inactive_pending`. No standalone filtering or loop/cross action is inserted
+`inactive_ported`; the later [loop/cross increment](PYTHON_LOOP_CROSS.md) also ports
+`DetectLoopCross` and `ValidateLoopCross` as `inactive_ported`. No standalone filtering or loop/cross action is inserted
 into tracking. Initialization reuses paired classification for its existing GMM
 action, with the same results and random consumption.
 
@@ -169,8 +169,9 @@ class counts and grade/GWAD results; only the coverage dispositions differ.
 Boundary cache representation is intentionally more faithful to the source.
 
 The scoped audit now has no `unused_helper_pending` or `ported_reached_behavior`
-definitions. Legacy I/O/conversion/export, inactive loop/cross workflows and
-call-path review remain explicit scope gaps. The later [header increment](PYTHON_HEADER.md)
+definitions. Legacy I/O/conversion/export and call-path review remain explicit
+scope gaps; the later [loop/cross increment](PYTHON_LOOP_CROSS.md) implements both
+inactive component bodies without activating scheduling. The [header increment](PYTHON_HEADER.md)
 inventories all 77 inline definitions and 19 named types. Whole-application comparison,
 real-data evaluation and MLS-scale profiling remain unverified. All limitation
 IDs remain open, including the utility policies recorded as LIM-033.

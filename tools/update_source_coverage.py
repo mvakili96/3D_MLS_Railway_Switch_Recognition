@@ -137,10 +137,10 @@ for name, target, note in (
     ),
 ):
     ENGINE[name] = rule("unused_helper_ported", (target,), note)
-for name in ("DetectLoopCross", "ValidateLoopCross"):
+for name, target in (("DetectLoopCross", "detect_loop_cross"), ("ValidateLoopCross", "validate_loop_cross")):
     ENGINE[name] = rule(
-        "inactive_pending",
-        note="Loop/cross workflow calls are commented out. Workflow reconstruction remains pending; do not enable implicitly.",
+        "inactive_ported", ("railway_mls.loop_cross:" + target,),
+        "Standalone literal source component, with explicit undefined-output/int32 guards. Original initialization/tracking/validation call sites stay commented out; no automatic scheduling is enabled.",
     )
 ENGINE["ComputeIntersectionPoint3D"] = rule(
     "inactive_ported",
@@ -155,7 +155,7 @@ ENGINE["TemplateMatching"] = rule(
 ENGINE["LineExtractionWithFixedAngleForLoopCross"] = rule(
     "inactive_ported",
     ("railway_mls.fitting:fit_loop_cross_line",),
-    "Standalone fitter is implemented; loop/cross scheduling remains inactive and pending.",
+    "Standalone fitter and detection/validation are implemented; automatic loop/cross scheduling remains inactive.",
 )
 for name in ("updateMaxMinFromReader", "readMaxMinFromReader", "readMaxMinFromTXTReader"):
     ENGINE[name] = rule(
