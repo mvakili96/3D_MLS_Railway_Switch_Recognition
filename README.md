@@ -57,6 +57,8 @@ document proposed corrections separately.
   provenance, JSON/CSV artifacts, source audit and explicitly pending scope.
 - [docs/PYTHON_UTILITIES.md](docs/PYTHON_UTILITIES.md): standalone paired GMM/height
   filtering, scalar geometry, index cycling and endpoint-only boundary state.
+- [docs/PYTHON_HEADER.md](docs/PYTHON_HEADER.md): inline definition/type inventory,
+  legacy points, tagged line/cache operations and segment state helpers.
 
 The original application uses Windows Forms/C++/CLI, PCL, VTK, Boost and LAS
 libraries. Project files contain machine-specific paths. Retaining them documents
@@ -87,6 +89,7 @@ python -m railway_mls pipeline-demo
 python -m railway_mls pipeline-demo --scenario components --output outputs/components-001
 python -m railway_mls source-audit --repo .
 python -m railway_mls utilities-demo
+python -m railway_mls header-demo
 python -m unittest discover -s tests -v
 ```
 
@@ -144,8 +147,12 @@ paired GMM/height filtering, literal scalar geometry and polygon boundaries with
 absent caches. These contracts are source-tested; loop/cross scheduling remains
 inactive.
 
-The installed `railway-mls` command supports the same fourteen demos and source
-audit. The audit inventories 124 definitions, hashes 41 project and 51 bundled
+`header-demo` exercises point/line/cache and neighbor-region state without input
+data. The header audit maps 77 uncommented definitions and 19 named types,
+including explicit policies for unknown and undefined native values.
+
+The installed `railway-mls` command supports the same fifteen demos and source
+audit. The audit inventories 201 definitions (124 engine/UI and 77 header), hashes 41 project and 51 bundled
 dependency files, and explicitly lists pending source scope. The former standalone
 and partially mapped utility gaps are implemented.
 Tests use `unittest`; when a C++ compiler is available they also compile temporary
@@ -174,7 +181,7 @@ repository refer to its separate history.
 ## Development direction
 
 Continue from the integrated pipeline and completed utility contracts to the
-remaining header/call-path review and legacy data/conversion/export interfaces.
+remaining call-path review and legacy data/conversion/export interfaces.
 Inactive loop/cross workflows remain recorded without enabling their scheduling.
 Keep scope gaps separate from the source limitations already reproduced.
 Include computational orchestration that currently lives in the GUI. Keep inactive source paths inactive

@@ -28,6 +28,21 @@ def direction_mode(next_point: Point3D, previous_point: Point3D) -> int:
     return 4
 
 
+def source_is_nan(value: float) -> bool:
+    return value != value
+
+
+def source_float_round(value: float) -> int:
+    """FLOOR_double: float32 input, truncation toward zero, positive half-up only."""
+    with np.errstate(over="ignore", invalid="ignore"):
+        narrowed = np.float32(value)
+    if not np.isfinite(narrowed) or not -(1 << 31) <= narrowed < (1 << 31):
+        raise ValueError("undefined source FLOOR_double float-to-int conversion")
+    truncated = int(narrowed)
+    fraction = np.float32(narrowed - np.float32(truncated))
+    return truncated + 1 if fraction >= 0.5 else truncated
+
+
 def source_angle(begin: Point3D, end: Point3D) -> float:
     """Line3D::GetAngle / RailwayExtraction::GetAngle, including coincident=0."""
     dx, dy = end.x - begin.x, end.y - begin.y
@@ -131,7 +146,7 @@ def line_parameters_from_angle(angle: float, x: float, y: float) -> tuple[float,
         return 0.0, -1.0, float(x)
     if angle == 90:
         return -1.0, 0.0, float(y)
-    a = tan(angle * pi / 180)
+    a = tan(angle * pi / 180) if isfinite(angle) else float("nan")
     return a, -1.0, y - a * x
 
 
@@ -145,14 +160,25 @@ class Line3D:
     angle: float = field(init=False)
     members: PointSelection | None = field(default=None, repr=False, compare=False)
     _center: Point3D | None = field(default=None, init=False, repr=False, compare=False)
+    _unit_vector: Point3D | None = field(default=None, init=False, repr=False, compare=False)
+    d3d: float | None = field(default=None, init=False, repr=False, compare=False)
 
     def __post_init__(self) -> None:
         self.update_parameters()
 
     def update_parameters(self) -> None:
         """Equivalent to explicitly calling GetLineParameter then GetAngle."""
+        self.update_coefficients()
+        self.update_angle()
+
+    def update_coefficients(self) -> None:
         self.a, self.b, self.c = line_parameters(self.begin, self.end)
+
+    def update_angle(self) -> None:
         self.angle = source_angle(self.begin, self.end)
+
+    def set_parameters_from_angle_at(self, x: float, y: float) -> None:
+        self.a, self.b, self.c = line_parameters_from_angle(self.angle, x, y)
 
     @property
     def center(self) -> Point3D:
@@ -164,8 +190,30 @@ class Line3D:
 
     def update_center(self) -> Point3D:
         """GetCenterPt: explicitly refresh the source's separately stored center."""
-        self._center = (self.begin + self.end) / 2
+        value = (self.begin + self.end) / 2
+        self._center = Point3D(
+            value.x, value.y, value.z, self._center.point_type if self._center is not None else 0
+        )
         return self._center
+
+    def swap_endpoints(self) -> None:
+        """Both native swap methods assign XYZ while endpoint slot tags stay put."""
+        first, second = self.begin, self.end
+        self.begin, self.end = first.assigned_xyz(second), second.assigned_xyz(first)
+
+    def extend_endpoints(self, times: float) -> BoundaryLine:
+        center = self.update_center()
+        return BoundaryLine(
+            center - (center - self.begin) * times, center - (center - self.end) * times
+        )
+
+    def is_vertex(self, point: Point3D) -> bool:
+        if self.begin.is_equal(point):
+            return True
+        if self.end.is_equal(point):
+            self.swap_endpoints()
+            return True
+        return False
 
     def set_ending_points(self, min_x: float, max_x: float, min_y: float, max_y: float) -> None:
         """SetEndingPnts: retain endpoint Z, coefficients, angle and cached center."""
@@ -185,7 +233,39 @@ class Line3D:
 
     @property
     def unit_vector(self) -> Point3D:
+        """Derived convenience; stored_unit_vector is the native mutable cache."""
         return (self.end - self.begin).normalized()
+
+    @property
+    def stored_unit_vector(self) -> Point3D | None:
+        return self._unit_vector
+
+    def update_unit_vector(self) -> Point3D:
+        value = self.unit_vector
+        self._unit_vector = Point3D(
+            value.x,
+            value.y,
+            value.z,
+            self._unit_vector.point_type if self._unit_vector is not None else 0,
+        )
+        return self._unit_vector
+
+    def set_ending_points_3d(self, min_x, max_x, min_y, max_y) -> None:
+        if self.a == 0 and self.b == 0:
+            return
+        self.set_ending_points(min_x, max_x, min_y, max_y)
+        self.begin = Point3D(self.begin.x, self.begin.y, 0, self.begin.point_type)
+        self.end = Point3D(self.end.x, self.end.y, 0, self.end.point_type)
+
+    def set_ending_points_by_center_and_length(self, radius: float) -> None:
+        if self._center is None:
+            raise ValueError("undefined source line center cache")
+        with np.errstate(invalid="ignore"):
+            angle = self.angle * pi / 180
+            dx, dy = radius * float(np.cos(angle)), radius * float(np.sin(angle))
+        center = self._center
+        self.begin = Point3D(center.x + dx, center.y + dy, center.z, self.begin.point_type)
+        self.end = Point3D(center.x - dx, center.y - dy, center.z, self.end.point_type)
 
     def order_endpoints(self, mode: int) -> None:
         """SetEndingByMode, including else-as-mode-4 and Y priority on ties."""
@@ -194,12 +274,12 @@ class Line3D:
         else:
             swap = self.begin.y > self.end.y if mode in (1, 2) else self.begin.y < self.end.y
         if swap:
-            self.begin, self.end = self.end, self.begin
+            self.swap_endpoints()
 
     def order_endpoints_by_reference(self, reference: Point3D) -> None:
         """SetEndByReferencePt: closer XY endpoint is begin; ties do not swap."""
         if distance_2d(self.begin, reference) > distance_2d(self.end, reference):
-            self.begin, self.end = self.end, self.begin
+            self.swap_endpoints()
 
     def topology(self, x: float, y: float) -> int:
         """GetTopologyUsingCrossProduct: right side is +1 for an eastward line."""

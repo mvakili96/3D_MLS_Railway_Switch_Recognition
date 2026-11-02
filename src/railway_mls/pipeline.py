@@ -319,6 +319,7 @@ def run_pipeline(
                     raise ValueError("supplied stack memberships must belong to the pipeline cloud")
     grid = GridIndex(cloud, settings.grid_size, bounds=bounds)
     fixtures = {
+        "stack_signature_schema_version": 2,
         "supplied_toes": len(supplied_toes),
         "supplied_stacks": len(supplied_stacks),
         "toe_inputs": [asdict(toe) for toe in supplied_toes],

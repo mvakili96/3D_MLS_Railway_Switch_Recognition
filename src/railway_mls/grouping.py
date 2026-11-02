@@ -7,6 +7,11 @@ import numpy as np
 from .points import PointSelection
 
 
+def larger_group(first: PointSelection, second: PointSelection) -> bool:
+    """LargePts comparator: strict member-count comparison, including ties."""
+    return len(first) > len(second)
+
+
 @dataclass(frozen=True)
 class PointGrouping:
     selected: PointSelection

@@ -4,12 +4,13 @@ from .config import ExtractionConfig
 from .geometry import (
     BoundaryLine, Line3D, direction_mode, distance_to_line_3d, inner_angle,
     intersection_point_3d, lines_from_vertices, min_max_xy, recount,
+    source_float_round, source_is_nan,
 )
-from .fitting import LineFitResult, fit_fixed_angle, fit_line_ransac
+from .fitting import LineFitResult, fit_fixed_angle, fit_line_ransac, higher_z_value
 from .gmm import classify_segment, classify_window, cluster_by_gmm, fit_height_gmm
 from .gauge import GaugeAdjustment, adjust_two_lines, adjust_two_lines_with_observation
 from .heads import TrackHeadResult, extract_track_points, filter_segment_by_previous_heights
-from .grouping import PointGrouping, group_points
+from .grouping import PointGrouping, group_points, larger_group
 from .initialization import InitializationResult, initial_kalman_states, initialize_tracks
 from .kalman import KalmanPrediction, KalmanState, KalmanUpdate, kalman_predict, kalman_update
 from .mdl import MDLResult, segment_track_points_mdl
@@ -24,6 +25,7 @@ from .models import (
     ToePoint,
     SwitchBox,
     GradeSection,
+    LoopCross, NeighborRegions, StateAssignment,
     seed_windows,
 )
 from .observations import (
@@ -32,7 +34,7 @@ from .observations import (
     determine_observation,
     observation_from_support,
 )
-from .points import Point3D, PointCloud, PointSelection
+from .points import LegacyLiDPoint, Point2D, Point3D, PointCloud, PointSelection
 from .sampling import MsvcRand, RecordedRand
 from .spatial import Bounds3D, GridIndex
 from .recognition import (
@@ -106,6 +108,8 @@ from .coverage import check_source_coverage, coverage_summary, source_coverage
 __version__ = "0.1.0"
 
 __all__ = [
+    "LegacyLiDPoint", "Point2D", "LoopCross", "NeighborRegions", "StateAssignment",
+    "source_float_round", "source_is_nan", "higher_z_value", "larger_group",
     "BoundaryLine", "distance_to_line_3d", "inner_angle", "intersection_point_3d",
     "lines_from_vertices", "min_max_xy", "recount", "filter_segment_by_previous_heights",
     "PipelineFinding", "PipelineOptions", "PipelineResult", "PipelineStage",

@@ -170,6 +170,7 @@ Boundary cache representation is intentionally more faithful to the source.
 
 The scoped audit now has no `unused_helper_pending` or `ported_reached_behavior`
 definitions. Legacy I/O/conversion/export, inactive loop/cross workflows and
-header/call-path review remain explicit scope gaps. Whole-application comparison,
+call-path review remain explicit scope gaps. The later [header increment](PYTHON_HEADER.md)
+inventories all 77 inline definitions and 19 named types. Whole-application comparison,
 real-data evaluation and MLS-scale profiling remain unverified. All limitation
 IDs remain open, including the utility policies recorded as LIM-033.

@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 from railway_mls.coverage import SOURCE_DIRECTORY, cpp_definitions, source_text_hash
+from header_coverage import header_entries
 
 
 def rule(disposition, python=(), note=""):
@@ -307,6 +308,8 @@ for filename, owner, rules in (
             )
         entries.append(entry)
     definition_files.append({"path": filename, "owner": owner, "definitions": entries})
+inline_entries, header_types = header_entries((source / "LIDARPT.h").read_text())
+definition_files.append({"path": "LIDARPT.h", "kind": "inline_header", "definitions": inline_entries})
 baseline = sha256(
     "\n".join(f"{f['path']}:{f['sha256']}" for f in (*files, *dependencies)).encode()
 ).hexdigest()
@@ -316,12 +319,17 @@ audit = {
     "definition_scope": [
         "Every out-of-class definition in RailwayExtraction.cpp and MainForm.cpp",
         "All top-level project .cpp/.h files have file-level dispositions",
-        "LIDARPT.h state/geometry is mapped by stage guides; header members are not individually counted",
+        "All 77 active inline definitions and 19 named top-level types in LIDARPT.h have explicit dispositions; commented Rotation3D/InverseRotation3D remain excluded",
         "Jama/etc are dependencies: only reached numerical behavior is ported, not whole libraries",
     ],
     "files": files,
     "bundled_dependencies": dependencies,
     "definition_files": definition_files,
+    "header_types": header_types,
+    "excluded_header_definitions": [
+        {"source": "LIDARPT.h", "name": name, "reason": "definition is inside a block comment"}
+        for name in ("Rotation3D", "InverseRotation3D")
+    ],
     "complete_reconstruction": False,
 }
 destination = root / "src/railway_mls/source_coverage.json"

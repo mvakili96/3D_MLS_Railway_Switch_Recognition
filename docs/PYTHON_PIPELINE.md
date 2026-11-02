@@ -158,13 +158,13 @@ still required for reproduction. MLS-scale runtime/memory remains unprofiled.
 ## Explicit coverage audit
 
 [source_coverage.json](../src/railway_mls/source_coverage.json) is packaged in the
-wheel. It records **124** out-of-class definitions in RailwayExtraction.cpp and
-MainForm.cpp, with owner/name/overload, signature, source line, disposition,
+wheel. It records **201** definitions: **124** in RailwayExtraction.cpp/MainForm.cpp
+and **77** inline definitions in LIDARPT.h, with owner/name/overload, signature, source line, disposition,
 Python target(s) and scope notes. All **41** top-level project .cpp/.h files and
 **51** bundled Jama/etc .cpp/.h/.inl files have normalized-newline SHA-256 hashes.
 Dependency hashes freeze the inputs; only reached numerical library behavior is
-ported. State/header routines are mapped by the individual stage guides rather
-than counted as separately audited definitions. This is a scoped lexical
+ported. All **19** named header types have explicit mappings; two commented
+rotation functions remain excluded. See [the header guide](PYTHON_HEADER.md). This is a scoped lexical
 inventory, not a C++ parser, exhaustive call graph or numerical coverage percentage.
 
 `source-audit --repo PATH` checks file/dependency inventory and hashes, selected

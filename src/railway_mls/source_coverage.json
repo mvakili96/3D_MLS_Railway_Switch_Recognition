@@ -4,7 +4,7 @@
   "definition_scope": [
     "Every out-of-class definition in RailwayExtraction.cpp and MainForm.cpp",
     "All top-level project .cpp/.h files have file-level dispositions",
-    "LIDARPT.h state/geometry is mapped by stage guides; header members are not individually counted",
+    "All 77 active inline definitions and 19 named top-level types in LIDARPT.h have explicit dispositions; commented Rotation3D/InverseRotation3D remain excluded",
     "Jama/etc are dependencies: only reached numerical behavior is ported, not whole libraries"
   ],
   "files": [
@@ -1743,6 +1743,1140 @@
           "note": "Windows Forms/VTK interaction, layer naming/display, application lifetime or progress; not recreated by the numerical pipeline."
         }
       ]
+    },
+    {
+      "path": "LIDARPT.h",
+      "kind": "inline_header",
+      "definitions": [
+        {
+          "id": "LIDARPT::bIsNan#1",
+          "owner": "LIDARPT",
+          "name": "bIsNan",
+          "signature": "inline bool bIsNan(double d)",
+          "line": 28,
+          "python": [
+            "railway_mls.geometry:source_is_nan"
+          ],
+          "disposition": "ported_inline",
+          "note": "Standalone predicate/comparator; preserve literal arithmetic and source ordering policies."
+        },
+        {
+          "id": "LIDARPT::FLOOR_double#1",
+          "owner": "LIDARPT",
+          "name": "FLOOR_double",
+          "signature": "inline int FLOOR_double (float _f)",
+          "line": 33,
+          "python": [
+            "railway_mls.geometry:source_float_round"
+          ],
+          "disposition": "ported_inline",
+          "note": "Standalone predicate/comparator; preserve literal arithmetic and source ordering policies."
+        },
+        {
+          "id": "LIDARPT::pnpoly#1",
+          "owner": "LIDARPT",
+          "name": "pnpoly",
+          "signature": "inline int pnpoly(int nvert, double *vertx, double *verty, double testx, double testy)",
+          "line": 111,
+          "python": [
+            "railway_mls.geometry:points_in_polygon"
+          ],
+          "disposition": "ported_inline",
+          "note": "Standalone predicate/comparator; preserve literal arithmetic and source ordering policies."
+        },
+        {
+          "id": "LIDARPT::pnpoly2#1",
+          "owner": "LIDARPT",
+          "name": "pnpoly2",
+          "signature": "inline int pnpoly2(int nvert, double *vertx, double *verty, double testx, double testy)",
+          "line": 122,
+          "python": [
+            "railway_mls.geometry:points_in_convex_polygon"
+          ],
+          "disposition": "ported_inline",
+          "note": "Standalone predicate/comparator; preserve literal arithmetic and source ordering policies."
+        },
+        {
+          "id": "LiDPOINT::LiDPOINT#1",
+          "owner": "LiDPOINT",
+          "name": "LiDPOINT",
+          "signature": "LiDPOINT()",
+          "line": 178,
+          "python": [
+            "railway_mls.points:LegacyLiDPoint"
+          ],
+          "disposition": "ported_inline",
+          "note": "Unused legacy point metadata/defaults; XYZ unknown until assigned; native division is undefined and guarded."
+        },
+        {
+          "id": "LiDPOINT::LiDPOINT#2",
+          "owner": "LiDPOINT",
+          "name": "LiDPOINT",
+          "signature": "LiDPOINT(double _x, double _y, double _z)",
+          "line": 191,
+          "python": [
+            "railway_mls.points:LegacyLiDPoint"
+          ],
+          "disposition": "ported_inline",
+          "note": "Unused legacy point metadata/defaults; XYZ unknown until assigned; native division is undefined and guarded."
+        },
+        {
+          "id": "LiDPOINT::~LiDPOINT#1",
+          "owner": "LiDPOINT",
+          "name": "~LiDPOINT",
+          "signature": "~LiDPOINT()",
+          "line": 207,
+          "python": [
+            "railway_mls.points:LegacyLiDPoint"
+          ],
+          "disposition": "native_lifetime",
+          "note": "Unused legacy point metadata/defaults; XYZ unknown until assigned; native division is undefined and guarded."
+        },
+        {
+          "id": "LiDPOINT::SetXYZ#1",
+          "owner": "LiDPOINT",
+          "name": "SetXYZ",
+          "signature": "void SetXYZ(double _x, double _y, double _z)",
+          "line": 210,
+          "python": [
+            "railway_mls.points:LegacyLiDPoint.set_xyz"
+          ],
+          "disposition": "ported_inline",
+          "note": "Unused legacy point metadata/defaults; XYZ unknown until assigned; native division is undefined and guarded."
+        },
+        {
+          "id": "LiDPOINT::SetXYZ#2",
+          "owner": "LiDPOINT",
+          "name": "SetXYZ",
+          "signature": "void SetXYZ(LiDPOINT pt)",
+          "line": 216,
+          "python": [
+            "railway_mls.points:LegacyLiDPoint.set_from"
+          ],
+          "disposition": "ported_inline",
+          "note": "Unused legacy point metadata/defaults; XYZ unknown until assigned; native division is undefined and guarded."
+        },
+        {
+          "id": "LiDPOINT::IsEqual#1",
+          "owner": "LiDPOINT",
+          "name": "IsEqual",
+          "signature": "bool IsEqual(LiDPOINT _pt)",
+          "line": 222,
+          "python": [
+            "railway_mls.points:LegacyLiDPoint.is_equal"
+          ],
+          "disposition": "ported_inline",
+          "note": "Unused legacy point metadata/defaults; XYZ unknown until assigned; native division is undefined and guarded."
+        },
+        {
+          "id": "LiDPOINT::operator-#1",
+          "owner": "LiDPOINT",
+          "name": "operator-",
+          "signature": "LiDPOINT operator- (const LiDPOINT _pt)",
+          "line": 230,
+          "python": [
+            "railway_mls.points:LegacyLiDPoint.__sub__"
+          ],
+          "disposition": "ported_inline",
+          "note": "Unused legacy point metadata/defaults; XYZ unknown until assigned; native division is undefined and guarded."
+        },
+        {
+          "id": "LiDPOINT::operator+#1",
+          "owner": "LiDPOINT",
+          "name": "operator+",
+          "signature": "LiDPOINT operator+ (const LiDPOINT _pt)",
+          "line": 239,
+          "python": [
+            "railway_mls.points:LegacyLiDPoint.__add__"
+          ],
+          "disposition": "ported_inline",
+          "note": "Unused legacy point metadata/defaults; XYZ unknown until assigned; native division is undefined and guarded."
+        },
+        {
+          "id": "LiDPOINT::operator/#1",
+          "owner": "LiDPOINT",
+          "name": "operator/",
+          "signature": "LiDPOINT operator/ (const double _s)",
+          "line": 248,
+          "python": [
+            "railway_mls.points:LegacyLiDPoint.__truediv__"
+          ],
+          "disposition": "undefined_source_guard",
+          "note": "Unused legacy point metadata/defaults; XYZ unknown until assigned; native division is undefined and guarded."
+        },
+        {
+          "id": "POINT2D::POINT2D#1",
+          "owner": "POINT2D",
+          "name": "POINT2D",
+          "signature": "POINT2D()",
+          "line": 262,
+          "python": [
+            "railway_mls.points:Point2D"
+          ],
+          "disposition": "ported_inline",
+          "note": "Default flag false; XY-constructor flag None; zero division returns a value copy and preserves flag."
+        },
+        {
+          "id": "POINT2D::POINT2D#2",
+          "owner": "POINT2D",
+          "name": "POINT2D",
+          "signature": "POINT2D(double _x, double _y)",
+          "line": 267,
+          "python": [
+            "railway_mls.points:Point2D"
+          ],
+          "disposition": "ported_inline",
+          "note": "Default flag false; XY-constructor flag None; zero division returns a value copy and preserves flag."
+        },
+        {
+          "id": "POINT2D::IsEqual#1",
+          "owner": "POINT2D",
+          "name": "IsEqual",
+          "signature": "bool IsEqual(POINT2D _pt)",
+          "line": 272,
+          "python": [
+            "railway_mls.points:Point2D.is_equal"
+          ],
+          "disposition": "ported_inline",
+          "note": "Default flag false; XY-constructor flag None; zero division returns a value copy and preserves flag."
+        },
+        {
+          "id": "POINT2D::operator*#1",
+          "owner": "POINT2D",
+          "name": "operator*",
+          "signature": "POINT2D operator* (const double _s)",
+          "line": 280,
+          "python": [
+            "railway_mls.points:Point2D.__mul__"
+          ],
+          "disposition": "ported_inline",
+          "note": "Default flag false; XY-constructor flag None; zero division returns a value copy and preserves flag."
+        },
+        {
+          "id": "POINT2D::operator/#1",
+          "owner": "POINT2D",
+          "name": "operator/",
+          "signature": "POINT2D operator/ (const double _s)",
+          "line": 288,
+          "python": [
+            "railway_mls.points:Point2D.__truediv__"
+          ],
+          "disposition": "ported_inline",
+          "note": "Default flag false; XY-constructor flag None; zero division returns a value copy and preserves flag."
+        },
+        {
+          "id": "POINT2D::operator-#1",
+          "owner": "POINT2D",
+          "name": "operator-",
+          "signature": "POINT2D operator- (const POINT2D _pt)",
+          "line": 299,
+          "python": [
+            "railway_mls.points:Point2D.__sub__"
+          ],
+          "disposition": "ported_inline",
+          "note": "Default flag false; XY-constructor flag None; zero division returns a value copy and preserves flag."
+        },
+        {
+          "id": "POINT2D::operator+#1",
+          "owner": "POINT2D",
+          "name": "operator+",
+          "signature": "POINT2D operator+ (const POINT2D _pt)",
+          "line": 307,
+          "python": [
+            "railway_mls.points:Point2D.__add__"
+          ],
+          "disposition": "ported_inline",
+          "note": "Default flag false; XY-constructor flag None; zero division returns a value copy and preserves flag."
+        },
+        {
+          "id": "POINT2D::isEqual#1",
+          "owner": "POINT2D",
+          "name": "isEqual",
+          "signature": "bool isEqual(POINT2D _pt)",
+          "line": 315,
+          "python": [
+            "railway_mls.points:Point2D.is_exactly_equal"
+          ],
+          "disposition": "ported_inline",
+          "note": "Default flag false; XY-constructor flag None; zero division returns a value copy and preserves flag."
+        },
+        {
+          "id": "POINT3D::POINT3D#1",
+          "owner": "POINT3D",
+          "name": "POINT3D",
+          "signature": "POINT3D()",
+          "line": 333,
+          "python": [
+            "railway_mls.points:Point3D"
+          ],
+          "disposition": "explicit_input_policy",
+          "note": "Frozen value API requires explicit XYZ. Assignment/normalization/sign preserve tags; arithmetic resets tags. Native union layout is not emulated."
+        },
+        {
+          "id": "POINT3D::POINT3D#2",
+          "owner": "POINT3D",
+          "name": "POINT3D",
+          "signature": "POINT3D(double _x, double _y, double _z)",
+          "line": 338,
+          "python": [
+            "railway_mls.points:Point3D"
+          ],
+          "disposition": "ported_inline",
+          "note": "Frozen value API requires explicit XYZ. Assignment/normalization/sign preserve tags; arithmetic resets tags. Native union layout is not emulated."
+        },
+        {
+          "id": "POINT3D::SetPoint3D#1",
+          "owner": "POINT3D",
+          "name": "SetPoint3D",
+          "signature": "void SetPoint3D(double _x, double _y, double _z)",
+          "line": 346,
+          "python": [
+            "railway_mls.points:Point3D.set_coordinates"
+          ],
+          "disposition": "ported_inline",
+          "note": "Frozen value API requires explicit XYZ. Assignment/normalization/sign preserve tags; arithmetic resets tags. Native union layout is not emulated."
+        },
+        {
+          "id": "POINT3D::ChangeSign#1",
+          "owner": "POINT3D",
+          "name": "ChangeSign",
+          "signature": "void ChangeSign()",
+          "line": 353,
+          "python": [
+            "railway_mls.points:Point3D.changed_sign"
+          ],
+          "disposition": "ported_inline",
+          "note": "Frozen value API requires explicit XYZ. Assignment/normalization/sign preserve tags; arithmetic resets tags. Native union layout is not emulated."
+        },
+        {
+          "id": "POINT3D::Normalize#1",
+          "owner": "POINT3D",
+          "name": "Normalize",
+          "signature": "void Normalize()",
+          "line": 359,
+          "python": [
+            "railway_mls.points:Point3D.normalized"
+          ],
+          "disposition": "ported_inline",
+          "note": "Frozen value API requires explicit XYZ. Assignment/normalization/sign preserve tags; arithmetic resets tags. Native union layout is not emulated."
+        },
+        {
+          "id": "POINT3D::operator=#1",
+          "owner": "POINT3D",
+          "name": "operator=",
+          "signature": "void operator= (POINT3D _pt3d)",
+          "line": 366,
+          "python": [
+            "railway_mls.points:Point3D.assigned_xyz"
+          ],
+          "disposition": "ported_inline",
+          "note": "Frozen value API requires explicit XYZ. Assignment/normalization/sign preserve tags; arithmetic resets tags. Native union layout is not emulated."
+        },
+        {
+          "id": "POINT3D::operator-#1",
+          "owner": "POINT3D",
+          "name": "operator-",
+          "signature": "POINT3D operator- (POINT3D _pt3d)",
+          "line": 372,
+          "python": [
+            "railway_mls.points:Point3D.__sub__"
+          ],
+          "disposition": "ported_inline",
+          "note": "Frozen value API requires explicit XYZ. Assignment/normalization/sign preserve tags; arithmetic resets tags. Native union layout is not emulated."
+        },
+        {
+          "id": "POINT3D::operator+#1",
+          "owner": "POINT3D",
+          "name": "operator+",
+          "signature": "POINT3D operator+ (POINT3D _pt3d)",
+          "line": 381,
+          "python": [
+            "railway_mls.points:Point3D.__add__"
+          ],
+          "disposition": "ported_inline",
+          "note": "Frozen value API requires explicit XYZ. Assignment/normalization/sign preserve tags; arithmetic resets tags. Native union layout is not emulated."
+        },
+        {
+          "id": "POINT3D::operator*#1",
+          "owner": "POINT3D",
+          "name": "operator*",
+          "signature": "POINT3D operator* (double _s)",
+          "line": 390,
+          "python": [
+            "railway_mls.points:Point3D.__mul__"
+          ],
+          "disposition": "ported_inline",
+          "note": "Frozen value API requires explicit XYZ. Assignment/normalization/sign preserve tags; arithmetic resets tags. Native union layout is not emulated."
+        },
+        {
+          "id": "POINT3D::operator/#1",
+          "owner": "POINT3D",
+          "name": "operator/",
+          "signature": "POINT3D operator/ (double _s)",
+          "line": 399,
+          "python": [
+            "railway_mls.points:Point3D.__truediv__"
+          ],
+          "disposition": "ported_inline",
+          "note": "Frozen value API requires explicit XYZ. Assignment/normalization/sign preserve tags; arithmetic resets tags. Native union layout is not emulated."
+        },
+        {
+          "id": "POINT3D::IsEqual#1",
+          "owner": "POINT3D",
+          "name": "IsEqual",
+          "signature": "bool IsEqual(POINT3D _pt)",
+          "line": 408,
+          "python": [
+            "railway_mls.points:Point3D.is_equal"
+          ],
+          "disposition": "ported_inline",
+          "note": "Frozen value API requires explicit XYZ. Assignment/normalization/sign preserve tags; arithmetic resets tags. Native union layout is not emulated."
+        },
+        {
+          "id": "POINT3D::DotProduct#1",
+          "owner": "POINT3D",
+          "name": "DotProduct",
+          "signature": "double DotProduct(POINT3D _pt3d)",
+          "line": 416,
+          "python": [
+            "railway_mls.points:Point3D.dot"
+          ],
+          "disposition": "ported_inline",
+          "note": "Frozen value API requires explicit XYZ. Assignment/normalization/sign preserve tags; arithmetic resets tags. Native union layout is not emulated."
+        },
+        {
+          "id": "POINT3D::CrossProduct#1",
+          "owner": "POINT3D",
+          "name": "CrossProduct",
+          "signature": "POINT3D CrossProduct(POINT3D _pt3d)",
+          "line": 420,
+          "python": [
+            "railway_mls.points:Point3D.cross"
+          ],
+          "disposition": "ported_inline",
+          "note": "Frozen value API requires explicit XYZ. Assignment/normalization/sign preserve tags; arithmetic resets tags. Native union layout is not emulated."
+        },
+        {
+          "id": "Line3D::Line3D#1",
+          "owner": "Line3D",
+          "name": "Line3D",
+          "signature": "Line3D()",
+          "line": 437,
+          "python": [
+            "railway_mls.geometry:Line3D"
+          ],
+          "disposition": "explicit_input_policy",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::GetAngle#1",
+          "owner": "Line3D",
+          "name": "GetAngle",
+          "signature": "void GetAngle()",
+          "line": 441,
+          "python": [
+            "railway_mls.geometry:Line3D.update_angle"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::GetLineParameter#1",
+          "owner": "Line3D",
+          "name": "GetLineParameter",
+          "signature": "void GetLineParameter()",
+          "line": 466,
+          "python": [
+            "railway_mls.geometry:Line3D.update_coefficients"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::Get2DLineParameterWithAngleAndPt#1",
+          "owner": "Line3D",
+          "name": "Get2DLineParameterWithAngleAndPt",
+          "signature": "void Get2DLineParameterWithAngleAndPt(double _x, double _y)",
+          "line": 485,
+          "python": [
+            "railway_mls.geometry:Line3D.set_parameters_from_angle_at"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::GetCenterPt#1",
+          "owner": "Line3D",
+          "name": "GetCenterPt",
+          "signature": "void GetCenterPt()",
+          "line": 504,
+          "python": [
+            "railway_mls.geometry:Line3D.update_center"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::SwapEnding#1",
+          "owner": "Line3D",
+          "name": "SwapEnding",
+          "signature": "void SwapEnding()",
+          "line": 511,
+          "python": [
+            "railway_mls.geometry:Line3D.swap_endpoints"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::SetEndingByMode#1",
+          "owner": "Line3D",
+          "name": "SetEndingByMode",
+          "signature": "void SetEndingByMode(int mode)",
+          "line": 516,
+          "python": [
+            "railway_mls.geometry:Line3D.order_endpoints"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::SetEndByReferencePt#1",
+          "owner": "Line3D",
+          "name": "SetEndByReferencePt",
+          "signature": "void SetEndByReferencePt(POINT3D ref)",
+          "line": 557,
+          "python": [
+            "railway_mls.geometry:Line3D.order_endpoints_by_reference"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::ExtendEndingPts#1",
+          "owner": "Line3D",
+          "name": "ExtendEndingPts",
+          "signature": "Line3D ExtendEndingPts(double times)",
+          "line": 566,
+          "python": [
+            "railway_mls.geometry:Line3D.extend_endpoints"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::IsVertex#1",
+          "owner": "Line3D",
+          "name": "IsVertex",
+          "signature": "bool IsVertex(POINT3D _pt)",
+          "line": 578,
+          "python": [
+            "railway_mls.geometry:Line3D.is_vertex"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::SwapVertex#1",
+          "owner": "Line3D",
+          "name": "SwapVertex",
+          "signature": "void SwapVertex()",
+          "line": 589,
+          "python": [
+            "railway_mls.geometry:Line3D.swap_endpoints"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::GetTopologyUsingCrossProduct#1",
+          "owner": "Line3D",
+          "name": "GetTopologyUsingCrossProduct",
+          "signature": "int GetTopologyUsingCrossProduct(double x, double y)",
+          "line": 596,
+          "python": [
+            "railway_mls.geometry:Line3D.topology"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::SetEndingPnts#1",
+          "owner": "Line3D",
+          "name": "SetEndingPnts",
+          "signature": "void SetEndingPnts(double minX, double maxX, double minY, double maxY)",
+          "line": 612,
+          "python": [
+            "railway_mls.geometry:Line3D.set_ending_points"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::SetEndingPnts3D#1",
+          "owner": "Line3D",
+          "name": "SetEndingPnts3D",
+          "signature": "void SetEndingPnts3D(double minX, double maxX, double minY, double maxY)",
+          "line": 649,
+          "python": [
+            "railway_mls.geometry:Line3D.set_ending_points_3d"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::SetEndingPntsByCenterAndLength#1",
+          "owner": "Line3D",
+          "name": "SetEndingPntsByCenterAndLength",
+          "signature": "void SetEndingPntsByCenterAndLength(double radius)",
+          "line": 694,
+          "python": [
+            "railway_mls.geometry:Line3D.set_ending_points_by_center_and_length"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::GetUnitVec#1",
+          "owner": "Line3D",
+          "name": "GetUnitVec",
+          "signature": "void GetUnitVec()",
+          "line": 704,
+          "python": [
+            "railway_mls.geometry:Line3D.update_unit_vector"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "Line3D::GetBufferVtxOfLine#1",
+          "owner": "Line3D",
+          "name": "GetBufferVtxOfLine",
+          "signature": "vector<POINT3D> GetBufferVtxOfLine(double buffersize)",
+          "line": 716,
+          "python": [
+            "railway_mls.geometry:Line3D.buffer_vertices"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+        },
+        {
+          "id": "GMMPara::GMMPara#1",
+          "owner": "GMMPara",
+          "name": "GMMPara",
+          "signature": "GMMPara()",
+          "line": 792,
+          "python": [
+            "railway_mls.models:GMMParameters"
+          ],
+          "disposition": "ported_inline",
+          "note": "Three zero-default scalar fields and assignment."
+        },
+        {
+          "id": "GMMPara::operator=#1",
+          "owner": "GMMPara",
+          "name": "operator=",
+          "signature": "void operator= (const GMMPara para)",
+          "line": 799,
+          "python": [
+            "railway_mls.models:GMMParameters.assign_from"
+          ],
+          "disposition": "ported_inline",
+          "note": "Three zero-default scalar fields and assignment."
+        },
+        {
+          "id": "TrackWindow::TrackWindow#1",
+          "owner": "TrackWindow",
+          "name": "TrackWindow",
+          "signature": "TrackWindow()",
+          "line": 828,
+          "python": [
+            "railway_mls.models:TrackWindow"
+          ],
+          "disposition": "explicit_input_policy",
+          "note": "Explicit center/orientation boundary; ordered main/side polygons, selections, line state, reset and tags."
+        },
+        {
+          "id": "TrackWindow::ResetTrackWindow#1",
+          "owner": "TrackWindow",
+          "name": "ResetTrackWindow",
+          "signature": "void ResetTrackWindow()",
+          "line": 836,
+          "python": [
+            "railway_mls.models:TrackWindow.reset"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit center/orientation boundary; ordered main/side polygons, selections, line state, reset and tags."
+        },
+        {
+          "id": "TrackWindow::GenerateVtxUsingCenterAndAngle#1",
+          "owner": "TrackWindow",
+          "name": "GenerateVtxUsingCenterAndAngle",
+          "signature": "void GenerateVtxUsingCenterAndAngle(double length, double width, int mode)",
+          "line": 844,
+          "python": [
+            "railway_mls.models:TrackWindow.generate_vertices"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit center/orientation boundary; ordered main/side polygons, selections, line state, reset and tags."
+        },
+        {
+          "id": "TrackWindow::SetTrackWindowMemPnts#1",
+          "owner": "TrackWindow",
+          "name": "SetTrackWindowMemPnts",
+          "signature": "void SetTrackWindowMemPnts(vector<PointXYZDouble*> Pnts)",
+          "line": 887,
+          "python": [
+            "railway_mls.models:TrackWindow.assign_members"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit center/orientation boundary; ordered main/side polygons, selections, line state, reset and tags."
+        },
+        {
+          "id": "TrackWindow::GetMaxMinOfMemPnts#1",
+          "owner": "TrackWindow",
+          "name": "GetMaxMinOfMemPnts",
+          "signature": "void GetMaxMinOfMemPnts(POINT3D &maxPt, POINT3D &minPt)",
+          "line": 900,
+          "python": [
+            "railway_mls.models:TrackWindow.member_bounds"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit center/orientation boundary; ordered main/side polygons, selections, line state, reset and tags."
+        },
+        {
+          "id": "TrackWindow::GetSideVtx#1",
+          "owner": "TrackWindow",
+          "name": "GetSideVtx",
+          "signature": "void GetSideVtx(Line3D ln, double centerWidth, double sideWidth)",
+          "line": 914,
+          "python": [
+            "railway_mls.models:TrackWindow.generate_side_vertices"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit center/orientation boundary; ordered main/side polygons, selections, line state, reset and tags."
+        },
+        {
+          "id": "TrackSegment::SetTrkGauge#1",
+          "owner": "TrackSegment",
+          "name": "SetTrkGauge",
+          "signature": "void SetTrkGauge(double dist)",
+          "line": 957,
+          "python": [
+            "railway_mls.models:TrackSegment.set_gauge"
+          ],
+          "disposition": "ported_inline",
+          "note": "Gauge, distance, stored/computed centers and five neighbor polygons; duplicate preserves destination distance/regions and flags capacity-dependent tag transport."
+        },
+        {
+          "id": "TrackSegment::GetNeighborVtxBND#1",
+          "owner": "TrackSegment",
+          "name": "GetNeighborVtxBND",
+          "signature": "void GetNeighborVtxBND(double length, double width, double widthTrkWnd)",
+          "line": 961,
+          "python": [
+            "railway_mls.models:TrackSegment.generate_neighbor_regions"
+          ],
+          "disposition": "ported_inline",
+          "note": "Gauge, distance, stored/computed centers and five neighbor polygons; duplicate preserves destination distance/regions and flags capacity-dependent tag transport."
+        },
+        {
+          "id": "TrackSegment::TrackSegment#1",
+          "owner": "TrackSegment",
+          "name": "TrackSegment",
+          "signature": "TrackSegment()",
+          "line": 1020,
+          "python": [
+            "railway_mls.models:TrackSegment"
+          ],
+          "disposition": "ported_inline",
+          "note": "Gauge, distance, stored/computed centers and five neighbor polygons; duplicate preserves destination distance/regions and flags capacity-dependent tag transport."
+        },
+        {
+          "id": "TrackSegment::GetCenterOfTwoTracks#1",
+          "owner": "TrackSegment",
+          "name": "GetCenterOfTwoTracks",
+          "signature": "void GetCenterOfTwoTracks()",
+          "line": 1024,
+          "python": [
+            "railway_mls.models:TrackSegment.update_center"
+          ],
+          "disposition": "ported_inline",
+          "note": "Gauge, distance, stored/computed centers and five neighbor polygons; duplicate preserves destination distance/regions and flags capacity-dependent tag transport."
+        },
+        {
+          "id": "TrackSegment::GetDistanceBetweenTwoCenter#1",
+          "owner": "TrackSegment",
+          "name": "GetDistanceBetweenTwoCenter",
+          "signature": "void GetDistanceBetweenTwoCenter()",
+          "line": 1027,
+          "python": [
+            "railway_mls.models:TrackSegment.update_gauge"
+          ],
+          "disposition": "ported_inline",
+          "note": "Gauge, distance, stored/computed centers and five neighbor polygons; duplicate preserves destination distance/regions and flags capacity-dependent tag transport."
+        },
+        {
+          "id": "TrackSegment::DuplicatePolyPair#1",
+          "owner": "TrackSegment",
+          "name": "DuplicatePolyPair",
+          "signature": "void DuplicatePolyPair(TrackSegment _trackSeg)",
+          "line": 1032,
+          "python": [
+            "railway_mls.models:TrackSegment.duplicate_from"
+          ],
+          "disposition": "ported_inline",
+          "note": "Gauge, distance, stored/computed centers and five neighbor polygons; duplicate preserves destination distance/regions and flags capacity-dependent tag transport."
+        },
+        {
+          "id": "TrackSegment::SwapWnd#1",
+          "owner": "TrackSegment",
+          "name": "SwapWnd",
+          "signature": "void SwapWnd(int mode)",
+          "line": 1038,
+          "python": [
+            "railway_mls.models:TrackSegment.swap_windows"
+          ],
+          "disposition": "ported_inline",
+          "note": "Gauge, distance, stored/computed centers and five neighbor polygons; duplicate preserves destination distance/regions and flags capacity-dependent tag transport."
+        },
+        {
+          "id": "SwitchBox::GenerateRgnsUsingCenterPt#1",
+          "owner": "SwitchBox",
+          "name": "GenerateRgnsUsingCenterPt",
+          "signature": "void GenerateRgnsUsingCenterPt(double size)",
+          "line": 1062,
+          "python": [
+            "railway_mls.models:SwitchBox.generate_region"
+          ],
+          "disposition": "ported_inline",
+          "note": "Center/angle required; region, optional native uninitialized reference height."
+        },
+        {
+          "id": "BinaryString::BinaryString#1",
+          "owner": "BinaryString",
+          "name": "BinaryString",
+          "signature": "BinaryString()",
+          "line": 1086,
+          "python": [
+            "railway_mls.models:BinaryString"
+          ],
+          "disposition": "ported_inline",
+          "note": "All scalar defaults, bits, source type/position/direction/toe labels."
+        },
+        {
+          "id": "BinaryString::SetBinaryString#1",
+          "owner": "BinaryString",
+          "name": "SetBinaryString",
+          "signature": "void SetBinaryString(int b1, int b2, int b3, int b4, int b5, int b6, int b7, int b8, int b9, int b10, int b11, int b12, int b13, int b14, int b15, int b16)",
+          "line": 1098,
+          "python": [
+            "railway_mls.models:BinaryString.set_bits"
+          ],
+          "disposition": "ported_inline",
+          "note": "All scalar defaults, bits, source type/position/direction/toe labels."
+        },
+        {
+          "id": "BinaryString::SetLables#1",
+          "owner": "BinaryString",
+          "name": "SetLables",
+          "signature": "void SetLables(int type)",
+          "line": 1120,
+          "python": [
+            "railway_mls.models:BinaryString.set_labels"
+          ],
+          "disposition": "ported_inline",
+          "note": "All scalar defaults, bits, source type/position/direction/toe labels."
+        },
+        {
+          "id": "TrackStack::TrackStack#1",
+          "owner": "TrackStack",
+          "name": "TrackStack",
+          "signature": "TrackStack()",
+          "line": 1161,
+          "python": [
+            "railway_mls.models:TrackStack"
+          ],
+          "disposition": "ported_inline",
+          "note": "Ordered segment values and independent binary state."
+        },
+        {
+          "id": "ToePt::ToePt#1",
+          "owner": "ToePt",
+          "name": "ToePt",
+          "signature": "ToePt()",
+          "line": 1177,
+          "python": [
+            "railway_mls.models:ToePoint"
+          ],
+          "disposition": "ported_inline",
+          "note": "Type -1/used false; unavailable geometry/angle/mode explicitly None."
+        },
+        {
+          "id": "PlnPara::operator=#1",
+          "owner": "PlnPara",
+          "name": "operator=",
+          "signature": "PlnPara& operator=(const PlnPara &f)",
+          "line": 1196,
+          "python": [
+            "railway_mls.planes:PlaneParameters"
+          ],
+          "disposition": "ported_inline",
+          "note": "Explicit coefficients, immutable value-copy API; uninitialized native output is handled by optional plane results."
+        },
+        {
+          "id": "LIDARPT::HigherZValue#1",
+          "owner": "LIDARPT",
+          "name": "HigherZValue",
+          "signature": "inline bool HigherZValue(const PointXYZDouble* pt1, const PointXYZDouble* pt2)",
+          "line": 1214,
+          "python": [
+            "railway_mls.fitting:higher_z_value"
+          ],
+          "disposition": "ported_inline",
+          "note": "Standalone predicate/comparator; preserve literal arithmetic and source ordering policies."
+        },
+        {
+          "id": "LIDARPT::LargePts#1",
+          "owner": "LIDARPT",
+          "name": "LargePts",
+          "signature": "inline bool LargePts(const PtSegment s1, const PtSegment s2)",
+          "line": 1218,
+          "python": [
+            "railway_mls.grouping:larger_group"
+          ],
+          "disposition": "ported_inline",
+          "note": "Standalone predicate/comparator; preserve literal arithmetic and source ordering policies."
+        },
+        {
+          "id": "GradeSect::GradeSect#1",
+          "owner": "GradeSect",
+          "name": "GradeSect",
+          "signature": "GradeSect()",
+          "line": 1265,
+          "python": [
+            "railway_mls.models:GradeSection"
+          ],
+          "disposition": "ported_inline",
+          "note": "All endpoint/tag/membership/scalar defaults and reset."
+        },
+        {
+          "id": "GradeSect::ResetGradeSect#1",
+          "owner": "GradeSect",
+          "name": "ResetGradeSect",
+          "signature": "void ResetGradeSect()",
+          "line": 1279,
+          "python": [
+            "railway_mls.models:GradeSection.reset"
+          ],
+          "disposition": "ported_inline",
+          "note": "All endpoint/tag/membership/scalar defaults and reset."
+        }
+      ]
+    }
+  ],
+  "header_types": [
+    {
+      "name": "LiDPOINT",
+      "kind": "class",
+      "line": 154,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.points:LegacyLiDPoint"
+      ],
+      "note": "Unused legacy point metadata/defaults; XYZ unknown until assigned; native division is undefined and guarded."
+    },
+    {
+      "name": "POINT2D",
+      "kind": "struct",
+      "line": 258,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.points:Point2D"
+      ],
+      "note": "Default flag false; XY-constructor flag None; zero division returns a value copy and preserves flag."
+    },
+    {
+      "name": "POINT3D",
+      "kind": "struct",
+      "line": 324,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.points:Point3D"
+      ],
+      "note": "Frozen value API requires explicit XYZ. Assignment/normalization/sign preserve tags; arithmetic resets tags. Native union layout is not emulated."
+    },
+    {
+      "name": "Line3D",
+      "kind": "struct",
+      "line": 427,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.geometry:Line3D"
+      ],
+      "note": "Explicit-endpoint initialized API plus BoundaryLine for missing caches; stored unit cache is distinct from derived direction; D3D stays None."
+    },
+    {
+      "name": "GMMPara",
+      "kind": "struct",
+      "line": 788,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.models:GMMParameters"
+      ],
+      "note": "Three zero-default scalar fields and assignment."
+    },
+    {
+      "name": "Grid",
+      "kind": "struct",
+      "line": 806,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.spatial:GridIndex"
+      ],
+      "note": "Array/sparse backend retains reached indexing/member order; unused/uninitialized per-cell metadata is not manufactured."
+    },
+    {
+      "name": "TrackWindow",
+      "kind": "struct",
+      "line": 814,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.models:TrackWindow"
+      ],
+      "note": "Explicit center/orientation boundary; ordered main/side polygons, selections, line state, reset and tags."
+    },
+    {
+      "name": "TrackSegment",
+      "kind": "struct",
+      "line": 945,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.models:TrackSegment"
+      ],
+      "note": "Gauge, distance, stored/computed centers and five neighbor polygons; duplicate preserves destination distance/regions and flags capacity-dependent tag transport."
+    },
+    {
+      "name": "SwitchBox",
+      "kind": "struct",
+      "line": 1056,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.models:SwitchBox"
+      ],
+      "note": "Center/angle required; region, optional native uninitialized reference height."
+    },
+    {
+      "name": "BinaryString",
+      "kind": "struct",
+      "line": 1078,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.models:BinaryString"
+      ],
+      "note": "All scalar defaults, bits, source type/position/direction/toe labels."
+    },
+    {
+      "name": "TrackStack",
+      "kind": "struct",
+      "line": 1157,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.models:TrackStack"
+      ],
+      "note": "Ordered segment values and independent binary state."
+    },
+    {
+      "name": "ToePt",
+      "kind": "struct",
+      "line": 1168,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.models:ToePoint"
+      ],
+      "note": "Type -1/used false; unavailable geometry/angle/mode explicitly None."
+    },
+    {
+      "name": "LoopCross",
+      "kind": "struct",
+      "line": 1185,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.models:LoopCross"
+      ],
+      "note": "Unavailable line/distance None; inactive workflow remains pending and unscheduled."
+    },
+    {
+      "name": "PlnPara",
+      "kind": "struct",
+      "line": 1190,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.planes:PlaneParameters"
+      ],
+      "note": "Explicit coefficients, immutable value-copy API; uninitialized native output is handled by optional plane results."
+    },
+    {
+      "name": "PtSegment",
+      "kind": "struct",
+      "line": 1209,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.grouping:PointGrouping"
+      ],
+      "note": "Array-backed groups/selectors and shared SegmentID labels; no invented standalone uninitialized SegmentID."
+    },
+    {
+      "name": "TrackLayer",
+      "kind": "struct",
+      "line": 1223,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.models:TrackLayer"
+      ],
+      "note": "All native containers represented, including empty loop/visual-loop/boundary/stack pools and unknown number."
+    },
+    {
+      "name": "InitialLocation",
+      "kind": "struct",
+      "line": 1242,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.models:InitialLocation"
+      ],
+      "note": "Explicit seed coordinates/angle/mode and optional paired second point; no guessed default coordinates."
+    },
+    {
+      "name": "GradeSect",
+      "kind": "struct",
+      "line": 1254,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.models:GradeSection"
+      ],
+      "note": "All endpoint/tag/membership/scalar defaults and reset."
+    },
+    {
+      "name": "ExtractionParameters",
+      "kind": "struct",
+      "line": 1294,
+      "source": "LIDARPT.h",
+      "python": [
+        "railway_mls.config:ExtractionConfig"
+      ],
+      "note": "Ten UI parameters mapped to core configuration; defaults come from source engine, not the uninitialized native aggregate."
+    }
+  ],
+  "excluded_header_definitions": [
+    {
+      "source": "LIDARPT.h",
+      "name": "Rotation3D",
+      "reason": "definition is inside a block comment"
+    },
+    {
+      "source": "LIDARPT.h",
+      "name": "InverseRotation3D",
+      "reason": "definition is inside a block comment"
     }
   ],
   "complete_reconstruction": false

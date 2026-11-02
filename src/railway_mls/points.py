@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from copy import copy
 from math import sqrt
 from operator import index
 
@@ -67,7 +68,108 @@ class Point3D:
         )
 
     def normalized(self) -> Point3D:
-        return self / sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
+        value = self / sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
+        return replace(value, point_type=self.point_type)
+
+    def assigned_xyz(self, other: Point3D) -> Point3D:
+        """Value equivalent of native assignment: retain this destination's tag."""
+        return replace(self, x=other.x, y=other.y, z=other.z)
+
+    def set_coordinates(self, x: float, y: float, z: float) -> Point3D:
+        """SetPoint3D resets the tag; frozen Python points return a new value."""
+        return Point3D(x, y, z)
+
+    def changed_sign(self) -> Point3D:
+        return replace(self, x=-self.x, y=-self.y, z=-self.z)
+
+
+@dataclass
+class Point2D:
+    """POINT2D: the XY constructor leaves flg unknown; default construction does not."""
+
+    x: float | None = None
+    y: float | None = None
+    flag: bool | None = None
+
+    def __post_init__(self):
+        if self.x is None and self.y is None:
+            self.x, self.y, self.flag = 0.0, 0.0, False
+        elif self.x is None or self.y is None:
+            raise ValueError("supply both POINT2D coordinates")
+        else:
+            self.x, self.y = float(self.x), float(self.y)
+
+    @staticmethod
+    def _arithmetic(x, y):
+        result = Point2D()
+        result.x, result.y = float(x), float(y)
+        return result
+
+    def __add__(self, other):
+        return self._arithmetic(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other):
+        return self._arithmetic(self.x - other.x, self.y - other.y)
+
+    def __mul__(self, scalar):
+        return self._arithmetic(self.x * scalar, self.y * scalar)
+
+    def __truediv__(self, scalar):
+        return copy(self) if scalar == 0 else self._arithmetic(self.x / scalar, self.y / scalar)
+
+    def is_equal(self, other):
+        return abs(self.x - other.x) < 1e-5 and abs(self.y - other.y) < 1e-5
+
+    def is_exactly_equal(self, other):
+        return self.x == other.x and self.y == other.y
+
+
+@dataclass
+class LegacyLiDPoint:
+    """Unused LiDPOINT state. Its broken division has no portable numeric result."""
+
+    x: float | None = None
+    y: float | None = None
+    z: float | None = None
+    segment_id: int = -1
+    class_code: int = 0
+    intensity: int = 0
+    alpha: float = 0.0
+    height_over_ground: float = 0.0
+    delta_z: float = 0.0
+    deleted: bool = False
+
+    def __post_init__(self):
+        if any(v is not None for v in (self.x, self.y, self.z)):
+            self.set_xyz(self.x, self.y, self.z)
+        self.intensity = index(self.intensity) & 0xFFFF
+
+    def coordinates(self):
+        if any(v is None for v in (self.x, self.y, self.z)):
+            raise ValueError("undefined source LiDPOINT coordinates")
+        return self.x, self.y, self.z
+
+    def set_xyz(self, x, y, z):
+        if any(v is None for v in (x, y, z)):
+            raise ValueError("supply all LiDPOINT coordinates")
+        self.x, self.y, self.z = float(x), float(y), float(z)
+
+    def set_from(self, other):
+        self.set_xyz(*other.coordinates())
+
+    def is_equal(self, other):
+        return all(abs(a - b) < 1e-5 for a, b in zip(self.coordinates(), other.coordinates()))
+
+    def __add__(self, other):
+        return LegacyLiDPoint(*(a + b for a, b in zip(self.coordinates(), other.coordinates())))
+
+    def __sub__(self, other):
+        return LegacyLiDPoint(*(a - b for a, b in zip(self.coordinates(), other.coordinates())))
+
+    def __truediv__(self, scalar):
+        raise ValueError(
+            "undefined_source_lidpoint_division: native divides uninitialized output XYZ"
+        )
 
 
 def _integer_vector(values: ArrayLike, length: int, name: str) -> NDArray[np.int32]:
