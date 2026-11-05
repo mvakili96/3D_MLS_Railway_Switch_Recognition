@@ -4,8 +4,10 @@ The optional Open3D desktop viewer displays a real LAS/LAZ cloud, accepts two
 picked positions, previews the fitted paired windows and runs the existing
 tracker with Play, Pause, Step and Reset controls. The default local input is
 `Vancouver/Thales_11_20Las/16.las`, where the source's sample pose was verified.
-This first version follows one main-track pass inside a bounded crop. It does
-not reproduce every Windows menu or schedule live bidirectional/branch passes.
+It follows the main path inside a bounded crop, then returns to detected switch
+points and traces eligible alternate paths. Switch tracing is enabled by default
+and uses an explicit fitted-reference recovery described below. The original
+reverse/forward UI workflow and Windows menus remain outside the viewer's scope.
 
 ## Start the demo
 
@@ -33,7 +35,10 @@ display produces a CLI error; run from a terminal in the graphical session.
    then click **Confirm start**.
 4. Click **Play**, **Pause** or **Step**. Each step runs an actual source-based
    prediction/extraction/fitting/update iteration. Green/red paths show the two
-   rails, gold shows their centerline, and cyan marks the loaded inference crop.
+   rails, gold shows the main centerline, purple shows branch centerlines, and
+   cyan marks the loaded inference crop. After the main path finishes, Play
+   automatically returns the windows to eligible switch points. Earlier paths
+   remain visible. Status/details show the active path and totals for each path.
 5. Use **Reset / pick again** for a fresh run. **Top view** and **3D view** change
    the camera. Standard mouse dragging/wheel controls orbit, pan and zoom.
 6. After a crop-edge stop, click **Restart with larger region**, then **Confirm
@@ -54,16 +59,20 @@ python -m railway_mls view Vancouver/Thales_11_20Las/16.las
 python -m railway_mls view --radius 30
 python -m railway_mls view /path/to/scene.laz --radius 8 --max-tracking-points 10000000
 python -m railway_mls view --preview-points 250000 --seed 1
+python -m railway_mls view --main-only
 ```
 
 **Open LAS / LAZ** selects another local file. Without a file argument, the
 Vancouver preset path is used if present; otherwise the empty viewer provides
 the open-file button. The dataset remains ignored by Git.
 
-The default crop radius is 8 m, yielding a 16 m by 16 m region around the initial
+The default crop radius is 30 m, yielding a 60 m by 60 m region around the initial
 seed. Radius can be adjusted from 2 to 30 m before choosing a seed; larger regions
 need more memory and computation. A 30 m radius around the source example covers
 all of `16.las`, but other files and poses may need different coverage.
+This loads 27.7 million inference points on the example tile and takes more
+startup time and memory than the earlier 8 m default. Small crops can end before
+a switch stack closes, leaving no source-eligible branch starting point.
 The default guard permits up to 30,000,000 inference
 points. If a region exceeds the budget, reduce its radius or explicitly increase
 `--max-tracking-points`. The viewer reports an error instead of thinning inference.
@@ -87,8 +96,8 @@ in LIM-040; the original reader and computational grid are unchanged.
 ## Session behavior and scope
 
 `viewer_model.load_preview` and `load_tracking_crop` stream bounded chunks.
-`ViewerSession` owns the cropped cloud, grid, original engine and one retained
-`SequentialTracker`. Preview initialization and confirm/reinitialization consume
+`ViewerSession` owns the cropped cloud, grid, original engine and a retained
+`SequentialTracker` for each path. Preview initialization and confirm/reinitialization consume
 the same RNG stream in source UI order. Pause resumes that same tracker; it does
 not repeat initialization or restart the random sequence. Reset clears working
 labels and creates a new RNG/session. No LAS file is edited.
@@ -100,12 +109,41 @@ loading at chunk boundaries and allows a running iteration to finish safely.
 Play/Step do not repeatedly call bounded `TrackingEngine.run_pass`, which cannot
 resume a partial orchestrated workflow.
 
+### Returning to switches and tracing branches
+
+The original `OnRailextractionTrackingRailway` first runs direction 1, recognizes
+completed switch stacks, detects toes and switch boxes, then snapshots the toe
+pool. It initializes eligible branch layers from those toes and runs direction 0
+with `main_track=False`. The viewer now schedules these events incrementally so
+Play/Pause/Step can cross the handoff without restarting the main loop.
+The type filters, layer allocation before filtering, copied Y-as-Z seed expression,
+shared cloud/labels/RNG, local used flags and final center-vector tagging follow
+the source-based engine. Branches process only the main pass's toe snapshot;
+they do not recursively discover and schedule new branches.
+
+The source snapshot contains a separate obstacle: it copies switch segments
+before filling their member lines (LIM-001). With **Trace other switch paths**
+enabled, the viewer supplies those missing lines from the same accepted step's
+saved fitted rails, before the toe postpass. It consumes no additional fitting
+draws, leaves rejected/nonfinite steps and uninitialized stack distances alone,
+and retains the original toe formulas and eligibility thresholds. The interface
+reports that fitted references are in use. This is an explicit demo recovery;
+its geometry is not a portable result of the native uninitialized reads.
+
+Uncheck **Trace other switch paths** before choosing a seed, or use `--main-only`,
+to disable both the recovery and branch scheduling. The computational
+`SequentialTracker`, toe helpers and `TrackingEngine.run_pass` remain unchanged
+and retain the strict source behavior. No branch pose is hardcoded or supplied
+as a fixture to the Vancouver viewer.
+
 Source stopping conditions and undefined-output diagnostics are retained.
 Reaching the cyan crop can produce point-shortage stops before the original
 scene ends. A trace can also carry documented MDL comparison limitations, and
-eligible toe postpasses retain LIM-001 rather than inventing references. No full
-scene completion, Windows interaction equivalence, paper metrics or annotation
-matching is claimed. See [LIM-040](LIMITATIONS.md) and the existing source entries.
+the optional reference recovery remains tracked under LIM-001. Full-scene
+completion, Windows interaction equivalence, paper metrics and annotation
+matching require further validation. See [LIM-040](LIMITATIONS.md) and the existing
+source entries. Active stacks are not flushed artificially at a boundary; an
+incomplete switch region is reported in the viewer.
 
 On a point-shortage stop, the viewer checks the final attempted windows against
 the loaded region and LAS header bounds. It reports a crop-edge or file-edge
@@ -117,13 +155,14 @@ order. Pause/Play continues the existing session.
 
 ### Observed trace length on the example tile
 
-Using the unchanged source pose, defaults and RNG seed 1:
+These earlier main-only runs use the unchanged source pose and RNG seed 1
+(`--main-only` reproduces that viewer mode):
 
 | Crop radius | Inference points | Accepted steps | Traced distance | Available coverage |
 | --- | ---: | ---: | ---: | --- |
 | 3 m, initial viewer default | 1,462,180 | 3 | 2.87 m | Crop edge |
-| 8 m, current default | 8,006,302 | 8 | 7.82 m | Crop edge |
-| 30 m, full example tile | 27,716,650 | 19 | 18.62 m | LAS tile edge |
+| 8 m, previous default | 8,006,302 | 8 | 7.82 m | Crop edge |
+| 30 m, current default/full tile | 27,716,650 | 19 | 18.62 m | LAS tile edge |
 
 All three runs end with `insufficient_window_points` after search lengths 1–6
 are tried. Their unaffected prefixes match exactly: the first two steps for
@@ -133,10 +172,25 @@ recognition remain separate work. The full-tile count includes the two reported
 header-rounding omissions. These observations establish demo coverage; native
 application equivalence and recognition accuracy remain open.
 
+With switch tracing enabled on the full example tile, actual point-cloud
+inference recognizes an eight-segment type-0 stack at score 0.9375, computes one
+eligible toe and traces a second path. A later five-segment type-18 stack also
+scores 0.9375; the original toe routine does not support that type.
+
+| Path | Accepted steps | Traced distance | End condition |
+| --- | ---: | ---: | --- |
+| Main path | 19 | 18.62 m | Insufficient window points at tile edge |
+| Branch 1 | 16 | 15.73 m | Insufficient window points at tile edge |
+
+The 35 accepted steps use actual tracking calculations. The branch endpoint is
+about 2.45 m from the main trace, demonstrating a distinct path. These results
+depend on the documented reference recovery and do not establish switch accuracy
+or native whole-application parity.
+
 ## Verification
 
 ```bash
-python -m unittest tests.test_viewer -v
+python -m unittest tests.test_viewer tests.test_viewer_branches -v
 python -m unittest discover -s tests -v
 python -m railway_mls reconstruction-audit --repo .
 ```
@@ -145,10 +199,16 @@ Model/loader tests cover global record parity across odd chunk sizes, crop order
 metadata/coordinates, preview budgets, cancellation, memory-budget failures,
 initialization/confirmation RNG order, pause/step continuation, reset, terminal
 postpasses, coverage hints, replayed confirmation edits, header-boundary handling
-and CLI validation. They use small generated LAS and synthetic
+and CLI validation. Branch tests compare the incremental workflow with the
+source-based engine's blocking scheduler, including raw inference, exact vectors,
+labels, RNG, toe snapshots/type gates, failed/undefined seeds and final tagging.
+They also check optional recovery and the unchanged strict baseline.
+They use small generated LAS and synthetic
 algorithm fixtures. GUI imports are excluded from the numerical core.
-The full suite passed 549 test methods, including 17 viewer loader/session/CLI
-checks and 206 compiled-native comparisons. No tests were skipped.
+The full suite passed 560 tests, including 28 viewer loader/session/CLI checks
+and 206 compiled-native comparisons. No tests were skipped. Eleven viewer tests
+were added for branch scheduling and recovery; native comparisons continue to
+cover the strict computational core.
 
 Desktop acceptance uses the real Vancouver file and native Open3D rendering,
 including depth-based picking, seed confirmation, Play/Pause/Step and closure.
@@ -169,6 +229,14 @@ and the existing unavailable-toe-geometry diagnostic. It disabled further region
 expansion and closed normally. Evidence is recorded locally in
 `outputs/interactive-viewer/extension-gui.json`, `extended-viewer.png` and
 `extend_desktop_check.py`; numerical traces are in `trace-radius-*.json`.
+
+The branch desktop check uses the default full-tile region, previews/confirms the
+source pose, plays to the main stop, pauses before the switch handoff, verifies
+that the RNG does not advance while paused, then steps the branch initialization
+and resumes Play. It retains the main geometry, renders both paths, reaches
+19/16 accepted steps and closes normally. Evidence is local in `branch-gui.json`,
+`branch-viewer.png` and `branch_desktop_check.py`. Thirteen captured segments use
+the explicit fitted-reference policy; no toe fixture is inserted into this run.
 
 The GUI thread and point-picking implementation follows the documented
 [Open3D application/threading API](https://www.open3d.org/docs/0.19.0/python_api/open3d.visualization.gui.Application.html)

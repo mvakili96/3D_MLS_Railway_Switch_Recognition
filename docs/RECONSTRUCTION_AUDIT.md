@@ -133,7 +133,9 @@ integration and packaging results; they do not change the validation limits abov
 All **40** [limitation families](LIMITATIONS.md) remain open, including the
 numerical-boundary/review-evidence entry LIM-039 and the later interactive-viewer
 entry LIM-040. The computational audit itself concluded with 39 entries;
-the separate [desktop viewer](PYTHON_VIEWER.md) adds delivery scope. The audit completes scope work
+the separate [desktop viewer](PYTHON_VIEWER.md) adds delivery scope. Its optional
+fitted-reference recovery enables a real-data branch demo while preserving the
+strict core and the open LIM-001 finding. The audit completes scope work
 on LIM-015 but does not close its validation concerns or any other ID. Next,
 review every limitation with the user and record decisions to retain, correct
 separately, investigate or defer. Then select real MLS data, coordinate units/CRS

@@ -50,6 +50,26 @@ geometry, reproduce affected cases with recorded inputs, and decide any separate
 corrected behavior. Check toe positions, angles/modes, branch initialization and
 engine/layer side effects together. **Status: open; review first.**
 
+**Viewer-only recovery, 2026-11-04:** the interactive switch demo now supplies
+missing stacked member lines from the **same accepted segment's saved fitted
+rails**, before recognition/toe detection. This is enabled by **Trace other
+switch paths**; `view --main-only` disables both recovery and branch scheduling.
+The strict tracking/toe/engine functions remain unchanged. Copying adds no fit
+or random draw; rejected/nonfinite segments and the uninitialized stacked
+distance are not repaired. The UI reports the policy. These are chosen reference
+values for a usable demo, not recovered values of the native uninitialized reads.
+
+On `16.las`, thirteen captured segments receive fitted references. The first
+completed stack has eight segments, type 0 and score 0.9375; its toe is computed
+from actual side-point memberships. The second has five segments, type 18 and
+score 0.9375 and remains unsupported by the source toe routine. Native formulas
+with the supplied references yield one eligible branch: 16 accepted steps over
+15.73 m after the unchanged 19-step/18.62 m main trace. Desktop evidence and
+source-scheduler comparisons are described in [the viewer guide](PYTHON_VIEWER.md).
+No hardcoded branch/toe is used for that real-data run. Whole-application parity,
+recognition accuracy and this policy's generality remain unverified. **LIM-001
+remains open.**
+
 | ID and trigger | Impact/current baseline handling | Post-reconstruction review and evidence |
 | --- | --- | --- |
 | **LIM-002 — Missing MDL candidates.** Native scoring/length checks can read lines never initialized, commonly on single/two-line inputs. | Explicit source penalties can yield a usable Python selection with `source_uninitialized_intermediates`, but `reference_comparable=False`. Missing selected geometry produces a structured failure. | Audit all candidate-count/flag paths with recorded samples and matched stage outputs. Do not treat default single-rail demo success as proof of portable native execution. [Details](PYTHON_FITTING_MDL.md#missing-candidates-and-native-undefined-reads). |
@@ -66,7 +86,7 @@ engine/layer side effects together. **Status: open; review first.**
 | **LIM-008 — Equal-key sorting.** Native `std::sort` does not specify equal-height or equal-component-size order. | Python uses documented stable ties. Native exact-order comparisons use appropriate distinct-key fixtures; tied membership/height checks have narrower claims. | Compare the target compiler/runtime's permutations and resulting random-index selections, grouping choices and outputs. [Heads](PYTHON_GMM_HEADS.md#random-draws-and-ordering), [grouping](PYTHON_FITTING_MDL.md#grouping-and-point-identity). |
 | **LIM-009 — Random state and floating-point environment.** Unknown earlier native draws, point order and arithmetic near thresholds affect model choices. | Owned MSVC recurrence/default seed and recorded raw streams are available. Component extracts receive identical draws; a seed alone does not recover an unknown original session. | Save complete configuration, cloud order and draw streams for matched experiments. Investigate threshold/tie discrepancies with explicit numerical tolerances and exact identity comparisons. [Details](PYTHON_GMM_HEADS.md#random-draws-and-ordering). |
 | **LIM-010 — Python boundaries and native uninitialized fields.** Some invalid counts, ownership, dimensions or nonfinite query inputs have no supported native result. Default geometry fields and native output-reference interfaces need explicit contracts. | Python rejects invalid API inputs or exposes unavailable fields as `None`. Endpoint-only boundary caches now remain absent in initialization/tracking; native comparisons read only defined endpoints/tags. New scalar 3D distance requires an explicit stored vector, and returned utility vectors do not expose aliased native output buffers. | Audit every newly implemented consumer before reading absent fields or assuming native reference aliasing. Retain explicit boundary contracts and identify comparisons that exclude undefined native values. [Utilities](PYTHON_UTILITIES.md), [initialization](PYTHON_KALMAN_INITIALIZATION.md), [toes](PYTHON_TOES.md). |
-| **LIM-011 — Whole-application equivalence.** Original Windows application has not been built/executed for full comparisons. | Current suite: 549 test methods, including 206 using compiled source extracts. Nineteen numerical demos, the separate desktop viewer, cloud inspection/conversion and both audits are available. PCL helper comparisons compile frozen original arithmetic/sort/filter bodies against bundled Eigen, with PointXYZ/field-trait shims and supplied native sort order. Parameter/point/seed boundaries and negative-count retry behavior are also source-tested. Codec, managed UI and whole-binary claims remain separate; unsafe reads/casts/overflow are excluded. | Computational call-path review is complete; compare matched whole-path intermediate/final results where a usable native reference exists. Keep component, controlled-callback/decoder/dependency and full-binary claims separate. |
+| **LIM-011 — Whole-application equivalence.** Original Windows application has not been built/executed for full comparisons. | Current suite: 560 test methods, including 206 using compiled source extracts. Nineteen numerical demos, the separate desktop viewer, cloud inspection/conversion and both audits are available. PCL helper comparisons compile frozen original arithmetic/sort/filter bodies against bundled Eigen, with PointXYZ/field-trait shims and supplied native sort order. Parameter/point/seed boundaries and negative-count retry behavior are also source-tested. Codec, managed UI and whole-binary claims remain separate; unsafe reads/casts/overflow are excluded. | Computational call-path review is complete; compare matched whole-path intermediate/final results where a usable native reference exists. Keep component, controlled-callback/decoder/dependency and full-binary claims separate. |
 | **LIM-012 — Real-data/published evaluation.** Vancouver raw LAS inputs are now available; evaluation annotations and matched reference outputs remain unverified. | On 2026-11-04 the local Vancouver collection was checked: 47 extracted LAS files, 1,671,344,500 point records, common 2016-05-23 creation date and TerraScan metadata. The commented C++ sample pose falls in `Thales_11_20Las/16.las`; Python initialization succeeds on a bounded 6 m by 6 m crop with the source's even-record selection. This establishes a usable real-data starting point, while full-scene tracing, published accuracy/recall and robustness remain untested. Historical evaluation-snapshot questions do not replace the chosen source baseline. | Start recorded real-data tracing from the matched tile/pose, identify evaluation annotations and reference outputs, then run error analysis and metric calculations. See the Vancouver checkpoint below and [validation plan](../PYTHON_PORT_PLAN.md#validation-levels). **Status: open.** |
 | **LIM-013 — Runtime and memory at MLS scale.** Local grouping can have quadratic scans; full step diagnostics retain reference arrays. | Sparse grid lookup and array operations are implemented; no representative real-cloud profiling has been completed. | Measure runtime/memory by stage and cloud/window size. Preserve neighbor/DFS/sample order when optimizing; assess optional diagnostic retention. [Grouping](PYTHON_FITTING_MDL.md), [tracking](PYTHON_TRACKING.md). |
 | **LIM-014 — Data adapters, units and precision.** Legacy readers have format-dependent thinning; count-prefixed text/CSV, CRS conversion and rounded exports need explicit contracts. | Legacy readers/vector exporters and explicit ECEF/geodetic/UTM conversion/exports are implemented. Source degree/radian, zone/hemisphere, ellipsoid/pi, sampling and three-decimal contracts are retained. Optional decoder equivalence, runtime/error policies, global geodetic accuracy and database integration remain unverified. Tracking performs no implicit frame conversion. | Review source-codec/format compatibility, sampling/density, rounded exports, bounds/labels, coordinate frames and database schema. [Coordinates](PYTHON_COORDINATES.md), LIM-037, [I/O guide](PYTHON_LEGACY_IO.md), LIM-036, [data contract](../PYTHON_PORT_PLAN.md#data-contract-to-prepare-now). |
@@ -409,7 +429,7 @@ needed, and review all existing limitations before choosing corrections. The
 completed computational scope review does not close any limitation.
 **Status: open.**
 
-### LIM-040: Interactive main-track viewer, crop scope and desktop lifecycle
+### LIM-040: Interactive main/branch viewer, crop scope and desktop lifecycle
 
 **Evidence:** `viewer_model.py`, `viewer.py`, `tests/test_viewer.py` and
 [the viewer guide](PYTHON_VIEWER.md). This is a new desktop presentation layer
@@ -423,7 +443,8 @@ A point budget rejects an oversized crop rather than introducing extra thinning.
 Crop boundaries can cause earlier point shortages than full-file tracking.
 The displayed trace must not be interpreted as the entire scene or a benchmark.
 
-The default radius is now 8 m; it can be set up to 30 m. On a point-shortage
+The default radius is now 30 m to cover the example tile and allow a switch stack
+to close before scheduling its branch; it can be set from 2 to 30 m. On a point-shortage
 stop, the final attempted windows provide a crop/file-boundary coverage hint
 without overriding the source stop code. **Restart with larger region** doubles
 the radius and replays from the saved preview pose with confirmation edits
@@ -449,10 +470,21 @@ the LAS edge. These runs extend through multi-line windows; they do not validate
 turnout recognition or establish continuity across adjacent files. The first
 two steps of 3/8 m runs and first seven of 8/30 m runs match exactly.
 
-The initial UI exposes one main-track pass. Branch and bidirectional algorithms
-remain available in the computational API, but their live orchestration, original
-Windows menus/layer management, all-file stitching and exports are not recreated
-in this first interface. Existing source toe/fit/MDL limitations remain visible.
+The UI now exposes one main-direction pass followed by its eligible toe-based
+branch passes. A retained tracker per invocation shares the engine's cloud,
+labels, RNG and global pools. The resumable scheduler follows source main-first
+ordering, snapshots toes only after main postpasses, allocates layers before
+type filtering, retains the copied Y-as-Z branch seed, tracks branches in
+direction 0 with main recognition disabled, updates only local used flags, and
+tags layer center vectors after all scheduled branches. It does not recursively
+schedule new toes. Both main and branch paths remain visible; status identifies
+the active path, and Pause/Step work at the switch handoff.
+
+Missing stacked references use the explicit viewer-only policy documented under
+LIM-001. `--main-only` or the unchecked switch-tracing control preserves the
+earlier unrecovered main-only demo. Full reverse/forward UI orchestration,
+original Windows menus/layer management, all-file stitching and exports remain
+outside this interface. Existing source fit/MDL limitations remain visible.
 The paired windows and paths use computed results, not canned animation.
 
 Two display picks are reconstructed from the rendered depth buffer, restored to
@@ -460,7 +492,7 @@ world coordinates and resolved to actual preview records before the original
 midpoint/angle/mode prefix. Sparse preview selection and picking precision can
 differ from the original VTK interaction. A preset retains the source's commented
 Vancouver pose. Preview initialization precedes confirmation/reinitialization
-on the same MSVC RNG stream. Pause/Step reuse a single SequentialTracker; pauses
+on the same MSVC RNG stream. Pause/Step reuse the active SequentialTracker; pauses
 take effect at iteration boundaries. Reset deliberately begins a new session and
 clears working labels. Display centering affects rendering only; no CRS conversion
 or change to coordinate-dependent Kalman formulas is introduced.
@@ -473,7 +505,7 @@ native window creation. Headless/SSH/GPU-driver environments need separate check
 
 **Post-reconstruction review:** assess real picking precision, longer/denser
 regions, UI responsiveness, desktop/driver portability, source stop diagnostics,
-crop-to-full-scene continuity and live multi-pass/branch lifecycle before extending
+crop-to-full-scene continuity, reference-recovery generality and live bidirectional lifecycle before extending
 the scope. Preserve the computational baseline while changing display/session
 behavior. This interface does not establish paper accuracy or full Windows-app
 equivalence. **Status: open.**
@@ -503,8 +535,22 @@ different stored coordinate bounds and cannot yet be linked to these LAS tiles.
 Point checks sampled 577,536 records across the 47 files, with no sampled
 nonfinite XYZ, out-of-header-bounds coordinates or invalid return fields.
 Sampled classifications were all code 1; evaluation ground-truth labels have
-not been identified, and the auxiliary `.cls` files have not been interpreted.
-This is not an exhaustive scan for corruption or dataset-quality defects.
+not been identified. This is not an exhaustive scan for corruption or
+dataset-quality defects.
+
+A subsequent annotation search read both auxiliary `.cls` files completely:
+`check.cls` contains 2,214,290 rows and `check2.cls` contains 1,941,210 rows.
+Both are six-column text tables: XYZ followed by three identical integers
+spanning 0–255, consistent with grayscale display values. Neither supplies a
+label legend or annotation provenance; the `.cls` suffix alone does not establish
+ground truth. `delete.txt` contains 52,551 XYZ rows; its companion configuration
+describes a cropped profile. No verified reference rail vectors, switch labels
+or documented manual annotations were found. Read-only listings of all five
+RAR archives show ten LAS tiles each (50 total), with no separate annotation
+files. Forty-seven tiles are currently extracted; the remaining archived LAS
+payloads have not been checked for labels. Confirm annotation schemas and
+manual/survey provenance with the data provider before treating any point subset
+as ground truth. **LIM-012 remains open.**
 
 A separate bounded check retained 1,462,180 original even-index records from a
 6 m by 6 m crop of `16.las`. The original sample pose

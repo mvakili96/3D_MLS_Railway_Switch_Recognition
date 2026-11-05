@@ -42,7 +42,7 @@ def _require_desktop():
 
 def launch_viewer(path=None, *, radius=DEFAULT_CROP_RADIUS, preview_points=150_000,
                   max_tracking_points=DEFAULT_TRACKING_POINT_LIMIT, random_seed=1,
-                  _test_driver=None):
+                  trace_branches=True, _test_driver=None):
     """Open the desktop app. _test_driver is an internal GUI acceptance hook."""
     _require_desktop()
     try:
@@ -70,6 +70,7 @@ def launch_viewer(path=None, *, radius=DEFAULT_CROP_RADIUS, preview_points=150_0
             self.last_progress = 0.0
             self.last_step = 0.0
             self.last_camera = None
+            self.overlays = set()
             self.scene = gui.SceneWidget()
             self.scene.scene = rendering.Open3DScene(self.window.renderer)
             self.scene.scene.set_background([0.035, 0.047, 0.065, 1])
@@ -80,7 +81,7 @@ def launch_viewer(path=None, *, radius=DEFAULT_CROP_RADIUS, preview_points=150_0
             self.panel = gui.ScrollableVert(0.45 * em, gui.Margins(em, em, em, em))
             self.window.add_child(self.panel)
             self.panel.add_child(gui.Label("RAILWAY MLS"))
-            self.panel.add_child(gui.Label("Interactive main-track demo"))
+            self.panel.add_child(gui.Label("Interactive track and switch demo"))
             self.file_label = gui.Label("Open a LAS/LAZ file to begin.")
             self.panel.add_child(self.file_label)
             self.open_button = self.button("Open LAS / LAZ...", self.open_dialog)
@@ -95,6 +96,9 @@ def launch_viewer(path=None, *, radius=DEFAULT_CROP_RADIUS, preview_points=150_0
             self.radius_edit.double_value = radius
             self.panel.add_child(self.radius_edit)
             self.panel.add_child(gui.Label("Tracking uses every source-selected\npoint inside the cyan region."))
+            self.branch_checkbox = gui.Checkbox("Trace other switch paths")
+            self.branch_checkbox.checked = trace_branches
+            self.panel.add_child(self.branch_checkbox)
             self.panel.add_fixed(0.3 * em)
             self.panel.add_child(gui.Label("2  Confirm the fitted seed"))
             self.edits = []
@@ -132,7 +136,7 @@ def launch_viewer(path=None, *, radius=DEFAULT_CROP_RADIUS, preview_points=150_0
             self.button("3D view", lambda: self.camera(top=False), row)
             self.panel.add_child(row)
             self.panel.add_fixed(0.4 * em)
-            self.panel.add_child(gui.Label("Green / red: rail windows\nGold: traced centerline  ·  Cyan: crop"))
+            self.panel.add_child(gui.Label("Green / red: rail windows\nGold: main · Purple: branch · Cyan: crop"))
             self.status_label = gui.Label("Ready to open a point cloud.")
             self.panel.add_child(self.status_label)
             self.detail_label = gui.Label("")
@@ -224,6 +228,7 @@ def launch_viewer(path=None, *, radius=DEFAULT_CROP_RADIUS, preview_points=150_0
                                           and self.frame is not None and self.frame.boundary == "crop"
                                           and self.session.crop.radius < MAX_CROP_RADIUS)
             self.radius_edit.enabled = not self.busy and not self.playing and phase == "empty"
+            self.branch_checkbox.enabled = not self.busy and not self.playing and phase == "empty"
             for edit in self.edits:
                 edit.enabled = not self.busy and phase == "preview"
 
@@ -285,11 +290,13 @@ def launch_viewer(path=None, *, radius=DEFAULT_CROP_RADIUS, preview_points=150_0
             self.scene.scene.camera.look_at(local, eye, [0, 1, 0] if top else [0, 0, 1])
             self.last_camera = (top, center.copy(), span)
             self.scene.force_redraw()
+            self.window.post_redraw()
 
         def clear_overlay(self):
-            for name in ("window0", "window1", "rail0", "rail1", "center", "crop", "pick0", "pick1"):
+            for name in self.overlays | {"pick0", "pick1"}:
                 if self.scene.scene.has_geometry(name):
                     self.scene.scene.remove_geometry(name)
+            self.overlays.clear()
 
         def line(self, name, xyz, color, *, closed=False, width=3):
             if self.scene.scene.has_geometry(name):
@@ -305,6 +312,7 @@ def launch_viewer(path=None, *, radius=DEFAULT_CROP_RADIUS, preview_points=150_0
             material = rendering.MaterialRecord()
             material.shader, material.line_width = "unlitLine", width * self.window.scaling
             self.scene.scene.add_geometry(name, geometry, material)
+            self.overlays.add(name)
 
         def start_picking(self):
             self.reset()
@@ -379,6 +387,7 @@ def launch_viewer(path=None, *, radius=DEFAULT_CROP_RADIUS, preview_points=150_0
 
         def prepare(self, pose, *, confirmation=None):
             radius = self.radius_edit.double_value
+            branches = self.branch_checkbox.checked
             self.set_status("Loading the tracking region…")
             filename = self.preview.info.path
 
@@ -387,7 +396,7 @@ def launch_viewer(path=None, *, radius=DEFAULT_CROP_RADIUS, preview_points=150_0
                                           max_points=max_tracking_points,
                                           progress=self.progress, cancel=self.closed.is_set)
                 self.progress(f"Building the grid for {len(crop.cloud):,} points…")
-                session = ViewerSession(crop, random_seed=random_seed)
+                session = ViewerSession(crop, random_seed=random_seed, trace_branches=branches)
                 return session, session.preview(pose)
 
             def prepared(result):
@@ -422,24 +431,35 @@ def launch_viewer(path=None, *, radius=DEFAULT_CROP_RADIUS, preview_points=150_0
             colors = ([0.25, 1, 0.52], [1, 0.32, 0.32])
             for i, xyz in enumerate(frame.windows):
                 self.line(f"window{i}", xyz, colors[i], closed=True, width=4)
-            for name, xyz, color in zip(("rail0", "rail1", "center"), frame.paths,
-                                        (*colors, [1, 0.78, 0.15])):
-                self.line(name, xyz, color, width=4 if name == "center" else 2)
+            path_sets = [trace.paths for trace in frame.traces] or [frame.paths]
+            for i, paths in enumerate(path_sets):
+                center_color = [1, 0.78, 0.15] if i == 0 else [0.76, 0.5, 1]
+                for role, xyz, color in zip(("rail0", "rail1", "center"), paths,
+                                           (*colors, center_color)):
+                    self.line(f"path{i}_{role}", xyz, color, width=4 if role == "center" else 2)
             crop = self.session.crop
             x, y, z = crop.center.as_array()
             r = crop.radius
             outline = np.array([[x-r,y-r,z], [x+r,y-r,z], [x+r,y+r,z], [x-r,y+r,z]])
             self.line("crop", outline, [0.1, 0.8, 0.95], closed=True, width=2)
             details = f"{len(crop.cloud):,} tracking points\nCrop: {2*r:g} × {2*r:g} m"
+            for trace in frame.traces:
+                details += f"\n{trace.name}: {trace.accepted_steps} steps · {trace.distance:.2f} m"
             if frame.phase == "preview":
                 message = "Check the starting windows, then Confirm start."
             elif frame.phase == "ready":
                 message = "Ready. Press Play or Step."
             elif frame.phase == "tracking":
-                message = f"{'Tracking' if self.playing else 'Paused'} · {frame.accepted_steps} steps · {frame.distance:.2f} m"
+                if frame.status == "branches_pending":
+                    message = "Returning to the switch region for the next path…"
+                elif frame.status == "branch_initialized":
+                    message = f"{frame.active_path} initialized at the switch."
+                else:
+                    message = (f"{'Tracking' if self.playing else 'Paused'} {frame.active_path} · "
+                               f"{frame.accepted_steps} steps · {frame.distance:.2f} m")
             elif frame.phase == "stopped":
                 self.playing = False
-                message = (f"Stopped · {frame.accepted_steps} steps · {frame.distance:.2f} m · "
+                message = (f"Stopped · {len(frame.traces)} paths · {frame.total_steps} total steps · "
                            f"{frame.status.replace('_', ' ')}")
                 if frame.boundary == "crop":
                     details += "\nSearch reached the crop edge.\nRestart with a larger region to trace farther."

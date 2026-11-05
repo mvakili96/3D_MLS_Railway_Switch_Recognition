@@ -70,7 +70,7 @@ class ViewerSessionTests(unittest.TestCase):
 
         with patch("railway_mls.viewer.launch_viewer") as launch:
             self.assertEqual(main(["view"]), 0)
-            self.assertEqual(launch.call_args.kwargs["radius"], 8)
+            self.assertEqual(launch.call_args.kwargs["radius"], 30)
             self.assertEqual(launch.call_args.kwargs["max_tracking_points"], 30_000_000)
             self.assertEqual(main(["view", "--radius", "30"]), 0)
             self.assertEqual(launch.call_args.kwargs["radius"], 30)

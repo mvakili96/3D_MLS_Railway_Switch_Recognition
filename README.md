@@ -92,12 +92,17 @@ python -m railway_mls view
 With the local `Vancouver/` data present, this opens `Thales_11_20Las/16.las`.
 Click **Use Vancouver source example**, **Confirm start**, then **Play**. You can
 also **Pick two points** with Ctrl-click to define a start and direction. The
-first version traces one main-track pass inside a visible crop; the default is
-16 m by 16 m. Use **Restart with larger region** after a crop-edge stop, or start
-with `python -m railway_mls view --radius 30` to cover the full example tile.
+viewer traces the main path, returns to detected switch points and traces the
+other eligible paths. Gold marks the main centerline and purple marks branches.
+The default 30 m radius covers the full example tile. Loading it uses more memory
+and time than the earlier smaller crops; progress appears in the viewer.
+Use **Restart with larger region** if a smaller crop reaches its edge.
+Uncheck **Trace other switch paths** before initialization, or run
+`python -m railway_mls view --main-only`, to compare the earlier main-only demo.
 Rendering uses a bounded preview; inference uses the source's even-record selection.
 The viewer reports any omitted LAS header-rounding records. Raw files stay local
-and unchanged.
+and unchanged. Switch tracing uses an explicit viewer recovery of missing source
+references from saved fitted rails; the strict computational baseline is retained.
 See [the viewer guide](docs/PYTHON_VIEWER.md) for setup, other files and limits.
 
 From the repository root, using Python 3.10 or newer:
