@@ -33,6 +33,8 @@ document proposed corrections separately.
   required review after full reconstruction, including the toe-reference issue.
 - [docs/RECONSTRUCTION_AUDIT.md](docs/RECONSTRUCTION_AUDIT.md): completed scope
   review, call-path evidence, numerical input adapters and validation boundaries.
+- [docs/PYTHON_VIEWER.md](docs/PYTHON_VIEWER.md): interactive Vancouver/LAS viewer,
+  two-point picking, fitted starting windows and live Play/Pause/Step controls.
 - `src/railway_mls/`: installable Python foundation, configuration and synthetic CLI.
 - `tests/`: component/integration checks and comparisons with original C++ extracts.
 - [docs/PYTHON_FOUNDATION.md](docs/PYTHON_FOUNDATION.md): implemented behavior,
@@ -78,6 +80,30 @@ the existing setup; it does not provide a portable build of the Windows applicat
 The Python foundation runs independently of those native dependencies.
 
 ## Run the implemented Python stages
+
+For the interactive desktop demo, from a graphical terminal:
+
+```bash
+source .venv/bin/activate
+python -m pip install -e ".[viewer]"
+python -m railway_mls view
+```
+
+With the local `Vancouver/` data present, this opens `Thales_11_20Las/16.las`.
+Click **Use Vancouver source example**, **Confirm start**, then **Play**. You can
+also **Pick two points** with Ctrl-click to define a start and direction. The
+viewer traces the main path, returns to detected switch points and traces the
+other eligible paths. Gold marks the main centerline and purple marks branches.
+The default 30 m radius covers the full example tile. Loading it uses more memory
+and time than the earlier smaller crops; progress appears in the viewer.
+Use **Restart with larger region** if a smaller crop reaches its edge.
+Uncheck **Trace other switch paths** before initialization, or run
+`python -m railway_mls view --main-only`, to compare the earlier main-only demo.
+Rendering uses a bounded preview; inference uses the source's even-record selection.
+The viewer reports any omitted LAS header-rounding records. Raw files stay local
+and unchanged. Switch tracing uses an explicit viewer recovery of missing source
+references from saved fitted rails; the strict computational baseline is retained.
+See [the viewer guide](docs/PYTHON_VIEWER.md) for setup, other files and limits.
 
 From the repository root, using Python 3.10 or newer:
 
@@ -195,7 +221,7 @@ explicit file conversion and both audits. The audit inventories 265 definitions
 (124 engine/UI, 77 header, 18 reader, 27 conversion and 19 support boundaries), hashes 41 project and 51 bundled
 dependency files, plus 14 frozen PCL extracts and 19 selected PCL/Eigen hashes.
 The completed computational scope review records 15 workflows and 29 active/inactive
-call-site witnesses. No scoped definition remains pending. All 39 limitation
+call-site witnesses. No scoped definition remains pending. All 40 limitation
 families remain open; whole-application equivalence and real MLS validation are pending.
 Tests use `unittest`; when a C++ compiler is available they also compile temporary
 extracts of the original

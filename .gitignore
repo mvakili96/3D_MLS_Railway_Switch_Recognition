@@ -18,6 +18,7 @@
 /ADE code/VS2017/
 
 # Local datasets and generated results. Keep new raw text data in these folders.
+/Vancouver/
 [Dd]ata/
 [Dd]atasets/
 raw_data/

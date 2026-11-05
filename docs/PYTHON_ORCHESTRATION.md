@@ -6,6 +6,12 @@ two-direction workflow from `MainForm.cpp`. It preserves the current unpacked C+
 and leaves the original files unchanged. Automatic toe references remain subject
 to [LIM-001](LIMITATIONS.md#lim-001-uninitialized-toe-reference-lines).
 
+The later [interactive viewer](PYTHON_VIEWER.md#returning-to-switches-and-tracing-branches)
+adds resumable main/branch scheduling and an explicit optional fitted-reference
+recovery for the real-data demo. The source-based engine described here retains
+its strict snapshot behavior and blocking workflow; the viewer's recovery is
+separate and does not change the native component comparisons below.
+
 ## Run and use
 
 ```bash
