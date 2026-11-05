@@ -130,8 +130,10 @@ the repository passed **33 CLI checks**, the new public input adapters and all
 four packaged resources. Ruff and whitespace checks passed. These are component,
 integration and packaging results; they do not change the validation limits above.
 
-All **39** [limitation families](LIMITATIONS.md) remain open, including the new
-numerical-boundary/review-evidence entry LIM-039. The audit completes scope work
+All **40** [limitation families](LIMITATIONS.md) remain open, including the
+numerical-boundary/review-evidence entry LIM-039 and the later interactive-viewer
+entry LIM-040. The computational audit itself concluded with 39 entries;
+the separate [desktop viewer](PYTHON_VIEWER.md) adds delivery scope. The audit completes scope work
 on LIM-015 but does not close its validation concerns or any other ID. Next,
 review every limitation with the user and record decisions to retain, correct
 separately, investigate or defer. Then select real MLS data, coordinate units/CRS

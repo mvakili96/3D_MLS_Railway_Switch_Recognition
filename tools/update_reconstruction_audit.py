@@ -183,7 +183,7 @@ review = {
     "workflows": workflows,
     "call_sites": call_sites,
     "call_inventory": call_inventory,
-    "open_limitations": [f"LIM-{number:03d}" for number in range(1, 40)],
+    "open_limitations": [f"LIM-{number:03d}" for number in range(1, 41)],
     "next_work": ["Review every limitation with the user before choosing corrections.",
                   "Agree real MLS inputs, coordinate units/CRS, sampling and experiment metrics.",
                   "Validate real-data outcomes and, if available, the matched original Windows executable."],

@@ -121,7 +121,7 @@ class ReconstructionReviewTests(unittest.TestCase):
         self.assertFalse(report["real_data_validation_complete"])
         self.assertFalse(report["limitations_review_complete"])
         self.assertEqual(reconstruction_review()["open_limitations"],
-                         [f"LIM-{i:03d}" for i in range(1, 40)])
+                         [f"LIM-{i:03d}" for i in range(1, 41)])
 
     def test_lexical_calls_exclude_comment_string_and_following_function_lookalikes(self):
         text = '''void Owner::first() {
@@ -195,7 +195,7 @@ class ReconstructionReviewTests(unittest.TestCase):
         self.assertEqual((report["status"], report["workflow_count"], report["call_site_count"]),
                          ("ok", 15, 29))
         self.assertFalse(report["real_data_validation_complete"])
-        self.assertEqual(len(report["open_limitations"]), 39)
+        self.assertEqual(len(report["open_limitations"]), 40)
 
 
 if __name__ == "__main__":

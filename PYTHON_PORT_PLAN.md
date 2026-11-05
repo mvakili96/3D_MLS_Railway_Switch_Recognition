@@ -160,10 +160,19 @@ hashes are frozen independently of the unchanged source baseline. See
 [docs/PYTHON_PCL_HELPERS.md](docs/PYTHON_PCL_HELPERS.md) and LIM-038. No native
 filtering/translation is inserted into loading or tracking.
 
-Verification passed 532 test methods, including 206 methods comparing against
+At the computational reconstruction checkpoint, verification passed 532 test methods, including 206 methods comparing against
 compiled extracts of the original C++. The complete original application has not
 been built. Database integration, the separate limitations review and
 full-reference/real-data checks remain later work.
+
+A separate [interactive viewer](docs/PYTHON_VIEWER.md) now loads local Vancouver
+LAS data, supports two-point seed picking/confirmation and displays a single
+main-track pass with Play/Pause/Step/Reset. Its inference crop preserves source
+record sampling and world coordinates; rendering uses a bounded preview. The
+desktop checks use `16.las`, including larger-region replay and a full-tile
+19-step trace. The suite now has 549 methods, and LIM-040 records crop coverage,
+header-rounding omissions, picking, lifecycle and remaining GUI scope. Paper
+metrics and live multi-pass/branch orchestration are deferred.
 
 ## Specification checklist
 

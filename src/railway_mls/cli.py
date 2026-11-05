@@ -3,7 +3,9 @@
 import argparse
 from dataclasses import asdict
 import json
+import sys
 from math import isfinite
+from .viewer_model import DEFAULT_CROP_RADIUS, DEFAULT_TRACKING_POINT_LIMIT, MAX_CROP_RADIUS
 
 import numpy as np
 
@@ -804,6 +806,12 @@ def _observation_demo(seed: int) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="3D MLS railway Python foundation")
     commands = parser.add_subparsers(dest="command", required=True)
+    view_parser = commands.add_parser("view", help="open the interactive LAS/LAZ tracking viewer")
+    view_parser.add_argument("path", nargs="?", help="LAS/LAZ file; defaults to Vancouver 16.las when available")
+    view_parser.add_argument("--radius", type=float, default=DEFAULT_CROP_RADIUS, help="initial XY tracking crop radius in metres (default: %(default)s)")
+    view_parser.add_argument("--preview-points", type=int, default=150_000, help="maximum display points; tracking is sampled separately")
+    view_parser.add_argument("--max-tracking-points", type=int, default=DEFAULT_TRACKING_POINT_LIMIT, help="crop memory guard; inference is never thinned to fit (default: %(default)s)")
+    view_parser.add_argument("--seed", type=int, default=1, help="initial Microsoft CRT random seed")
     commands.add_parser("pcl-helpers-demo", help="exercise source float32 voxel and double-centroid PointXYZ helpers")
     commands.add_parser("conversion-demo", help="exercise source coordinate formulas, buffer state and converted PTS output")
     convert_parser = commands.add_parser("convert-cloud", help="explicit legacy ECEF/UTM conversion with source formulas")
@@ -914,6 +922,22 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command == "view":
+        if not np.isfinite(arguments.radius) or not 2 <= arguments.radius <= MAX_CROP_RADIUS:
+            parser.error(f"--radius must be between 2 and {MAX_CROP_RADIUS:g} metres")
+        if min(arguments.preview_points, arguments.max_tracking_points) <= 0:
+            parser.error("viewer point limits must be positive")
+        from .viewer import launch_viewer
+
+        try:
+            launch_viewer(arguments.path, radius=arguments.radius,
+                          preview_points=arguments.preview_points,
+                          max_tracking_points=arguments.max_tracking_points,
+                          random_seed=arguments.seed)
+        except (ImportError, RuntimeError, OSError, ValueError) as error:
+            print(f"Viewer: {error}", file=sys.stderr)
+            return 1
+        return 0
     if arguments.command == "pcl-helpers-demo":
         print(json.dumps(_pcl_helpers_demo(), indent=2, allow_nan=False))
         return 0
