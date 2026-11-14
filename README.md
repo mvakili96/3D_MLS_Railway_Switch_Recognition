@@ -234,6 +234,49 @@ API contracts, preserved source quirks, undefined accesses and nonfinite arithme
 PCL helper comparisons additionally require the locally bundled Eigen headers;
 their Python runtime and demo work without those headers or PCL libraries.
 
+## Prediction scene catalog
+
+The first full-scene prediction milestone inventories extracted LAS/LAZ inputs
+and validates experiment settings. It prepares the input contract for the later
+multi-tile loader and headless tracker. It does not generate predictions yet.
+
+From the repository root, using the existing environment and LAS extra:
+
+```bash
+python -m pip install -e '.[las]'
+python -m railway_mls prediction-audit \
+  --manifest configs/prediction-vancouver-pilot.json
+```
+
+The pilot declares original Vancouver tiles 16 and 17, pins their complete-file
+SHA256 hashes, and records the source example initialization, RNG seed 1, strict
+branch handling, fixed scene bounds, and the existing even-record input policy.
+Paths are relative to the manifest file. Use `--data-root /path/to/tiles` to
+relocate only the unannotated inputs. The audit's `valid_with_pending` result
+means the input definition passed while nine additional seeds and the pilot's
+reference path assignment still require review. It does not mean tracking has
+run or complete nine-path coverage has been established.
+
+Inventory a directory or an explicit ordered list of files:
+
+```bash
+python -m railway_mls scene-catalog Vancouver/Thales_11_20Las \
+  --root Vancouver --output outputs/prediction-catalog-run-01.json
+```
+
+Directory expansion includes only direct LAS/LAZ children in natural filename
+order. Pass several source directories to cover all five Vancouver groups;
+explicit argument order is preserved. Archives are never extracted. Catalogs
+record counts, formats, scales, offsets, bounds, full byte hashes and header
+footprint components/axis gaps. Footprints cannot establish point occupancy or
+rail continuity. Point arrays and classifications are not decoded at this stage.
+
+`--output` must name a new JSON file. The audit also accepts `--output` to retain
+its full report. Generated catalogs remain local under ignored `outputs/`.
+The tracked pilot manifest separates inference settings from evaluation scope;
+the inference API receives no annotation or saved-model paths. The frozen tracker
+and evaluator calculations are unchanged.
+
 ## What stays local
 
 The root `.gitignore` excludes datasets and extracted data, dependency installation

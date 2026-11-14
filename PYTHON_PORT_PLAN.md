@@ -25,6 +25,13 @@ must revisit every open ID, including LIM-001 (uninitialized toe reference lines
 
 ## Implementation progress
 
+The first scene-prediction milestone adds `scene-catalog`, `prediction-audit`
+and `configs/prediction-vancouver-pilot.json`. It fixes original tile order,
+hashes, input/initialization policies and explicit pending path assignments.
+The inference contract is separate from reference evaluation. Multi-tile cached
+input and the headless prediction runner remain later increments; no new tracker
+or evaluator behavior is introduced by the catalog stage.
+
 A separate [Python rail evaluator](docs/PYTHON_EVALUATION.md) now reconstructs
 the newly supplied 2018 MFC/LiDAS evaluation command. Its source baseline and
 35-file audit are independent of this algorithm's ADE/PCL baseline. The full

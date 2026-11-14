@@ -680,6 +680,45 @@ review, native application execution and switch benchmark mapping remain later
 work. Detailed run artifacts stay local under
 `outputs/vancouver-evaluation-source2018-verified/`.
 
+### Prediction scene catalog checkpoint — 2026-11-14
+
+The catalog milestone prepares the original-Vancouver tile 16–17 continuation
+experiment with a versioned manifest, exact input byte hashes and a separate
+annotation-free inference contract. Nine additional seed definitions and all
+generated-route assignments remain explicitly pending. The pilot source pose
+is preserved; tile numbers are not interpreted as reference path IDs.
+
+The real inventory covers all 47 extracted files, with 1,671,344,500 declared
+records, 835,672,262 per-file even records before boundary handling and
+46,797,659,943 bytes hashed. Header footprints form two components with an
+X-axis gap of 121.579 m, reproducing the previous coverage finding without
+extracting tiles 57–59. The pilot declares 74,958,927 records across tiles 16/17
+and 37,479,464 source-even records before any later loader omissions. Its input
+hashes and header seed check pass; its generated-route assignment is pending.
+The local artifacts are `outputs/prediction-scene-catalog/vancouver-all-extracted.json`
+and `pilot-audit.json` in the same directory.
+
+Catalogs validate headers, payload length and SHA256 bytes without decoding
+point arrays. Their rectangle connectivity and axis gaps are metadata checks,
+not point occupancy, rail continuity or full-scene coverage evidence. Per-file
+even-record counts are pre-boundary-policy upper counts: actual few-ULP omissions
+cannot be established by this metadata-only stage. The named header policy is
+declared for the later loader, not applied to or claimed validated on every
+cataloged record here. LAS <=1.3/formats 0–5 are the selected prediction-layout
+contract; newer headers are reported as incompatible instead of silently
+changing source input assumptions.
+
+Inference manifests pin tile order, reader policy, fixed header-union bounds,
+source parameters, RNG/initialization lifecycle and resource budgets. Budgets
+are declarations at this stage; no cache, grid, tracking state or prediction is
+allocated. The original and evaluation-package subsampled inputs remain distinct.
+`valid_with_pending` means a valid input definition with unresolved seed/mapping
+entries, not completed inference. The strict computational core, viewer recovery
+policy and evaluator thresholds remain unchanged. Verification passed all 633
+tests, including 31 new catalog/manifest checks, and the existing source audits.
+**All existing limitation IDs
+remain open**, including LIM-001, LIM-012, LIM-036 and LIM-040.
+
 ## Resolution history
 
 No entries are closed. Record future decisions here with ID, date, evidence,

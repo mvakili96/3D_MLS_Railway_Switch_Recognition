@@ -17,6 +17,9 @@
 /ADE code/Installations/
 /ADE code/VS2017/
 
+# Keep new documentation local; already tracked documents remain tracked.
+/docs/
+
 # Local datasets and generated results. Keep new raw text data in these folders.
 /Vancouver/
 /evaluation data/
