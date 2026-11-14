@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "profile": "source2018",
+  "dataset_root": "../evaluation data/DataForPaper/Vancouver For Evaluation_20180306",
+  "scope": "24 independent annotation parts; overlapping records are not deduplicated; head-only aggregates excluded",
+  "historical_workbook": "../Evaluation.xlsx",
+  "historical_outcomes": "../Vancouver/TPFN",
+  "cases": [
+    {
+      "case_id": "P1_01",
+      "path_id": 1,
+      "las": "Manually Edited/P1_01.las",
+      "left": "RailVector/Path1_Left.TXT",
+      "right": "RailVector/Path1_Right.TXT",
+      "sha256": {
+        "las": "0b0e3645ecab3288eee775dac55ebad2f0481e2957c5fde5c2e32ef8468a2495",
+        "left": "ef5a1ed54791379ab4aaac5db15f8dea1dc9cf70c64f61d12863463180856852",
+        "right": "d647f4532c886bf7c8b21ff7c9e8116cad2f885551ab940c14552f2cacf363b6"
+      }
+    },
+    {
+      "case_id": "P1_02",
+      "path_id": 1,
+      "las": "Manually Edited/P1_02.las",
+      "left": "RailVector/Path1_Left.TXT",
+      "right": "RailVector/Path1_Right.TXT",
+      "sha256": {
+        "las": "49fa1ce75e2f811742faaa551f8c69d2bcf4b6a103614f2097d0d5b18978a01e",
+        "left": "ef5a1ed54791379ab4aaac5db15f8dea1dc9cf70c64f61d12863463180856852",
+        "right": "d647f4532c886bf7c8b21ff7c9e8116cad2f885551ab940c14552f2cacf363b6"
+      }
+    },
+    {
+      "case_id": "P1_03",
+      "path_id": 1,
+      "las": "Manually Edited/P1_03.las",
+      "left": "RailVector/Path1_Left.TXT",
+      "right": "RailVector/Path1_Right.TXT",
+      "sha256": {
+        "las": "f627404dd2b813d626e746b4d587fd7eec8e35dee278db55477334c45c37a4e4",
+        "left": "ef5a1ed54791379ab4aaac5db15f8dea1dc9cf70c64f61d12863463180856852",
+        "right": "d647f4532c886bf7c8b21ff7c9e8116cad2f885551ab940c14552f2cacf363b6"
+      }
+    },
+    {
+      "case_id": "P1_04",
+      "path_id": 1,
+      "las": "Manually Edited/P1_04.las",
+      "left": "RailVector/Path1_Left.TXT",
+      "right": "RailVector/Path1_Right.TXT",
+      "sha256": {
+        "las": "b86660177ece1e16cc442f1496514a51194317879ce41244f22a5a189324a601",
+        "left": "ef5a1ed54791379ab4aaac5db15f8dea1dc9cf70c64f61d12863463180856852",
+        "right": "d647f4532c886bf7c8b21ff7c9e8116cad2f885551ab940c14552f2cacf363b6"
+      }
+    },
+    {
+      "case_id": "P1_05",
+      "path_id": 1,
+      "las": "Manually Edited/P1_05.las",
+      "left": "RailVector/Path1_Left.TXT",
+      "right": "RailVector/Path1_Right.TXT",
+      "sha256": {
+        "las": "11ec76fb34358427452c75b37a9683ca2c422fd21328695cc2e3a4bf1d7300a4",
+        "left": "ef5a1ed54791379ab4aaac5db15f8dea1dc9cf70c64f61d12863463180856852",
+        "right": "d647f4532c886bf7c8b21ff7c9e8116cad2f885551ab940c14552f2cacf363b6"
+      }
+    },
+    {
+      "case_id": "P1_06",
+      "path_id": 1,
+      "las": "Manually Edited/P1_06.las",
+      "left": "RailVector/Path1_Left.TXT",
+      "right": "RailVector/Path1_Right.TXT",
+      "sha256": {
+        "las": "452bf56d0fb7a1a9fa8d3cfae77f899ddd6b70265624694491442f36e55179e6",
+        "left": "ef5a1ed54791379ab4aaac5db15f8dea1dc9cf70c64f61d12863463180856852",
+        "right": "d647f4532c886bf7c8b21ff7c9e8116cad2f885551ab940c14552f2cacf363b6"
+      }
+    },
+    {
+      "case_id": "P2_01",
+      "path_id": 2,
+      "las": "Manually Edited/P2_01.las",
+      "left": "RailVector/Path2_Left.TXT",
+      "right": "RailVector/Path2_Right.TXT",
+      "sha256": {
+        "las": "f13e0f7adefab40de595a2a4f8e813fbf90e48ce49233ca62d73924be2dffd30",
+        "left": "ca1f6705d4507aa2341d0a2390ffb3bd7f231cea47877b3791c6c82ee74d1bee",
+        "right": "d6b93004fdd5e2d56f37d05eece1bd8b799cbc2b2d17574a4c8a3ed2ad147edc"
+      }
+    },
+    {
+      "case_id": "P2_02",
+      "path_id": 2,
+      "las": "Manually Edited/P2_02.las",
+      "left": "RailVector/Path2_Left.TXT",
+      "right": "RailVector/Path2_Right.TXT",
+      "sha256": {
+        "las": "ca619cc9e480d6c6545ec2588f207bd0770feeacaff85a76c84448704a016cda",
+        "left": "ca1f6705d4507aa2341d0a2390ffb3bd7f231cea47877b3791c6c82ee74d1bee",
+        "right": "d6b93004fdd5e2d56f37d05eece1bd8b799cbc2b2d17574a4c8a3ed2ad147edc"
+      }
+    },
+    {
+      "case_id": "P2_03",
+      "path_id": 2,
+      "las": "Manually Edited/P2_03.las",
+      "left": "RailVector/Path2_Left.TXT",
+      "right": "RailVector/Path2_Right.TXT",
+      "sha256": {
+        "las": "647b7ee3c2a1a7b87f46e443c22da1806af89401892ed3d11d229856aaa3ffb9",
+        "left": "ca1f6705d4507aa2341d0a2390ffb3bd7f231cea47877b3791c6c82ee74d1bee",
+        "right": "d6b93004fdd5e2d56f37d05eece1bd8b799cbc2b2d17574a4c8a3ed2ad147edc"
+      }
+    },
+    {
+      "case_id": "P2_04",
+      "path_id": 2,
+      "las": "Manually Edited/P2_04.las",
+      "left": "RailVector/Path2_Left.TXT",
+      "right": "RailVector/Path2_Right.TXT",
+      "sha256": {
+        "las": "aa15d9564dfe157c9c738b47fe2dcf5eb477412d262368a1f2dc436120746fa9",
+        "left": "ca1f6705d4507aa2341d0a2390ffb3bd7f231cea47877b3791c6c82ee74d1bee",
+        "right": "d6b93004fdd5e2d56f37d05eece1bd8b799cbc2b2d17574a4c8a3ed2ad147edc"
+      }
+    },
+    {
+      "case_id": "P2_05",
+      "path_id": 2,
+      "las": "Manually Edited/P2_05.las",
+      "left": "RailVector/Path2_Left.TXT",
+      "right": "RailVector/Path2_Right.TXT",
+      "sha256": {
+        "las": "dcfa8f16dcdb10417ddf2f16b544f89fcb787aa431c0a608903a28bd1f032f67",
+        "left": "ca1f6705d4507aa2341d0a2390ffb3bd7f231cea47877b3791c6c82ee74d1bee",
+        "right": "d6b93004fdd5e2d56f37d05eece1bd8b799cbc2b2d17574a4c8a3ed2ad147edc"
+      }
+    },
+    {
+      "case_id": "P2_06",
+      "path_id": 2,
+      "las": "Manually Edited/P2_06.las",
+      "left": "RailVector/Path2_Left.TXT",
+      "right": "RailVector/Path2_Right.TXT",
+      "sha256": {
+        "las": "79e323f27822f7c0dc9b81ddd76d0529d35793cce602be1fc1e3f7e13e0b207b",
+        "left": "ca1f6705d4507aa2341d0a2390ffb3bd7f231cea47877b3791c6c82ee74d1bee",
+        "right": "d6b93004fdd5e2d56f37d05eece1bd8b799cbc2b2d17574a4c8a3ed2ad147edc"
+      }
+    },
+    {
+      "case_id": "P3_01",
+      "path_id": 3,
+      "las": "Manually Edited/P3_01.las",
+      "left": "RailVector/Path3_Left.txt",
+      "right": "RailVector/Path3_Right.txt",
+      "sha256": {
+        "las": "6806f69bcf847dd16ef42626af10a1974840178ac082b467874ef97b09376ab7",
+        "left": "cbfd9504e6da037d3633165636d64f44dba3098ffc30f84bbe5caae689c48ca9",
+        "right": "427b5bf7648d8fc6dea311c88d7370b6a226eb981ce56c7bdaf0fa2ff9463978"
+      }
+    },
+    {
+      "case_id": "P3_02",
+      "path_id": 3,
+      "las": "Manually Edited/P3_02.las",
+      "left": "RailVector/Path3_Left.txt",
+      "right": "RailVector/Path3_Right.txt",
+      "sha256": {
+        "las": "07085f4903826683fd3ee3ad38b3c8408662b6b0da8421b86ef7ba89b6d7230e",
+        "left": "cbfd9504e6da037d3633165636d64f44dba3098ffc30f84bbe5caae689c48ca9",
+        "right": "427b5bf7648d8fc6dea311c88d7370b6a226eb981ce56c7bdaf0fa2ff9463978"
+      }
+    },
+    {
+      "case_id": "P3_03",
+      "path_id": 3,
+      "las": "Manually Edited/P3_03.las",
+      "left": "RailVector/Path3_Left.txt",
+      "right": "RailVector/Path3_Right.txt",
+      "sha256": {
+        "las": "1aa834bc2be8c18fe7826576e5a702127f58c4f8637a1a8f32eb8fdf58e5a037",
+        "left": "cbfd9504e6da037d3633165636d64f44dba3098ffc30f84bbe5caae689c48ca9",
+        "right": "427b5bf7648d8fc6dea311c88d7370b6a226eb981ce56c7bdaf0fa2ff9463978"
+      }
+    },
+    {
+      "case_id": "P3_04",
+      "path_id": 3,
+      "las": "Manually Edited/P3_04.las",
+      "left": "RailVector/Path3_Left.txt",
+      "right": "RailVector/Path3_Right.txt",
+      "sha256": {
+        "las": "34b4ba41508ecdbafb2d54a0891ba8b06e83433618753ef300006d067ededb30",
+        "left": "cbfd9504e6da037d3633165636d64f44dba3098ffc30f84bbe5caae689c48ca9",
+        "right": "427b5bf7648d8fc6dea311c88d7370b6a226eb981ce56c7bdaf0fa2ff9463978"
+      }
+    },
+    {
+      "case_id": "P4_01",
+      "path_id": 4,
+      "las": "Manually Edited/P4_01.las",
+      "left": "RailVector/Path4_Left.txt",
+      "right": "RailVector/Path4_Right.txt",
+      "sha256": {
+        "las": "a08223ee07c03b3d64c7fcba6b326a3475f7ebc634487e2a9fbeab6bd72ff0e4",
+        "left": "358bbac0674a1ec54a4679681fdbeaec3901f222b6b46e9448d2a3fa46b734d8",
+        "right": "10bb46c9f9d982e07d0b468578197a190c0a90f9adb2c48b7ab13a572fd6b92f"
+      }
+    },
+    {
+      "case_id": "P5_01",
+      "path_id": 5,
+      "las": "Manually Edited/P5_01.las",
+      "left": "RailVector/Path5_Left.txt",
+      "right": "RailVector/Path5_Right.txt",
+      "sha256": {
+        "las": "a92503660f900062e4e8e5a8bfa8f2fee560fd11c424ab8c692b2ba70004bea0",
+        "left": "d77ef218251136ba2db1e07a54c5772f8fe5fd52ee45e263b5cff03ee938757d",
+        "right": "cbb342e02851c69f4aecece3b3d3dbbcd165c28a5469a07723a3ca55af7fb827"
+      }
+    },
+    {
+      "case_id": "P6_01",
+      "path_id": 6,
+      "las": "Manually Edited/P6_01.las",
+      "left": "RailVector/Path6_Left.txt",
+      "right": "RailVector/Path6_Right.txt",
+      "sha256": {
+        "las": "2f6f260e7d4d26c30dc2d1239eeeebd59c2554b633044f41c4809dedacfb741b",
+        "left": "49b48f1dbe6acf248daa541ac146654108143ec613d775d847bfbfb75754b200",
+        "right": "ae042b9bdc653f16e0b2b0b2e8b0d08dbed857af0c9e567ad74db68d62786fa2"
+      }
+    },
+    {
+      "case_id": "P6_02",
+      "path_id": 6,
+      "las": "Manually Edited/P6_02.las",
+      "left": "RailVector/Path6_Left.txt",
+      "right": "RailVector/Path6_Right.txt",
+      "sha256": {
+        "las": "af73d9b257203751d6f9995316c5e814508e21c45bdcf2b7a0fae1013005e694",
+        "left": "49b48f1dbe6acf248daa541ac146654108143ec613d775d847bfbfb75754b200",
+        "right": "ae042b9bdc653f16e0b2b0b2e8b0d08dbed857af0c9e567ad74db68d62786fa2"
+      }
+    },
+    {
+      "case_id": "P7_01",
+      "path_id": 7,
+      "las": "Manually Edited/P7_01.las",
+      "left": "RailVector/Path7_Left.txt",
+      "right": "RailVector/Path7_Right.txt",
+      "sha256": {
+        "las": "7678148f5e7651f0203923fee91465ffc5b59d2426106ec5395976a956b7a7f5",
+        "left": "8aaa7936a9990454f942c869d7deec691b25ec77f31f9605bc9ba213fb8a5d33",
+        "right": "319cb8419cd8755b1b2677f438b25a599dab6783eea61f701182553607709569"
+      }
+    },
+    {
+      "case_id": "P7_02",
+      "path_id": 7,
+      "las": "Manually Edited/P7_02.las",
+      "left": "RailVector/Path7_Left.txt",
+      "right": "RailVector/Path7_Right.txt",
+      "sha256": {
+        "las": "9c65f4703ca464ddd9c11cf0b52cc4dbe413cc62bfc6788df5ae9c36d4518261",
+        "left": "8aaa7936a9990454f942c869d7deec691b25ec77f31f9605bc9ba213fb8a5d33",
+        "right": "319cb8419cd8755b1b2677f438b25a599dab6783eea61f701182553607709569"
+      }
+    },
+    {
+      "case_id": "P8_01",
+      "path_id": 8,
+      "las": "Manually Edited/P8_01.las",
+      "left": "RailVector/Path8_Left.txt",
+      "right": "RailVector/Path8_Right.txt",
+      "sha256": {
+        "las": "24093e7941e16128fa1ffb0ebb5d6d7a9e47ac58e49d2f63e3d7e9b677c0ee0c",
+        "left": "f33a78853b81301dedfbbba174466b4964bf08e384298021c8980b068f755479",
+        "right": "9db127202cf4cea7c2cf445acbb5384dbe5ff57ccd6083a171d2c3860b2bc4d4"
+      }
+    },
+    {
+      "case_id": "P9_01",
+      "path_id": 9,
+      "las": "Manually Edited/P9_01.las",
+      "left": "RailVector/Path9_Left.txt",
+      "right": "RailVector/Path9_Right.txt",
+      "sha256": {
+        "las": "98746fbe6665d00aa81cff7ad37de07c7bb6e6256ea6f27a1234b534cfc2543b",
+        "left": "36ef93d1fb0b1ffc8d0ab0c323c4f07aa3f9b7b073167aaa6ceec10726f6896b",
+        "right": "b1e6a3cbca5903c8bab876f69e5793a951314583334ab06f7cc8955608fd7dd5"
+      }
+    }
+  ]
+}

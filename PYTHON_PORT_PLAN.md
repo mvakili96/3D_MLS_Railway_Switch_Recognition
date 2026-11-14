@@ -25,6 +25,12 @@ must revisit every open ID, including LIM-001 (uninitialized toe reference lines
 
 ## Implementation progress
 
+A separate [Python rail evaluator](docs/PYTHON_EVALUATION.md) now reconstructs
+the newly supplied 2018 MFC/LiDAS evaluation command. Its source baseline and
+35-file audit are independent of this algorithm's ADE/PCL baseline. The full
+24-part Vancouver evaluation on saved original models is runnable; historical
+metric correspondence and full-scene Python predictions remain later work.
+
 The first Python foundation is implemented in `src/railway_mls/`. It includes the
 source defaults, stable point identities/shared labels, geometry, paired seed-window
 construction and ordered grid lookup. An installable package and synthetic demo

@@ -87,7 +87,7 @@ remains open.**
 | **LIM-009 — Random state and floating-point environment.** Unknown earlier native draws, point order and arithmetic near thresholds affect model choices. | Owned MSVC recurrence/default seed and recorded raw streams are available. Component extracts receive identical draws; a seed alone does not recover an unknown original session. | Save complete configuration, cloud order and draw streams for matched experiments. Investigate threshold/tie discrepancies with explicit numerical tolerances and exact identity comparisons. [Details](PYTHON_GMM_HEADS.md#random-draws-and-ordering). |
 | **LIM-010 — Python boundaries and native uninitialized fields.** Some invalid counts, ownership, dimensions or nonfinite query inputs have no supported native result. Default geometry fields and native output-reference interfaces need explicit contracts. | Python rejects invalid API inputs or exposes unavailable fields as `None`. Endpoint-only boundary caches now remain absent in initialization/tracking; native comparisons read only defined endpoints/tags. New scalar 3D distance requires an explicit stored vector, and returned utility vectors do not expose aliased native output buffers. | Audit every newly implemented consumer before reading absent fields or assuming native reference aliasing. Retain explicit boundary contracts and identify comparisons that exclude undefined native values. [Utilities](PYTHON_UTILITIES.md), [initialization](PYTHON_KALMAN_INITIALIZATION.md), [toes](PYTHON_TOES.md). |
 | **LIM-011 — Whole-application equivalence.** Original Windows application has not been built/executed for full comparisons. | Current suite: 560 test methods, including 206 using compiled source extracts. Nineteen numerical demos, the separate desktop viewer, cloud inspection/conversion and both audits are available. PCL helper comparisons compile frozen original arithmetic/sort/filter bodies against bundled Eigen, with PointXYZ/field-trait shims and supplied native sort order. Parameter/point/seed boundaries and negative-count retry behavior are also source-tested. Codec, managed UI and whole-binary claims remain separate; unsafe reads/casts/overflow are excluded. | Computational call-path review is complete; compare matched whole-path intermediate/final results where a usable native reference exists. Keep component, controlled-callback/decoder/dependency and full-binary claims separate. |
-| **LIM-012 — Real-data/published evaluation.** Vancouver raw LAS inputs are now available; evaluation annotations and matched reference outputs remain unverified. | On 2026-11-04 the local Vancouver collection was checked: 47 extracted LAS files, 1,671,344,500 point records, common 2016-05-23 creation date and TerraScan metadata. The commented C++ sample pose falls in `Thales_11_20Las/16.las`; Python initialization succeeds on a bounded 6 m by 6 m crop with the source's even-record selection. This establishes a usable real-data starting point, while full-scene tracing, published accuracy/recall and robustness remain untested. Historical evaluation-snapshot questions do not replace the chosen source baseline. | Start recorded real-data tracing from the matched tile/pose, identify evaluation annotations and reference outputs, then run error analysis and metric calculations. See the Vancouver checkpoint below and [validation plan](../PYTHON_PORT_PLAN.md#validation-levels). **Status: open.** |
+| **LIM-012 — Real-data/published evaluation.** Vancouver rail ground truth, saved model outputs and a separate native evaluator are now available; exact published-run correspondence remains unverified. | The separately supplied `evaluation data/` package includes manually edited class-3 rail-head LAS for paths 1–9, all 18 left/right saved model files, evaluation source/binaries, and workbooks/outcomes matching the older published-style table. Full label scans and coordinate checks support their relationship to the existing Vancouver cloud. Source/spreadsheet thresholds, FP/FN naming, signed/absolute errors, scoring scope and input versions differ. The exact additional-100-region mapping and native execution remain unverified. | Reproduce saved outcomes under an explicit protocol, preserve the frozen ADE baseline, match input/preprocessing versions, identify the 100-region case index, and then score Python outputs on matched coverage. See [evaluation package audit](EVALUATION_PACKAGE_AUDIT.md). **Status: open.** |
 | **LIM-013 — Runtime and memory at MLS scale.** Local grouping can have quadratic scans; full step diagnostics retain reference arrays. | Sparse grid lookup and array operations are implemented; no representative real-cloud profiling has been completed. | Measure runtime/memory by stage and cloud/window size. Preserve neighbor/DFS/sample order when optimizing; assess optional diagnostic retention. [Grouping](PYTHON_FITTING_MDL.md), [tracking](PYTHON_TRACKING.md). |
 | **LIM-014 — Data adapters, units and precision.** Legacy readers have format-dependent thinning; count-prefixed text/CSV, CRS conversion and rounded exports need explicit contracts. | Legacy readers/vector exporters and explicit ECEF/geodetic/UTM conversion/exports are implemented. Source degree/radian, zone/hemisphere, ellipsoid/pi, sampling and three-decimal contracts are retained. Optional decoder equivalence, runtime/error policies, global geodetic accuracy and database integration remain unverified. Tracking performs no implicit frame conversion. | Review source-codec/format compatibility, sampling/density, rounded exports, bounds/labels, coordinate frames and database schema. [Coordinates](PYTHON_COORDINATES.md), LIM-037, [I/O guide](PYTHON_LEGACY_IO.md), LIM-036, [data contract](../PYTHON_PORT_PLAN.md#data-contract-to-prepare-now). |
 | **LIM-015 — Reconstruction scope and validation.** Inventory consistency is distinct from numerical equivalence. | The [reconstruction audit](RECONSTRUCTION_AUDIT.md) records the completed computational scope review: 265 definitions, 19 named LIDARPT types, all 41 project files, 15 workflows and 29 active/inactive call-site witnesses. The original 41 project/51 dependency hashes and baseline ID remain unchanged; 14 PCL extracts/19 selected PCL/Eigen hashes stay separate. Commented scheduling/rotations remain excluded and whole dependency libraries are not claimed ported. | Implementation scope review is complete; whole-application/native and real-data validation remain open. Review every limitation with the user before selecting corrections. Neither completion metadata nor passing inventory checks close this ID or establish native/published-result equivalence. [Audit scope and evidence](RECONSTRUCTION_AUDIT.md). |
@@ -568,6 +568,117 @@ The read-only working script and detailed evidence are kept locally under
 `outputs/vancouver-verification/verify_dataset.py` and `verification.json`.
 The raw data/archives were not modified. All 40 limitation IDs remain open;
 availability of this collection does not close LIM-012 or other validation IDs.
+
+### Spatial coverage check — 2026-11-14
+
+Section IV-A and Table I (PDF page 6) describe two main paths, 1,581/1,578 m
+long; one rail parking zone with five paths (3–7); two 47 m connecting paths
+(8–9); and 100 additional selected multi-track regions across the network.
+Figure 7 (PDF page 7) shows the nine-path layout with only part of the main
+paths. It has no geographic axes or georeferenced path boundaries. File numbering
+cannot be equated to paper path IDs.
+
+The five local archives contain tiles 11–60. Header inspection confirms that
+`57.las`, `58.las` and `59.las` are archived but not extracted. Their headers
+were decoded in memory without writing the full tiles. The extracted 47-file
+collection has a 121.579 m easting band with no tile coverage, between
+514489.610 and 514611.189. Adding the three archived tile footprints fills that
+band and joins all 50 header rectangles into one connected component.
+The full collection declares 1,789,519,342 point records, with an XY bounding
+span of 1,730.168 m east–west and 285.995 m north–south. These are bounding-box
+extents, not measured track lengths or proof of point occupancy/rail continuity.
+
+A whole-file deterministic stride sample of 4,684,730 points from the 47
+extracted tiles provides a top-view overview of the western multi-track area.
+Its widening track/structure layout is consistent with a rail parking area, but
+the five parking paths and two connectors have not been individually matched
+to the paper's labels. No manifest or coordinates link the 100 additional
+regions to these files. The 1.73 km span is compatible with the scale of the
+reported main tracks; it does not certify that their exact endpoints or all
+paper regions are present. Tiles numbered 1–10 being absent is likewise not
+proof of a missing paper region without a source manifest.
+
+Local evidence is under `outputs/vancouver-coverage/`: `check_coverage.py`,
+`coverage.json`, `display_sample.npy` and `tile_coverage.png`. No raw LAS or RAR
+was changed. A georeferenced study-area/path map or provider file-to-region
+manifest is needed for a definitive completeness check. **LIM-012 remains open.**
+
+### Ground-truth location search — 2026-11-14
+
+The 2026-11-14 [ground-truth path search](GROUND_TRUTH_SEARCH.md) found no explicit
+annotation directory or filename after checking current/archived source, the
+bundled native history, application/debug strings and project browse caches.
+The concrete search leads are the historical parent `Theles Project`,
+`Vancouver data`, and original project identifier `GeoICT/Thales-Railway-Tracking`.
+The paper's TerraScan manual-classification workflow is a provenance clue, not
+an observed ground-truth folder. Algorithm export filenames and FLANN's
+`ground_truth.h` do not establish annotation provenance. **LIM-012 remains open.**
+
+### Newly supplied evaluation package — 2026-11-14
+
+The later `evaluation data/` folder changes the reference-availability finding:
+Vancouver manually classified rail-head LAS and an actual ground-truth evaluator
+are present in this separate MFC/LiDAS project. All nine path model pairs parse,
+all 29 manual LAS label profiles were scanned, duplicate named reference copies
+are byte-identical, and saved outcome counts match `Evaluation.xlsx`. The
+provided nine-path layout aligns with the existing Vancouver cloud.
+
+The [package audit](EVALUATION_PACKAGE_AUDIT.md) records exact locations and
+remaining issues: source/spreadsheet protocol differences, incomplete later
+results, artifact/preprocessing versions, original Windows runtime execution,
+and the missing/unverified mapping of the 100 extra regions. Python evaluation
+and full nine-path Python predictions are still separate work. No imported data,
+original source or frozen algorithm behavior was modified. **LIM-012 remains open.**
+
+### Python rail evaluation reconstruction — 2026-11-14
+
+The [2018 evaluator port](PYTHON_EVALUATION.md) now includes its full-record
+annotated LAS adapter, ordered model loader, source geometry, assignment,
+metrics, immutable reference labels and independent 35-file source audit. The
+strict tracker baseline and existing viewer policies were not changed.
+
+The 24-part batch processed 38,768,029 records and 4,710,223 class-3 positives
+counted by part. Source candidate assignment retained 4,699,754 positives,
+excluding 10,469. Historical outcome/workbook denominators total 4,699,760:
+source assignment is lower by three records on path 1, two on path 2 and one
+on path 8. Most of the previously unexplained denominator difference is now
+accounted for by source exclusion, while the six-record difference remains.
+
+Assigned-positive pass rates range from 56.38% to 85.43% with the frozen source
+0.12/0.05 m tests and supplied saved models. These are not scores for Python
+tracker predictions. Original-source comparisons pass for 11,705 real records
+across all 24 cases plus synthetic edge fixtures. All nine historical TPFN
+count pairs match the older workbook; source-versus-historical pass/fail
+disagreement remains unresolved and must not be fixed by silently changing
+thresholds or vertical gating/statistics.
+
+Additional evaluator boundaries retained for later review:
+
+- Each case starts with fresh memberships. Native GUI vector appends and unsafe
+  re-evaluation/pointer reuse are not emulated.
+- Canonical input is preserved; malformed numeric-prefix/token behavior and
+  unsupported LAS layouts fail explicitly. Legacy raw classification flag bits
+  remain part of the byte comparison. LAZ decoding is a portable extension.
+- Source unassigned `ClassCodeRe` is uninitialized. Python reports outcome 0
+  with segment ID -1 and unavailable residuals instead of reading it.
+- P6/P7 complementary parts retain their separate positive/background labels.
+  Part-wise totals can count coordinates more than once; aggregated precision
+  is not certified as globally unique complete-label scene accuracy.
+- The candidate index must retain literal polygon behavior, including full
+  checks for degenerate polygons. Temporary residual files preserve source
+  accumulation order; runtime/disk requirements scale with case size.
+- Native comparisons compile source extracts with data/presentation shims,
+  not the original Windows executable or SDK. Full real-data case results are
+  from Python; native real-data comparisons use documented subsets.
+- The Python prediction adapter selects one explicit layer and never joins
+  layers. Full-scene prediction coverage, viewer repair provenance and valid
+  reference-scope selection still require separate experiments.
+
+**LIM-012 remains open. All 40 existing IDs remain open.** The computational
+evaluation port is complete; published-result reproduction, the limitations
+review, native application execution and switch benchmark mapping remain later
+work. Detailed run artifacts stay local under
+`outputs/vancouver-evaluation-source2018-verified/`.
 
 ## Resolution history
 
