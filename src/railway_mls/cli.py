@@ -808,6 +808,8 @@ def main(argv: list[str] | None = None) -> int:
     commands = parser.add_subparsers(dest="command", required=True)
     from .evaluation.runner import add_cli as add_evaluation_cli
     add_evaluation_cli(commands)
+    from .prediction.cli import add_cli as add_prediction_cli
+    add_prediction_cli(commands)
     view_parser = commands.add_parser("view", help="open the interactive LAS/LAZ tracking viewer")
     view_parser.add_argument("path", nargs="?", help="LAS/LAZ file; defaults to Vancouver 16.las when available")
     view_parser.add_argument("--radius", type=float, default=DEFAULT_CROP_RADIUS, help="initial XY tracking crop radius in metres (default: %(default)s)")
@@ -925,6 +927,9 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command in ("scene-catalog", "prediction-audit"):
+        from .prediction.cli import run_cli as run_prediction_cli
+        return run_prediction_cli(arguments)
     if arguments.command in ("evaluation-demo", "evaluation-audit", "evaluate-rails"):
         from .evaluation.runner import run_cli as run_evaluation_cli
         return run_evaluation_cli(arguments, parser)
