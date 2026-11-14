@@ -19,6 +19,7 @@
 
 # Local datasets and generated results. Keep new raw text data in these folders.
 /Vancouver/
+/evaluation data/
 [Dd]ata/
 [Dd]atasets/
 raw_data/

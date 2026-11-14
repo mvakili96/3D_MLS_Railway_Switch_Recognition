@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "profile": "source2018",
+  "files": [
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/InitialSetting.cpp",
+      "sha256": "ed4e7bb9f925ca79ed71d3b7bfbbcfffeae096b201ecf62987ae83c2db600260"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/InitialSetting.h",
+      "sha256": "2ec2f73bdd687dbb308b4b18e34b84f4c5c50a84a5158bf06ae1483bae3291fe"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/LidasView.cpp",
+      "sha256": "841029488b5a6f4bbda3cef759960aff49e65f433732da8119f014fc0b4e42b4"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/LidasView.h",
+      "sha256": "26035f279783dedbb756b57ed941736a3f762cd67733fffcad6165db2939dd4f"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/LineSegment.cpp",
+      "sha256": "0e787d70832be78491f66bfe422a57ea3277f57d3cae3c04f90d12cd5ed87478"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/M.H",
+      "sha256": "29d56c2484533d7e98bb68b7a39f301431f40d0378a8fcc37d11b351b03c1127"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/MainFrm.cpp",
+      "sha256": "73ae9f5ec952a5907b14c9d60bfee9a7aefa40f1000f5aef01e822dff9dfc097"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/MainFrm.h",
+      "sha256": "cfc7bfdd827c64e25b789626bbda6000f7fc95a8f837d8390f0937d00bc0c7db"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/SplitWindow.cpp",
+      "sha256": "5fee65578b3bbcc227f3da8f39e1be95a169313f77f991d8cdc22f73dcd578c4"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/SplitWindow.h",
+      "sha256": "bc18348ffa0ecb3af015165c3bec99c7f7b6ccac99e772a501ce38e99f996eb4"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/Viewer.cpp",
+      "sha256": "49055b73b78909cd5ce6c69260d01dd6b7d07736ea4cdb6a8eb007edfa77c65e"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/Viewer.h",
+      "sha256": "e3c19baff2c82a00385659f76a7e4a9ad7a60abe16024ca6f57977a46a701842"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/Viewer.rc",
+      "sha256": "dfaf7236440506e7590c7658167a7d94e0f1b2ba09089d0454930ca7442fe687"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/Viewer.vcproj",
+      "sha256": "c1aa1da94b74baed2b86321d7ce9c7239e8ac416474c33e3597cbc6c23fee852"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/ViewerDoc.cpp",
+      "sha256": "8b64ede099bd452d2a02391e40fd41d2393c69d0b72203ce0daef44a9adbec64"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/ViewerDoc.h",
+      "sha256": "264ef0916b79a5ee58ebb54a160134097332a40716766eeda67b49f59863d9ab"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/ViewerView.cpp",
+      "sha256": "4b960b8ace6c3ad226e144c113e200a8d664eaec8f1d8cca125406484b36c6be"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/ViewerView.h",
+      "sha256": "ff96d52c4f8d05888fff510170a6ffde946a02df0602362fa605ce6e4f087d29"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/XTDockingBar.cpp",
+      "sha256": "8a5fd34e80add13b4ed958a1c7d259206571ebe4d173d06c7c77eaf1c0eca4aa"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/XtremeTKManager.h",
+      "sha256": "8fdbc6c16a7f3e60f433de4f3ba5876afe24bcaa4d9874b18a0af7027064767c"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/etc/2dvector.h",
+      "sha256": "afc994c01e13e71602a4d3a13c48a0e4d19943c025365d4a2f9c1be5f26c3b4c"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/etc/matrix.h",
+      "sha256": "ed0ca4b4cc02f788212d65490110ba27220fed7b6e975f7528b17181380d50fd"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/etc/vector.h",
+      "sha256": "4d1b67c7df510fb7e927b79c82026c307179f1ff55dcf5c76545df463ee41c5d"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/las/ColorLevelTbl.cpp",
+      "sha256": "43fa2404650322d0cbbecdfa31d73b1db5a3b0450031dc651f860a746b3c2d43"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/las/ColorLevelTbl.h",
+      "sha256": "ee61c1ec856be8d69d00eb365cd490b87f487df50f501d9266abb61eab5c13d3"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/las/FCodeInfoTbl.cpp",
+      "sha256": "295d0063396a2553596b0fb32e31e5c2f5408dc4e42009c780195c624e9a4bb8"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/las/FCodeInfoTbl.h",
+      "sha256": "9b9087fadf308e32e2cffc067e5d6f63b5107e7282af21c110d83ed805ad386d"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/las/LAS.cpp",
+      "sha256": "8af66d2a475101d4a344583690047862032b7a6fa64c537fcdc8c11cde05befc"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/las/LAS.h",
+      "sha256": "3c55cd4b07d2b758278878ae1d24a47cec4f7a971808dceca991af0442de4e26"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/las/LASTypes.h",
+      "sha256": "790f4860bf74d80b9850b149262109e2495ce5c652c59701a11abc5cbe193050"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/las/LIDARPT.h",
+      "sha256": "0db49aaa2c0bea9a6337bcef7be7abe8ab4dd94895e73305986e58fd09100c67"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/resource.h",
+      "sha256": "3ca2c1d7c191ca710a3cdb3a30792c88286a9f875451e1e467f8f33a23e94ce1"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/stdafx.cpp",
+      "sha256": "263cd2b90fe2d479c6b9d80f8cc178c9593a06a40844ac7577ef8cb09c9585b1"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/stdafx.h",
+      "sha256": "88b28d4b056eb79a4cdbe2436decc0a36938eeb8401231186de0204d87fde49a"
+    },
+    {
+      "path": "evaluation data/RailwayExtractor_20180306_evaluation/Source/Viewer/xtdockingbar.h",
+      "sha256": "dbb6e371c7166bdfc882cda24d2c46c6e60f4ba9c9e9269c4c49ffbc82a2180d"
+    }
+  ],
+  "scope": [
+    {
+      "source": "OnHeadptsandtrackOpenpoints",
+      "python": "io.iter_reference_las",
+      "disposition": "ported-fresh-session"
+    },
+    {
+      "source": "OnHeadptsandtrackOpentrackvector",
+      "python": "io.read_rail_segments",
+      "disposition": "ported-fresh-session"
+    },
+    {
+      "source": "OnHeadptsandtrackOpentrackvector33004",
+      "python": "io.read_rail_segments",
+      "disposition": "ported-fresh-session"
+    },
+    {
+      "source": "Line3D::GetLineParameter",
+      "python": "geometry.prepare_line",
+      "disposition": "ported"
+    },
+    {
+      "source": "Line3D::GetBufferVtxOfLine",
+      "python": "geometry.prepare_line",
+      "disposition": "ported"
+    },
+    {
+      "source": "pnpoly2",
+      "python": "geometry.polygon_membership",
+      "disposition": "ported"
+    },
+    {
+      "source": "GetPntsInsidePolygon",
+      "python": "geometry.assign_points",
+      "disposition": "ported"
+    },
+    {
+      "source": "ComputeFootOfPerpendicular",
+      "python": "geometry.residuals",
+      "disposition": "ported"
+    },
+    {
+      "source": "DistanceBetweenPoints2D(POINT3D,POINT3D)",
+      "python": "geometry.residuals",
+      "disposition": "ported"
+    },
+    {
+      "source": "DistanceBetweenPointAndLine2D(LiDPOINT*,Line3D)",
+      "python": "geometry.residuals",
+      "disposition": "ported"
+    },
+    {
+      "source": "DistanceOfHeightBetweenPointAndLine3D",
+      "python": "geometry.residuals",
+      "disposition": "ported"
+    },
+    {
+      "source": "OnHeadptsandtrackEvaluation",
+      "python": "core.evaluate_chunks",
+      "disposition": "ported-fresh-session"
+    },
+    {
+      "source": "OnHeadptsandtrackEvaluation commented length/output",
+      "python": null,
+      "disposition": "inactive"
+    },
+    {
+      "source": "CFileDialog/MFC redraw/color mode",
+      "python": null,
+      "disposition": "presentation-not-ported"
+    },
+    {
+      "source": "2018 application tracking/recognition",
+      "python": null,
+      "disposition": "separate-existing-2017-baseline"
+    }
+  ]
+}

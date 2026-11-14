@@ -806,6 +806,8 @@ def _observation_demo(seed: int) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="3D MLS railway Python foundation")
     commands = parser.add_subparsers(dest="command", required=True)
+    from .evaluation.runner import add_cli as add_evaluation_cli
+    add_evaluation_cli(commands)
     view_parser = commands.add_parser("view", help="open the interactive LAS/LAZ tracking viewer")
     view_parser.add_argument("path", nargs="?", help="LAS/LAZ file; defaults to Vancouver 16.las when available")
     view_parser.add_argument("--radius", type=float, default=DEFAULT_CROP_RADIUS, help="initial XY tracking crop radius in metres (default: %(default)s)")
@@ -923,6 +925,9 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
+    if arguments.command in ("evaluation-demo", "evaluation-audit", "evaluate-rails"):
+        from .evaluation.runner import run_cli as run_evaluation_cli
+        return run_evaluation_cli(arguments, parser)
     if arguments.command == "view":
         if not np.isfinite(arguments.radius) or not 2 <= arguments.radius <= MAX_CROP_RADIUS:
             parser.error(f"--radius must be between 2 and {MAX_CROP_RADIUS:g} metres")

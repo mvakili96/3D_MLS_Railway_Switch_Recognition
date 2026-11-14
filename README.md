@@ -13,12 +13,16 @@ analysis and source GWAD row/text generation. An integrated in-memory pipeline,
 synthetic workflow, diagnostic outputs and explicit source coverage audit are
 available. The [computational reconstruction audit](docs/RECONSTRUCTION_AUDIT.md)
 is complete; all retained limitations remain open for review and real-data
-validation is pending. The current
+accuracy validation of Python tracker predictions is pending. The current
 unpacked C++ code is the source of truth: preserve its computational behavior and
 document proposed corrections separately.
 
 ## Repository contents
 
+- [docs/PYTHON_EVALUATION.md](docs/PYTHON_EVALUATION.md): reconstructed 2018 rail
+  evaluator, annotated Vancouver case manifest, source comparisons and real-data
+  validation. Start with `python -m railway_mls evaluation-demo`; use
+  `evaluate-rails` for reference LAS and saved or Python rail predictions.
 - `ADE code/PCLProject/PCLProject/PCLProject/`: original C++/CLI application,
   railway algorithm, geometry/state models, readers, exporters, and UI resources.
   The small `Jama/` and `etc/` numerical helpers are retained because the source
