@@ -1,6 +1,6 @@
 # Limitations register and post-reconstruction review
 
-Last updated: **2026-11-04**. Baseline: the current unpacked C++ source.
+Last updated: **2026-11-15**. Baseline: the current unpacked C++ source.
 
 This is the persistent register for known source limitations, Python portability
 choices, and validation gaps. The user has requested that they be retained for
@@ -718,6 +718,54 @@ policy and evaluator thresholds remain unchanged. Verification passed all 633
 tests, including 31 new catalog/manifest checks, and the existing source audits.
 **All existing limitation IDs
 remain open**, including LIM-001, LIM-012, LIM-036 and LIM-040.
+
+### Multi-tile input backend checkpoint — 2026-11-15
+
+The disk-backed cache and sparse cell-run index preserve per-file even-record
+selection, manifest/record order, duplicate coordinates, source cell insertion
+quirks, neighbor traversal order and shared mutable labels. Cache payloads remain
+read-only; each run gets separate zero/-1 label files. Raw LAS classifications
+are not imported. The strict computational tracker and evaluator are unchanged.
+
+The real tile-16/17 cache retains 37,479,462 points, omitting the same two known
+header-rounding records under the manifest's explicit four-ULP policy (LIM-040).
+The immutable payload totals 1,649,140,928 bytes across 2,787 occupied cells.
+The builder's observed peak RSS is 111,996,928 bytes. An independent streaming
+check with odd input chunks and original scalar grid arithmetic matches three
+ordered neighborhoods, including 771,497 IDs from both tiles at the join. That
+verification's process peak RSS is 256,397,312 bytes. This proves input lookup,
+not continuous tracking or nine-path extraction. Local evidence is under
+`outputs/multitile-input/`.
+
+Retained backend limitations and lifecycle contracts:
+
+- The named header-rounding omission remains an explicit input portability
+  policy. `reject_outside` fails rather than quietly applying that policy.
+- Scene bounds/origin are fixed per declared input set. Adding tiles can change
+  the declared bounds and available points; comparison to a one-tile viewer is
+  not the same as backend equivalence for identical fixed inputs.
+- Resource admission uses conservative estimates, chunk/query-boundary process
+  RSS checks and paging advice. It is not an OS hard limit on arbitrary caller
+  NumPy allocations. Linux resident accounting/paging is verified; fallback
+  peak accounting can reject a run conservatively, and a platform without memory
+  accounting fails explicitly. The disk estimate reserves temporary indexing
+  and one fresh label state; separate retained run directories also consume disk.
+- Incomplete builds retain a failure record and remove owned payloads. Existing
+  cache/run paths are never overwritten. Cache checksums detect corruption;
+  seeds/fitting parameters do not invalidate unchanged spatial data, while
+  ordered inputs, grid/reader policies and source profiles do.
+- Run selections/file views have the owning context's lifetime. Closing a run
+  flushes labels; reopening existing mutable state/resuming a run is not added.
+- The old pipeline still constructs its own in-memory grid. The next runner
+  must use the provided mapped grid and bounded diagnostics rather than passing
+  the complete mapped cloud through that old constructor.
+
+Verification passed 655 test methods, including 22 new backend checks, all three
+existing source/reconstruction audits and a built-wheel cache-opening check.
+
+**All existing limitation IDs remain open.** Full-scene inference, automatic
+branches affected by LIM-001, Table I reporting and native whole-application
+agreement remain later work.
 
 ## Resolution history
 
