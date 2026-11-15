@@ -927,7 +927,7 @@ def main(argv: list[str] | None = None) -> int:
         help="include close secondary rails to exercise turnout stacks",
     )
     arguments = parser.parse_args(argv)
-    if arguments.command in ("scene-catalog", "prediction-audit", "build-scene-cache", "scene-cache-audit"):
+    if arguments.command in ("scene-catalog", "prediction-audit", "build-scene-cache", "scene-cache-audit", "predict-rails"):
         from .prediction.cli import run_cli as run_prediction_cli
         return run_prediction_cli(arguments)
     if arguments.command in ("evaluation-demo", "evaluation-audit", "evaluate-rails"):

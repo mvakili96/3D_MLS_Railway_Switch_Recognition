@@ -26,6 +26,14 @@ def add_cli(commands):
     cache.add_argument("cache")
     cache.add_argument("--manifest")
     cache.add_argument("--data-root")
+    predict = commands.add_parser("predict-rails", help="run source tracking over a verified multi-tile cache")
+    predict.add_argument("--manifest", required=True)
+    predict.add_argument("--cache", required=True)
+    predict.add_argument("--output", required=True, help="new prediction output directory")
+    predict.add_argument("--run", action="append", help="select a ready run ID; default all ready runs")
+    predict.add_argument("--data-root")
+    predict.add_argument("--max-steps", type=int, help="explicit diagnostic bound per source invocation")
+    predict.add_argument("--retain-history", action="store_true", help="retain full diagnostic step objects")
 
 
 def run_cli(args):
@@ -34,6 +42,20 @@ def run_cli(args):
         if output_path and Path(output_path).exists():
             raise FileExistsError(f"output already exists: {args.output}")
         progress = lambda message: print(message, file=sys.stderr, flush=True)
+        if args.command == "predict-rails":
+            from .runner import run_predictions
+            result = run_predictions(args.manifest, args.cache, args.output, run_ids=args.run,
+                                     data_root=args.data_root, retain_history=args.retain_history,
+                                     max_steps=args.max_steps, progress=progress)
+            print(json.dumps({"status": result["status"], "output": str(Path(args.output)/"manifest.json"),
+                              "runs": [{"run_id": r["run_id"], "status": r["status"],
+                                        "coverage": r.get("coverage"), "failure": r.get("failure")}
+                                       for r in result["runs"]],
+                              "pending_seed_runs": result["pending_seed_runs"],
+                              "nine_path_complete": False}, indent=2, allow_nan=False))
+            statuses = [r["status"] for r in result["runs"]]
+            return (130 if "interrupted" in statuses else 0 if result["status"] != "partial"
+                    else 2 if all(s in ("step_limit", "completed", "completed_with_limitations") for s in statuses) else 1)
         if args.command in ("build-scene-cache", "scene-cache-audit"):
             from .cache import build_scene_cache, open_scene_cache
             if args.data_root and not args.manifest:

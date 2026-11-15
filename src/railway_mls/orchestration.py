@@ -221,12 +221,16 @@ class TrackingEngine:
         *,
         config: ExtractionConfig | None = None,
         rng: RandSource | None = None,
+        retain_history: bool = True,
+        step_callback=None,
     ) -> None:
         self.config = config if config is not None else ExtractionConfig()
         if self.config.grid_size != grid.grid_size:
             raise ValueError("engine configuration must match the grid size")
         self.grid = grid
         self.rng = rng if rng is not None else MsvcRand()
+        self.retain_history = bool(retain_history)
+        self.step_callback = step_callback
         self.layers: list[TrackLayer] = []
         self.current_layer: TrackLayer | None = None
         self.initial_location: InitialLocation | None = None
@@ -311,9 +315,12 @@ class TrackingEngine:
             completed_stacks=self.completed_stacks,
             toe_points=self.toe_points,
             switch_boxes=self.switch_boxes,
+            retain_history=self.retain_history,
+            step_callback=(None if self.step_callback is None else
+                           lambda step: self.step_callback(layer_index, direction, main_track, step)),
         )
         result = tracker.run(max_steps=max_steps)
-        if result.steps:
+        if result.attempted_steps:
             self._initialization_pending = False
         self.distance_from_start = result.distance_from_start
         return TrackingInvocation(layer_index, direction, main_track, result, result.status)

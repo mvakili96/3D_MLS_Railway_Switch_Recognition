@@ -1,0 +1,242 @@
+{
+  "schema_version": 1,
+  "kind": "prediction_experiment",
+  "experiment_id": "vancouver-original-16-18-continuation",
+  "inference": {
+    "data_root": "../Vancouver/Thales_11_20Las",
+    "tiles": [
+      {
+        "path": "16.las",
+        "sha256": "fd85c57093c1f3930c592acb6a3a79660ffbbabec0713a150b27482b04759744"
+      },
+      {
+        "path": "17.las",
+        "sha256": "d88fa5c5b623ab6dbadedf60a3441f0ccc218fb3a4e78d40d6631021ca3b637a"
+      },
+      {
+        "path": "18.las",
+        "sha256": "ab2db64b2d28fd93ca1d69458cc94b72459a5e8e409c11b7699ce04739401480"
+      }
+    ],
+    "input_collection": "original_vancouver_extracted",
+    "source_baseline": "b04978b12f533a86f2fd24527e5dc4b4779a082461a7050142cb8e372b6c09f0",
+    "record_selection": "per_file_even_zero_based",
+    "bounds_policy": "fixed_header_union",
+    "header_roundoff": "omit_outside_within_four_ulps",
+    "coordinate_units": "m",
+    "config": {
+      "grid_size": 1.0,
+      "skip_rate": 1,
+      "track_window_width": 0.42,
+      "track_window_length": 1.0,
+      "max_distance_for_ransac": 0.06,
+      "track_gauge": 1.5,
+      "min_track_points": 5,
+      "min_points": 20,
+      "mdl_weight": 0.4,
+      "grouping_distance": 0.15,
+      "min_track_intensity": 0,
+      "max_track_intensity": 1500
+    },
+    "budgets": {
+      "memory_bytes": 8589934592,
+      "cache_disk_bytes": 107374182400
+    },
+    "runs": [
+      {
+        "run_id": "source-16-18",
+        "status": "ready",
+        "seed": {
+          "xyz": [
+            513194.41,
+            5458237.85,
+            6.61
+          ],
+          "angle": 355.0,
+          "mode": 4
+        },
+        "seed_provenance": "Original commented initialization in ADE MainForm.cpp:383; previously verified on unannotated tile 16 in the interactive viewer. Direct supplied-seed initialization once is planned for headless runs. Input coverage extension: tile 18 covers the upper route beyond tile 16; the declared 16/17-only pilot stopped in a header-footprint gap. No reference labels or original predicted vectors were used to choose this tile.",
+        "random_seed": 1,
+        "direction": "single",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-1",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-2",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-3",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-4",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-5",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-6",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-7",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-8",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-9",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      }
+    ]
+  },
+  "evaluation": {
+    "reference_manifest": "evaluation-vancouver.json",
+    "expected_path_ids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "mappings": [
+      {
+        "run_id": "source-16-18",
+        "status": "pending",
+        "path_id": null,
+        "layer": null,
+        "note": "Review generated geometry before assigning a reference path; tile 16 is not a path ID."
+      },
+      {
+        "run_id": "vancouver-path-1",
+        "status": "pending",
+        "path_id": 1,
+        "layer": null,
+        "note": "Intended reference path only; seed and generated layer mapping still require review."
+      },
+      {
+        "run_id": "vancouver-path-2",
+        "status": "pending",
+        "path_id": 2,
+        "layer": null,
+        "note": "Intended reference path only; seed and generated layer mapping still require review."
+      },
+      {
+        "run_id": "vancouver-path-3",
+        "status": "pending",
+        "path_id": 3,
+        "layer": null,
+        "note": "Intended reference path only; seed and generated layer mapping still require review."
+      },
+      {
+        "run_id": "vancouver-path-4",
+        "status": "pending",
+        "path_id": 4,
+        "layer": null,
+        "note": "Intended reference path only; seed and generated layer mapping still require review."
+      },
+      {
+        "run_id": "vancouver-path-5",
+        "status": "pending",
+        "path_id": 5,
+        "layer": null,
+        "note": "Intended reference path only; seed and generated layer mapping still require review."
+      },
+      {
+        "run_id": "vancouver-path-6",
+        "status": "pending",
+        "path_id": 6,
+        "layer": null,
+        "note": "Intended reference path only; seed and generated layer mapping still require review."
+      },
+      {
+        "run_id": "vancouver-path-7",
+        "status": "pending",
+        "path_id": 7,
+        "layer": null,
+        "note": "Intended reference path only; seed and generated layer mapping still require review."
+      },
+      {
+        "run_id": "vancouver-path-8",
+        "status": "pending",
+        "path_id": 8,
+        "layer": null,
+        "note": "Intended reference path only; seed and generated layer mapping still require review."
+      },
+      {
+        "run_id": "vancouver-path-9",
+        "status": "pending",
+        "path_id": 9,
+        "layer": null,
+        "note": "Intended reference path only; seed and generated layer mapping still require review."
+      }
+    ]
+  }
+}

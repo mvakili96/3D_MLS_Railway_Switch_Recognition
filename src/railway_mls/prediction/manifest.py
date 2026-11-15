@@ -325,7 +325,7 @@ def audit_prediction_manifest(path, *, data_root=None, progress=None):
                           "pending_path_mappings": pending_mappings,
                           "input_configuration_ready": not errors and bool(ready_runs),
                           "expected_path_configuration_ready": configuration_ready,
-                          "prediction_runner_available": False,
+                          "prediction_runner_available": True,
                           "seed_initialization_verified": False,
                           "predictions_generated": False, "nine_path_complete": False},
             "policies": {"record_selection": inference.record_selection,

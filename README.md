@@ -237,8 +237,8 @@ their Python runtime and demo work without those headers or PCL libraries.
 ## Prediction scene catalog
 
 The first full-scene prediction milestone inventories extracted LAS/LAZ inputs
-and validates experiment settings. It prepares the input contract for the later
-multi-tile loader and headless tracker. It does not generate predictions yet.
+and validates experiment settings used by the multi-tile loader and headless
+tracker. Catalog/audit commands themselves do not generate predictions.
 
 From the repository root, using the existing environment and LAS extra:
 
@@ -318,8 +318,8 @@ Labels start at class 0/segment -1 for every new run; overlapping selections
 share their run's labels. Cached coordinates and intensities stay read-only,
 and independent run states do not share labels. Selections/file views must stay
 within the context-manager lifetime. Do not call the old in-memory pipeline
-constructor on the entire mapped cloud; the next headless-runner increment will
-wire the cached grid into the full workflow.
+constructor on the entire mapped cloud; use the headless command below to run
+the source workflow directly with the cached grid.
 
 The declared memory/disk limits are checked during construction, state creation
 and query allocation. Paging releases file-backed pages where supported. These
@@ -330,7 +330,65 @@ it never reduces density or substitutes a smaller scene.
 The real tile-16/17 cache retained **37,479,462 points** with two reported ULP
 omissions. Independent streaming checks matched three ordered neighborhoods,
 including 771,497 points across the tile join. This establishes multi-tile input
-lookup; demonstrating continuous real tracking is the next milestone.
+lookup. The headless runner below additionally demonstrates continuous tracing.
+
+## Headless scene tracking
+
+`predict-rails` runs the existing source-based tracking/orchestration over a
+verified cache without Open3D. Inputs stay in one scene/grid across tile joins;
+labels, RNG and active stacks are not reset at those joins.
+
+The original tile-16/17 pilot stops after 19 accepted windows because the traced
+upper route leaves both files' footprints. Tile 18 covers that raw-data region.
+The separately declared continuation manifest adds tile 18 with a pinned hash,
+retaining the original seed and settings. It does not change the original pilot
+or automatically select/restart routes.
+
+```bash
+python -m railway_mls build-scene-cache \
+  --manifest configs/prediction-vancouver-continuation.json \
+  --output outputs/continuation-cache-run-01
+python -m railway_mls predict-rails \
+  --manifest configs/prediction-vancouver-continuation.json \
+  --cache outputs/continuation-cache-run-01 \
+  --output outputs/continuation-predictions-run-01
+```
+
+Choose new output directories. By default all ready seeds run; pending seeds
+are listed explicitly. Use `--run source-16-18` to select that ready run, or
+repeat `--run` for several declared ready runs. Requesting a pending or unknown
+seed fails before starting. Strict source branches are required; the viewer's
+fitted-reference recovery is not silently enabled.
+
+Each run writes `vectors.csv` (the evaluator's existing Python-vector schema),
+`segments.csv`, a streaming `steps.jsonl`, and `manifest.json`. Geometry remains
+separate by run/layer/vector. The manifest records source stops, pass/branch
+identities, RNG state/count, source configuration, input/cache/artifact hashes,
+limitations and header-based coverage hints. It also retains partial vectors
+after resource/initialization failures or interruption. A source stop can occur
+after vector mutations; exports preserve those mutations rather than trimming
+the source result. Reference files are not read and evaluation is not performed.
+
+Compact diagnostic history is the default. Explicit iteration/accepted-step
+counters and cumulative findings preserve semantics while retaining just the
+last detailed step per invocation. Source layers, completed stacks and required
+supports remain intact. Existing APIs/viewer retain their full-history default.
+`--retain-history` enables that diagnostic mode for this runner. Compact mode
+does not impose a constant bound on all source model/support state.
+
+There is no default step cap. `--max-steps N` explicitly limits each source
+invocation and reports a truncated `step_limit` result; it does not resume a
+previous output directory. CLI exit codes are 0 for completed workflows including
+documented limitations, 2 for diagnostic truncation, 1 for other failures and
+130 for interruption. Completion describes the selected workflow, not complete
+reference coverage. The remaining nine path seeds and mappings are still pending.
+
+The strict continuation accepted **50 windows over 49.80 m**, including 31
+accepted centers beyond tile 16, then stopped at the declared scene edge.
+Full/compact runs had identical vectors, labels, journals and RNG state/count.
+The full regression suite passed **672 tests**, including 17 new headless checks.
+Existing LIM-001 and LIM-002 findings remain recorded. Matching the generated
+routes to reference paths and scoring them is the next milestone.
 
 ## What stays local
 
