@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from copy import copy
+from collections import Counter
 from dataclasses import dataclass, replace
 from math import isfinite
 from operator import index
@@ -107,12 +108,23 @@ class TrackingResult:
     recognition: StackRecognitionBatch | None = None
     toe_detection: ToeBatchResult | None = None
     switch_box_detection: SwitchBoxBatch | None = None
+    attempted_step_count: int | None = None
+    accepted_step_count: int | None = None
+    history_complete: bool = True
+    models_reference_comparable: bool = True
+    model_status_counts: tuple[tuple[str, int], ...] = ()
+    diagnostic_counts: tuple[tuple[str, int], ...] = ()
+
+    @property
+    def attempted_steps(self) -> int:
+        return len(self.steps) if self.attempted_step_count is None else self.attempted_step_count
 
     @property
     def reference_comparable(self) -> bool:
         """False if a port policy bypassed undefined native intermediate access."""
         return (
             not self.status.startswith(("undefined_source", "nonfinite"))
+            and self.models_reference_comparable
             and all(model.reference_comparable for step in self.steps for model in step.models)
             and (self.toe_detection is None or self.toe_detection.reference_comparable)
             and (self.switch_box_detection is None or self.switch_box_detection.reference_comparable)
@@ -120,7 +132,8 @@ class TrackingResult:
 
     @property
     def accepted_steps(self) -> int:
-        return sum(step.accepted for step in self.steps)
+        return (sum(step.accepted for step in self.steps) if self.accepted_step_count is None
+                else self.accepted_step_count)
 
 
 class SequentialTracker:
@@ -148,6 +161,8 @@ class SequentialTracker:
         completed_stacks: list[TrackStack] | None = None,
         toe_points: list[ToePoint] | None = None,
         switch_boxes: list[SwitchBox] | None = None,
+        retain_history: bool = True,
+        step_callback=None,
     ) -> None:
         self.config = config if config is not None else ExtractionConfig()
         if self.config.grid_size != grid.grid_size:
@@ -177,6 +192,11 @@ class SequentialTracker:
         self.completed_stacks = completed_stacks if completed_stacks is not None else []
         self.active_stack = TrackStack()
         self.steps: list[TrackingStep] = []
+        self.retain_history = bool(retain_history)
+        self.step_callback = step_callback
+        self.attempted_count = self.accepted_count = 0
+        self.models_reference_comparable = True
+        self.model_counts, self.finding_counts = Counter(), Counter()
         self.status = "ready" if layer.track_segments else "no_segments"
         self.current = _snapshot(layer.track_segments[-1]) if layer.track_segments else None
 
@@ -187,11 +207,28 @@ class SequentialTracker:
         remaining = limit
         while self.status == "ready" and (remaining is None or remaining > 0):
             step = self._step()
-            self.steps.append(step)
+            self.attempted_count += 1
+            self.accepted_count += int(step.accepted)
+            if self.retain_history:
+                self.steps.append(step)
+            else:
+                self.steps[:] = [step]
+            for model in step.models:
+                self.model_counts[model.status] += 1
+                if not model.reference_comparable:
+                    self.models_reference_comparable = False
+                    self.finding_counts["mdl:"+model.status] += 1
+            if step.selection is not None and step.selection.status == "unresolved_gauge_tie":
+                self.finding_counts["selection:"+step.selection.status] += 1
+            for attempt in step.attempts:
+                if attempt.extraction is not None and attempt.extraction.status == "partial_clustering":
+                    self.finding_counts["extraction:partial_clustering"] += 1
             if remaining is not None:
                 remaining -= 1
             if not step.accepted or step.status != "accepted":
                 self.status = step.status
+            if self.step_callback is not None:
+                self.step_callback(step)
         status = "step_limit" if self.status == "ready" else self.status
         if self.recognition is None and status in {
             "insufficient_window_points",
@@ -233,6 +270,12 @@ class SequentialTracker:
             self.recognition,
             self.toe_detection,
             self.switch_box_detection,
+            attempted_step_count=self.attempted_count,
+            accepted_step_count=self.accepted_count,
+            history_complete=self.retain_history,
+            models_reference_comparable=self.models_reference_comparable,
+            model_status_counts=tuple(sorted(self.model_counts.items())),
+            diagnostic_counts=tuple(sorted(self.finding_counts.items())),
         )
 
     def _step(self) -> TrackingStep:
@@ -243,7 +286,7 @@ class SequentialTracker:
         minimum_points = settings.min_points if settings.min_points >= 0 else float("inf")
         minimum_heads = settings.min_track_points if settings.min_track_points >= 0 else float("inf")
         first, second = current.track1, current.track2
-        if not self.steps:
+        if not self.attempted_count:
             mode = direction_mode(first.member_line.end, first.member_line.begin)
         else:
             mode = direction_mode(
@@ -256,7 +299,7 @@ class SequentialTracker:
 
         def finish(status: str, accepted: bool = False) -> TrackingStep:
             return TrackingStep(
-                len(self.steps) + 1,
+                self.attempted_count + 1,
                 mode,
                 states,
                 tuple(attempts),

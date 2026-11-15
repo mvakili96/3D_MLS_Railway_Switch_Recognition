@@ -25,6 +25,15 @@ must revisit every open ID, including LIM-001 (uninitialized toe reference lines
 
 ## Implementation progress
 
+The headless scene runner now uses the verified mapped grid directly, with one
+source RNG/label state per run and optional compact diagnostic retention. The
+strict declared 16/17/18 continuation traces 50 accepted windows/49.80 m across
+the tile join; original 16/17 input stops in a header-footprint gap. Full and
+compact histories produce identical vectors, labels, journals and RNG outcomes.
+Source model/stacks remain retained, diagnostics are cumulative, and no viewer
+reference repair is enabled. Source-based extraction is runnable; reference-path
+matching, nine-path seed completion, evaluation and Table I assembly remain later.
+
 The multi-tile input milestone adds immutable disk-backed XYZ/intensity/source
 identity storage, a sparse stable membership index and fresh per-run labels.
 `build-scene-cache` and `scene-cache-audit` preserve the declared sampling and

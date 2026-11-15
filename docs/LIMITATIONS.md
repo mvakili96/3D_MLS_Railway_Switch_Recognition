@@ -767,6 +767,65 @@ existing source/reconstruction audits and a built-wheel cache-opening check.
 branches affected by LIM-001, Table I reporting and native whole-application
 agreement remain later work.
 
+### Headless continuous tracking checkpoint — 2026-11-15
+
+The headless runner consumes only inference definitions and verified cache
+payloads. It uses source single/bidirectional and branch orchestration with a
+shared cloud, labels and RNG within each run. It never reads reference LAS or
+saved original rail predictions. Independent runs receive fresh state. The
+source evaluator and computational constants remain unchanged.
+
+The strict 16/17 pilot still accepts 19 windows/18.6184 m and ends with
+`insufficient_window_points`. Individual header footprints expose the failed
+search's gap even though the union bounding box contains it. Raw tile 18 covers
+the upper route's continuation. A separate checked-in 16/17/18 manifest declares
+that input extension; the original manifest is preserved. This is an explicit
+new input scope chosen from raw headers and the source stop, not an automatic
+restart, reference-guided route or algorithm correction.
+
+The extended strict scene accepts 50 windows/49.79518321994075 m, including 31
+accepted centers beyond tile 16. It ends at the scene header edge with the same
+native point-shortage stop. Source recognition/toe postpasses retain unavailable
+toe references (LIM-001), and MDL comparisons retain documented non-comparable
+intermediates (LIM-002). No viewer fitted-reference recovery is enabled. These
+results establish continuous source-based extraction over this local scene,
+not reference path identity, ground-truth accuracy or complete nine-path coverage.
+
+Full and compact real runs have identical exported vectors/segments, step
+journals, final labels and RNG: 705,879 draws, final MSVC state 3,407,192,942.
+Both attempt 51 steps, with 50 accepted. Compact history retains one detailed
+step; full history retains 51. Observed RSS peaks are 250,658,816 and
+309,559,296 bytes respectively. All source layer segments, completed stacks and
+supports remain available to source postpasses; compact diagnostics do not bound
+all source-state growth. Backend checks remain boundary checks, not OS limits.
+
+Additional lifecycle/output contracts remain explicit:
+
+- Direct supplied-seed initialization happens once before source orchestration;
+  the viewer's preview/confirmation draws are not reproduced. Native reverse/
+  forward resets inside bidirectional orchestration remain source behavior.
+- Cumulative counters/MDL-selection-clustering findings survive dropped detailed
+  steps. Existing APIs retain full history by default. Observer hooks consume no
+  RNG draws and must not mutate the source state.
+- Source stops, caps, resource exhaustion, partial initialization and interruption
+  preserve available geometry and journal events. Partial workflows can have
+  unavailable postpass summaries and are not marked comparable. Exports preserve
+  vector mutations that precede a native failed-step gate.
+- Footprint/bounding-box hints are diagnostics, not proof of rail occupancy.
+  The headless command does not automatically add tiles or reseed a failed path.
+- Existing output paths are rejected; complete process resume is not implemented.
+  Ready-run selection is distinct from nine-path readiness; pending seeds remain
+  visible and cannot be explicitly selected as if initialized.
+- The primary headless profile requires strict branches. The viewer repair
+  remains separate and is not imported merely because a manifest names it.
+
+Verification passed 672 test methods, including 17 new compact/headless tests,
+the original/native component suite, three source/reconstruction audits and a
+wheel build. Local experiments and vectors remain under
+`outputs/headless-tracking/`. **All existing limitation IDs remain open.**
+The next work is reviewed path/layer matching and pilot evaluation; nine-path
+prediction generation and Table I reporting remain later increments.
+
 ## Resolution history
 
 No entries are closed. Record future decisions here with ID, date, evidence,
