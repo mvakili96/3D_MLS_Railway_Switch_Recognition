@@ -277,6 +277,61 @@ The tracked pilot manifest separates inference settings from evaluation scope;
 the inference API receives no annotation or saved-model paths. The frozen tracker
 and evaluator calculations are unchanged.
 
+## Multi-tile input cache
+
+The next input milestone provides a disk-backed cloud and stable sparse grid.
+It preserves the manifest's source sampling, tile/record order, world coordinates,
+duplicate records and shared-label behavior. It does not run full-scene tracking.
+
+Build and verify a new cache from the pilot manifest:
+
+```bash
+python -m railway_mls build-scene-cache \
+  --manifest configs/prediction-vancouver-pilot.json \
+  --output outputs/multitile-cache-run-01
+python -m railway_mls scene-cache-audit outputs/multitile-cache-run-01 \
+  --manifest configs/prediction-vancouver-pilot.json
+```
+
+The builder streams the source-selected records, applies the declared header
+policy and writes read-only coordinate/intensity/source-ID files plus a stable
+cell-membership index. Cache identity includes ordered input hashes, source and
+decoding profiles, bounds policy, grid size and sampling/boundary settings.
+Seed, RNG and fitting changes do not invalidate unchanged spatial input. Reopening
+verifies the cache manifest and payload checksums; the cached snapshot can be
+used without rereading the original LAS files. Existing output paths are rejected.
+
+Use the API to create a fresh label state and query neighborhoods:
+
+```python
+from railway_mls.prediction import load_inference_spec, open_scene_cache
+
+spec = load_inference_spec("configs/prediction-vancouver-pilot.json")
+cache = open_scene_cache("outputs/multitile-cache-run-01", inference=spec)
+with cache.new_run("outputs/multitile-label-state-01") as scene:
+    points = scene.grid.neighbor_points(513194.41, 5458237.85)
+    tile_indices, original_record_ids = scene.cloud.source_records(points.indices)
+    print(len(points))
+```
+
+Labels start at class 0/segment -1 for every new run; overlapping selections
+share their run's labels. Cached coordinates and intensities stay read-only,
+and independent run states do not share labels. Selections/file views must stay
+within the context-manager lifetime. Do not call the old in-memory pipeline
+constructor on the entire mapped cloud; the next headless-runner increment will
+wire the cached grid into the full workflow.
+
+The declared memory/disk limits are checked during construction, state creation
+and query allocation. Paging releases file-backed pages where supported. These
+are backend-boundary checks and conservative estimates, not an OS-enforced limit
+on arbitrary allocations made by a caller. Exhaustion reports `resource_limited`;
+it never reduces density or substitutes a smaller scene.
+
+The real tile-16/17 cache retained **37,479,462 points** with two reported ULP
+omissions. Independent streaming checks matched three ordered neighborhoods,
+including 771,497 points across the tile join. This establishes multi-tile input
+lookup; demonstrating continuous real tracking is the next milestone.
+
 ## What stays local
 
 The root `.gitignore` excludes datasets and extracted data, dependency installation

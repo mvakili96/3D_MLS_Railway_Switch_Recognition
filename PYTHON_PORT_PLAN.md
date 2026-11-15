@@ -25,6 +25,14 @@ must revisit every open ID, including LIM-001 (uninitialized toe reference lines
 
 ## Implementation progress
 
+The multi-tile input milestone adds immutable disk-backed XYZ/intensity/source
+identity storage, a sparse stable membership index and fresh per-run labels.
+`build-scene-cache` and `scene-cache-audit` preserve the declared sampling and
+coordinate policies. Small-scene lookup/tracking-prefix comparisons match the
+existing in-memory backend; real tile-16/17 neighborhoods match independent
+streamed scalar-grid checks. Continuous full-scene tracking remains a later
+headless-runner increment. Original computational/source baselines are unchanged.
+
 The first scene-prediction milestone adds `scene-catalog`, `prediction-audit`
 and `configs/prediction-vancouver-pilot.json`. It fixes original tile order,
 hashes, input/initialization policies and explicit pending path assignments.
