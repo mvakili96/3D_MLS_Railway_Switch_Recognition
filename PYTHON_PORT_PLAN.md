@@ -25,6 +25,25 @@ must revisit every open ID, including LIM-001 (uninitialized toe reference lines
 
 ## Implementation progress
 
+The nine-path workflow now declares all 47 extracted original tiles, independent
+bidirectional strict runs and all 24 reference parts. Planning/prediction/
+evaluation ledgers retain every path and missing/failed case. Manual viewer seed
+captures version new definitions without changing frozen inputs; post-run layer
+previews do not score or read reference labels. Explicit reviewed mappings feed
+the existing evaluator, including disjoint batches from one frozen definition.
+One complete source pose (Path 3) is available; eight manual starting poses remain
+pending. The full original-data cache retains 835,672,256 points after six
+documented ULP omissions. Full nine-path data generation is pending manual starts;
+Table I reporting remains separate. No source equations or repair policy changed.
+
+The expanded real Path 3 attempt accepts 252 reverse and 298 forward windows,
+then stops at `undefined_source_head_extraction`, preserving partial geometry.
+Post-run route review precedes evaluation on all four Path 3 parts. Assignment
+coverage is 89.4910% and nTP/all positives is 77.4773%, versus original-model
+99.8840% and 83.4752% under the same source2018 scope. All nine paths and 24
+parts remain accounted in the ledger; eight unseeded paths have unavailable
+scores. Artifacts: `outputs/vancouver-nine-path-evaluation-verified/`.
+
 The matched-pilot evaluator consumes separately reviewed, hash-pinned prediction
 exports without rerunning inference. The unchanged strict 16/17/18 pilot layer
 maps to Path 3 after post-run route inspection. Both Python and saved original
@@ -34,7 +53,8 @@ and passes 11.27% of all positives; original assignments reach 99.88%, with 83.4
 of all positives passing. Coverage diagnostics are separate from native metric
 names. Frozen vectors/provenance, per-case/path comparisons and a static overlay
 are exported; fragments are never joined across gaps. Source limitations remain
-visible. Nine-path seed completion/extraction and Table I reporting remain next.
+visible. The larger experiment workflow is below; seed completion and Table I
+reporting remain outstanding.
 
 The headless scene runner now uses the verified mapped grid directly, with one
 source RNG/label state per run and optional compact diagnostic retention. The

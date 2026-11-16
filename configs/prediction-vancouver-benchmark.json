@@ -1,0 +1,401 @@
+{
+  "schema_version": 1,
+  "kind": "prediction_experiment",
+  "experiment_id": "vancouver-original-nine-path-benchmark",
+  "inference": {
+    "data_root": "../Vancouver",
+    "tiles": [
+      {
+        "path": "Thales_11_20Las/11.las",
+        "sha256": "ef9730b6020b550729be8fcfa9fee27a1c1e95bcead0e03262ed2cfefc251e38"
+      },
+      {
+        "path": "Thales_11_20Las/12.las",
+        "sha256": "9a98b93c3131e39117bc461b512bc199f249d0581e4d7206e0ed19373e0fb845"
+      },
+      {
+        "path": "Thales_11_20Las/13.las",
+        "sha256": "6a1de6157519a5e19c002f445539c85bada5af826e70f89ba4165f3a0285518b"
+      },
+      {
+        "path": "Thales_11_20Las/14.las",
+        "sha256": "31d0b1169f5673368ad37f4f264d35d65f3a4673ed06910fb32c5a9e78f9010d"
+      },
+      {
+        "path": "Thales_11_20Las/15.las",
+        "sha256": "d04e7c25075253ae488b901956fbcfd4983f648c0b3d1139f7edd61d3a5cb346"
+      },
+      {
+        "path": "Thales_11_20Las/16.las",
+        "sha256": "fd85c57093c1f3930c592acb6a3a79660ffbbabec0713a150b27482b04759744"
+      },
+      {
+        "path": "Thales_11_20Las/17.las",
+        "sha256": "d88fa5c5b623ab6dbadedf60a3441f0ccc218fb3a4e78d40d6631021ca3b637a"
+      },
+      {
+        "path": "Thales_11_20Las/18.las",
+        "sha256": "ab2db64b2d28fd93ca1d69458cc94b72459a5e8e409c11b7699ce04739401480"
+      },
+      {
+        "path": "Thales_11_20Las/19.las",
+        "sha256": "e1dc02435e5e74cbb79f75919a1feb169e40099a15abebb941e570e154695b9f"
+      },
+      {
+        "path": "Thales_11_20Las/20.las",
+        "sha256": "001d4ed7c3b3a7f71ea984613eb695c7e80892a8b159fb2c534cf67ee253cf47"
+      },
+      {
+        "path": "Thales_21_30Las/21.las",
+        "sha256": "a58de4d2dfd0a1aa7a7f45ba403bbff35831a3b244e6ea5b30a2261181977ba4"
+      },
+      {
+        "path": "Thales_21_30Las/22.las",
+        "sha256": "40b5159d7566e279d4607698092c528bbf47aad83f78f20f1ba09effc45c2280"
+      },
+      {
+        "path": "Thales_21_30Las/23.las",
+        "sha256": "e85f9ebbf46e4d8458c64520d8dd81108d9018c98c69d25daf1fb061b4722625"
+      },
+      {
+        "path": "Thales_21_30Las/24.las",
+        "sha256": "73176585e0fb79e2812475555648e24779cfcb3adc9e3c0281d0379a60740735"
+      },
+      {
+        "path": "Thales_21_30Las/25.las",
+        "sha256": "6a8efa50569ae4f97fc3da30d3fe02808329b4a9446573486e069aea6ca993d1"
+      },
+      {
+        "path": "Thales_21_30Las/26.las",
+        "sha256": "d3201c12d83e91ffbfd6c5132b5be4ac97dad5f7b633819b8f6efdb54fdf2ba1"
+      },
+      {
+        "path": "Thales_21_30Las/27.las",
+        "sha256": "f00c4740950a55a99115ca98db7c74f87539397733236b9fc861b0b61f37a55b"
+      },
+      {
+        "path": "Thales_21_30Las/28.las",
+        "sha256": "410f4542381ad52a8b785fb8ac8a3b441e484b2addbb7768803489c90ac7b858"
+      },
+      {
+        "path": "Thales_21_30Las/29.las",
+        "sha256": "4dc2c3b8e0ab2c07238dde9386010e60ebfd5cef32d17e5df9d0e052cc7485a1"
+      },
+      {
+        "path": "Thales_21_30Las/30.las",
+        "sha256": "2ce47a5f0ffc03ffac3ea117d7012974ae53c5579f546cc0a3ff7e32bf93f6c4"
+      },
+      {
+        "path": "Thales_31_40Las/31.las",
+        "sha256": "60b4185a153aa29eacae38dc2b728e65a97e72c10ccb316927af5841965959c6"
+      },
+      {
+        "path": "Thales_31_40Las/32.las",
+        "sha256": "c7d3ca7342d276ebedc5af1596c2ea0ab77370595ab00e1d5cf5ac990de264c2"
+      },
+      {
+        "path": "Thales_31_40Las/33.las",
+        "sha256": "4bee4cc3db4518d1b275b3d65d5dacd21ce1ccbc6da5c8be4ba88aec6b52991b"
+      },
+      {
+        "path": "Thales_31_40Las/34.las",
+        "sha256": "f5a787d0c41ef4c742c7d039cae3011057b33d739200c559806a9b9b12a600d8"
+      },
+      {
+        "path": "Thales_31_40Las/35.las",
+        "sha256": "e1900fd37ab0024dc5ab6a5ce6e60115d572643758766b05674e2a911faf52b0"
+      },
+      {
+        "path": "Thales_31_40Las/36.las",
+        "sha256": "9eef4dbf4c8376af76c2ed8f460a3b65b23d7e8c4528aa02a86f10463c01d90e"
+      },
+      {
+        "path": "Thales_31_40Las/37.las",
+        "sha256": "4bc1cd8fb6c9590d8cbe8a949a4b84b4a7a4ee9198dae65d8721f0bb8794b073"
+      },
+      {
+        "path": "Thales_31_40Las/38.las",
+        "sha256": "e0e67d56c3a5702d02565f12582e4baaaf92bf758ef4f5d92d188ce6428ccff4"
+      },
+      {
+        "path": "Thales_31_40Las/39.las",
+        "sha256": "06b481a25b47a6f943833009bf22b006ab074faf2f3f39a5b0fc6f2fa98d7e0f"
+      },
+      {
+        "path": "Thales_31_40Las/40.las",
+        "sha256": "f605da0d9a4d0d7c902b632d1f316bdcc248e3a9e9cd65b31ff4c487355de317"
+      },
+      {
+        "path": "Thales_41_50Las/41.las",
+        "sha256": "d7279e842878575d9f5993a45bc4a204e62f94c056d0d940355fe03ef5fa3b1d"
+      },
+      {
+        "path": "Thales_41_50Las/42.las",
+        "sha256": "484f968ec890df1e7983d1af612da7a4de1c0a73b3c76235a8ddf2f94cc01373"
+      },
+      {
+        "path": "Thales_41_50Las/43.las",
+        "sha256": "703a35070cf5f631e9f5e96285ee2cbcb27fbdb79b41412441b32d3c108f7b94"
+      },
+      {
+        "path": "Thales_41_50Las/44.las",
+        "sha256": "0d11609053bf0b3065f586a5feceb0b8e69fff61e4d9a8a8a707f3a2055394c9"
+      },
+      {
+        "path": "Thales_41_50Las/45.las",
+        "sha256": "03405587408ddbe751fa00dfb950228faf4f31c2c763e4d83ccbbcbc5ef377e0"
+      },
+      {
+        "path": "Thales_41_50Las/46.las",
+        "sha256": "55823d5062657e0347e77107a37eeeac42ae63680381245489d11a7e81eec725"
+      },
+      {
+        "path": "Thales_41_50Las/47.las",
+        "sha256": "3994e3718a27a35d619b07617e947d85ce05339bfa97bbe6c1c6962a53e13ed5"
+      },
+      {
+        "path": "Thales_41_50Las/48.las",
+        "sha256": "a8d70b28462cc65f25deea52dfd2a93d705cd5a7ff25989e97e0505b746067a1"
+      },
+      {
+        "path": "Thales_41_50Las/49.las",
+        "sha256": "64b2e508a4b069813677b5754ee7f997569d86e78d1689d7305914a078ee6fd3"
+      },
+      {
+        "path": "Thales_41_50Las/50.las",
+        "sha256": "ffdc46514547a8952088cb84f73b94f1a156c98b39ad5383244a0120cc33a1a5"
+      },
+      {
+        "path": "Thales51_60Las/51.las",
+        "sha256": "181df2989582ad2b2a7645077815e66810419c4b5c9eb84210c9dec21ab68a5f"
+      },
+      {
+        "path": "Thales51_60Las/52.las",
+        "sha256": "dcb8516580e5324cf823ca085d20face07d37b2929e79f17ea1184a9032d35a5"
+      },
+      {
+        "path": "Thales51_60Las/53.las",
+        "sha256": "08bebf5b5cb5ec696b9b2353edb520a15c2badb12627a8f69cb425d0071cd7f0"
+      },
+      {
+        "path": "Thales51_60Las/54.las",
+        "sha256": "825da3ac66da437d1745848a045236d7dc41b0ceb60e4a052e0fd13680df6223"
+      },
+      {
+        "path": "Thales51_60Las/55.las",
+        "sha256": "d333d9b7767c81cdfa3cc34fa3e7d47adee89227f332a3f3532b03a4c198a3c7"
+      },
+      {
+        "path": "Thales51_60Las/56.las",
+        "sha256": "fc9da1272af8d19b55275ead5c955fae8428e6e9a622b2cf4d78696a2707b0ef"
+      },
+      {
+        "path": "Thales51_60Las/60.las",
+        "sha256": "3bc3aa1cf7fbed5026ab82dabe2be9f60f72f83810af47e35c75de00daa87a8e"
+      }
+    ],
+    "input_collection": "original_vancouver_extracted",
+    "source_baseline": "b04978b12f533a86f2fd24527e5dc4b4779a082461a7050142cb8e372b6c09f0",
+    "record_selection": "per_file_even_zero_based",
+    "bounds_policy": "fixed_header_union",
+    "header_roundoff": "omit_outside_within_four_ulps",
+    "coordinate_units": "m",
+    "config": {
+      "grid_size": 1.0,
+      "skip_rate": 1,
+      "track_window_width": 0.42,
+      "track_window_length": 1.0,
+      "max_distance_for_ransac": 0.06,
+      "track_gauge": 1.5,
+      "min_track_points": 5,
+      "min_points": 20,
+      "mdl_weight": 0.4,
+      "grouping_distance": 0.15,
+      "min_track_intensity": 0,
+      "max_track_intensity": 1500
+    },
+    "budgets": {
+      "memory_bytes": 8589934592,
+      "cache_disk_bytes": 107374182400
+    },
+    "runs": [
+      {
+        "run_id": "vancouver-path-1",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-2",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-3",
+        "status": "ready",
+        "seed": {
+          "xyz": [
+            513194.41,
+            5458237.85,
+            6.61
+          ],
+          "angle": 355.0,
+          "mode": 4
+        },
+        "seed_provenance": "Original commented MainForm.cpp:383 source pose. The unchanged strict pilot was reviewed as Path 3 before this expanded-scene experiment. Use the same supplied start with the source bidirectional workflow; no reference coordinates or fitted reference models supply seed geometry.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-4",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-5",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-6",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-7",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-8",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      },
+      {
+        "run_id": "vancouver-path-9",
+        "status": "pending",
+        "seed": null,
+        "seed_provenance": "Pending review of original setup notes and manual selection on unannotated data. Grade_param.xlsx has incomplete Path 1/2 notes; no complete nine-path seed set is established.",
+        "random_seed": 1,
+        "direction": "bidirectional",
+        "branch_policy": "strict",
+        "max_steps": null
+      }
+    ]
+  },
+  "evaluation": {
+    "reference_manifest": "evaluation-vancouver.json",
+    "expected_path_ids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "mappings": [
+      {
+        "run_id": "vancouver-path-1",
+        "status": "pending",
+        "path_id": 1,
+        "layer": null,
+        "note": "Intended route identity; freeze output and explicitly review exported layers before evaluation."
+      },
+      {
+        "run_id": "vancouver-path-2",
+        "status": "pending",
+        "path_id": 2,
+        "layer": null,
+        "note": "Intended route identity; freeze output and explicitly review exported layers before evaluation."
+      },
+      {
+        "run_id": "vancouver-path-3",
+        "status": "pending",
+        "path_id": 3,
+        "layer": null,
+        "note": "Intended route identity; freeze output and explicitly review exported layers before evaluation."
+      },
+      {
+        "run_id": "vancouver-path-4",
+        "status": "pending",
+        "path_id": 4,
+        "layer": null,
+        "note": "Intended route identity; freeze output and explicitly review exported layers before evaluation."
+      },
+      {
+        "run_id": "vancouver-path-5",
+        "status": "pending",
+        "path_id": 5,
+        "layer": null,
+        "note": "Intended route identity; freeze output and explicitly review exported layers before evaluation."
+      },
+      {
+        "run_id": "vancouver-path-6",
+        "status": "pending",
+        "path_id": 6,
+        "layer": null,
+        "note": "Intended route identity; freeze output and explicitly review exported layers before evaluation."
+      },
+      {
+        "run_id": "vancouver-path-7",
+        "status": "pending",
+        "path_id": 7,
+        "layer": null,
+        "note": "Intended route identity; freeze output and explicitly review exported layers before evaluation."
+      },
+      {
+        "run_id": "vancouver-path-8",
+        "status": "pending",
+        "path_id": 8,
+        "layer": null,
+        "note": "Intended route identity; freeze output and explicitly review exported layers before evaluation."
+      },
+      {
+        "run_id": "vancouver-path-9",
+        "status": "pending",
+        "path_id": 9,
+        "layer": null,
+        "note": "Intended route identity; freeze output and explicitly review exported layers before evaluation."
+      }
+    ]
+  }
+}
