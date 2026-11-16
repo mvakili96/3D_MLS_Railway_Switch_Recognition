@@ -182,6 +182,13 @@ def evaluation_demo():
 
 
 def add_cli(commands):
+    matched = commands.add_parser("evaluate-predictions", help="compare frozen Python and original vectors on reviewed complete paths")
+    matched.add_argument("--manifest", required=True)
+    matched.add_argument("--output", required=True)
+    matched.add_argument("--data-root", help="override the reference dataset root only")
+    matched.add_argument("--chunk-size", type=int, default=250_000)
+    matched.add_argument("--point-outcomes", action="store_true")
+    matched.add_argument("--overlay", action="store_true", help="write static reference/cloud/prediction plots (requires evaluation extra)")
     commands.add_parser("evaluation-demo", help="score a small generated source2018 evaluation fixture")
     audit = commands.add_parser("evaluation-audit", help="check the separate frozen 2018 evaluator source")
     audit.add_argument("--repo", default=".")
@@ -202,6 +209,19 @@ def add_cli(commands):
 
 def run_cli(args, parser):
     from .audit import evaluation_audit
+    if args.command == "evaluate-predictions":
+        from .matched import run_matched_evaluation
+        try:
+            report = run_matched_evaluation(args.manifest, args.output, data_root=args.data_root,
+                                            chunk_size=args.chunk_size, point_outcomes=args.point_outcomes,
+                                            overlay=args.overlay, progress=lambda msg: print(msg, file=sys.stderr))
+        except (OSError, ValueError, ImportError, KeyError, TypeError) as error:
+            print(json.dumps({"status": "failed", "error": str(error)}), file=sys.stderr)
+            return 1
+        print(json.dumps(strict_json_value({"status": report["status"], "output": str(Path(args.output)/"report.json"),
+                                           "paths": report["paths"], "unmapped_path_ids": report["unmapped_path_ids"],
+                                           "failures": report["failures"]}), indent=2, allow_nan=False))
+        return 0 if report["status"] == "completed" else 1
     if args.command == "evaluation-demo":
         print(json.dumps(evaluation_demo(), indent=2, allow_nan=False))
         return 0

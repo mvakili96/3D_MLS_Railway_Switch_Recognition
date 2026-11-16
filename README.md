@@ -387,8 +387,79 @@ The strict continuation accepted **50 windows over 49.80 m**, including 31
 accepted centers beyond tile 16, then stopped at the declared scene edge.
 Full/compact runs had identical vectors, labels, journals and RNG state/count.
 The full regression suite passed **672 tests**, including 17 new headless checks.
-Existing LIM-001 and LIM-002 findings remain recorded. Matching the generated
-routes to reference paths and scoring them is the next milestone.
+Existing LIM-001 and LIM-002 findings remain recorded. The following milestone
+now connects frozen predictions to the reference evaluator.
+
+## Matched Python prediction evaluation
+
+`evaluate-predictions` evaluates frozen Python exports and the supplied original
+models on the **same complete reference path**, using the unchanged `source2018`
+kernel. It consumes explicit reviewed mappings; it never chooses the best-scoring
+layer, reruns tracking, changes thresholds or crops annotations to a short trace.
+
+```bash
+python -m pip install -e '.[evaluation]'
+python -m railway_mls evaluate-predictions \
+  --manifest configs/evaluation-vancouver-python-pilot.json \
+  --output outputs/python-pilot-evaluation-run-02 \
+  --overlay
+```
+
+Choose a new output directory. The `evaluation` extra adds LAS loading and
+Matplotlib for static plots; scoring alone needs the existing `las` extra.
+`--point-outcomes` exports every reference record's assignment/residuals for
+each model. `--chunk-size` changes I/O batch size, never sampling or scoring.
+`--data-root` relocates the reference dataset; SHA256 pins remain required.
+
+The checked-in pilot mapping pins the existing local
+`outputs/headless-tracking/continuation-compact` export, its per-run manifest,
+the unchanged prediction definition, and the reference manifest. Post-run route
+inspection identifies `source-16-18`, layer 0 as **Path 3**. All four parts
+`P3_01`–`P3_04` are evaluated, including the areas the roughly 50 m prediction
+never reached. The original inference manifest retains its pre-run pending
+mappings; this separate evaluation mapping records the later review without
+changing the frozen prediction definition.
+
+For a different export, create a separate mapping JSON with its directory,
+root/run manifest hashes, inference definition, explicit layers, review notes
+and complete reference case lists. Do not reuse the pilot hashes. Predictions
+and datasets remain local. A mapping's `prediction_sources` entries identify
+frozen output directories, while `paths[].fragments` declares segment order.
+Pending mappings are listed but never scored. The same fragment cannot be
+assigned twice, and exact shared segments across fragments require review.
+Separate fragments are concatenated as segment arrays without connecting lines.
+
+Outputs include `report.json`, paired `cases.csv`/`paths.csv`, each model's
+source evaluation reports, copied original/Python vectors and frozen provenance.
+`--overlay` adds a full-path view and a prediction zoom with the reference cloud,
+positive labels and both models. Plot sampling affects display only. Input pins
+are checked for consumed manifests, vectors and references; large tracker label
+states/cache payloads are not consumed or revalidated by this evaluator.
+
+Coverage is reported alongside the native names/formulas:
+
+- `positive_assignment_percent`: assigned positives / all reference positives.
+- `all_positive_success_percent`: nTP / all reference positives, a coverage
+  diagnostic separate from source recall.
+- Source Precision and Recall retain the C++ names and exclusion of unassigned
+  records. Error statistics remain per case; path-level standard deviations are
+  not obtained by averaging case standard deviations.
+
+The verified pilot scores **5,820,115 records**, including 559,511 positives.
+Python assigns 71,450 positives (**12.77%**) and passes 63,042 (**11.27%** of
+all positives). The original model assigns 558,862 (**99.88%**) and passes
+467,053 (**83.48%** of all positives). Their source Precision values are 88.23%
+and 83.57%; these use different assigned subsets and do not establish superior
+Python accuracy. Only `P3_01` is reached by the pilot. Parts with no assignments
+retain source nonfinite statistics as JSON null plus explicit annotations.
+
+The local comparison and static plot are under
+`outputs/python-pilot-evaluation-verified/`. Verification passed **692 tests**,
+including 20 new mapping, coverage, fragment, native-adapter and artifact checks;
+the source/reconstruction/evaluation audits and wheel build also pass.
+Source undefined-state limitations,
+nine-path seed completion, full-scene extraction and Table I reporting remain
+open. This milestone does not produce the complete Table I assessment.
 
 ## What stays local
 

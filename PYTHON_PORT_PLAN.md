@@ -25,14 +25,25 @@ must revisit every open ID, including LIM-001 (uninitialized toe reference lines
 
 ## Implementation progress
 
+The matched-pilot evaluator consumes separately reviewed, hash-pinned prediction
+exports without rerunning inference. The unchanged strict 16/17/18 pilot layer
+maps to Path 3 after post-run route inspection. Both Python and saved original
+models have been scored on all four Path 3 parts with the unchanged source2018
+evaluator: 5,820,115 records, 559,511 positives. Python assigns 12.77% of positives
+and passes 11.27% of all positives; original assignments reach 99.88%, with 83.48%
+of all positives passing. Coverage diagnostics are separate from native metric
+names. Frozen vectors/provenance, per-case/path comparisons and a static overlay
+are exported; fragments are never joined across gaps. Source limitations remain
+visible. Nine-path seed completion/extraction and Table I reporting remain next.
+
 The headless scene runner now uses the verified mapped grid directly, with one
 source RNG/label state per run and optional compact diagnostic retention. The
 strict declared 16/17/18 continuation traces 50 accepted windows/49.80 m across
 the tile join; original 16/17 input stops in a header-footprint gap. Full and
 compact histories produce identical vectors, labels, journals and RNG outcomes.
 Source model/stacks remain retained, diagnostics are cumulative, and no viewer
-reference repair is enabled. Source-based extraction is runnable; reference-path
-matching, nine-path seed completion, evaluation and Table I assembly remain later.
+reference repair is enabled. Source-based extraction and matched pilot evaluation
+are runnable; nine-path seed completion and Table I assembly remain later.
 
 The multi-tile input milestone adds immutable disk-backed XYZ/intensity/source
 identity storage, a sparse stable membership index and fresh per-run labels.
