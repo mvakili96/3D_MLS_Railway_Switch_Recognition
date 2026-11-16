@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "kind": "matched_prediction_evaluation",
+  "profile": "source2018",
+  "reference_manifest": {
+    "path": "evaluation-vancouver.json",
+    "sha256": "0f2056b4ee8d0c60a0d0f1137af2a447a08ab1c23aff04a5fc950d0641560764"
+  },
+  "prediction_sources": [
+    {
+      "source_id": "continuation-compact",
+      "directory": "../outputs/headless-tracking/continuation-compact",
+      "manifest_sha256": "d76667925cc205fbac461311728421bd1e30a5923afa0cebb0e8f1adff4f183f",
+      "inference_manifest": "prediction-vancouver-continuation.json"
+    }
+  ],
+  "paths": [
+    {
+      "path_id": 3,
+      "status": "reviewed",
+      "case_ids": [
+        "P3_01",
+        "P3_02",
+        "P3_03",
+        "P3_04"
+      ],
+      "fragments": [
+        {
+          "source_id": "continuation-compact",
+          "run_id": "source-16-18",
+          "layer": 0,
+          "run_manifest_sha256": "75ec2104763b07abc616a4f9dff4de68b3cd4350d83eda7ac36a89bf40428916"
+        }
+      ],
+      "review_note": "Post-run route review of the already frozen strict layer against all nine supplied original path geometries (outputs/pilot-route-review/route-review.png): both rails follow Path 3 from the supplied source seed through the turnout, continuing above Path 5 at the eastern end. This assigns route identity only. The prediction vectors, initialization, RNG, fitting and tile choice were frozen before reviewing references. Evaluate all four Path 3 parts without cropping to the approximately 50 m prediction extent."
+    }
+  ]
+}

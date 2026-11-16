@@ -826,6 +826,54 @@ wheel build. Local experiments and vectors remain under
 The next work is reviewed path/layer matching and pilot evaluation; nine-path
 prediction generation and Table I reporting remain later increments.
 
+### Matched Python pilot evaluation — 2026-11-15
+
+The frozen strict 16/17/18 pilot has now been matched to Path 3 by post-run
+inspection of its route against the nine supplied original path geometries.
+The matching decision is recorded in a separate manifest, not by changing the
+prediction definition. No seed, tile choice, fitting, RNG or source threshold
+was changed after viewing references. The evaluator rejects pending mappings,
+cropped case lists, altered consumed inputs, repaired branch profiles, duplicate
+fragment assignments and exact cross-fragment shared segments. It preserves
+within-layer source segment repeats/order and never adds connecting segments
+between fragments.
+
+Both models were evaluated on all `P3_01`–`P3_04` records: 5,820,115 records,
+559,511 reference positives. Python assigns 71,450 positives (12.7701%), leaves
+488,061 unassigned, and has nTP 63,042 (11.2673% of all positives). The saved
+original model assigns 558,862 (99.8840%), leaves 649 unassigned, and has nTP
+467,053 (83.4752% of all positives). Source Precision is 88.2323% vs 83.5722%,
+and source Recall is 87.5304% vs 85.5133%; these use each model's own assigned
+subset. They cannot establish better Python accuracy at matched coverage.
+Native formulas/names and exclusions remain unchanged. Counts/coverage are
+summed across independent parts; error statistics remain per case rather than
+averaging standard deviations or claiming pooled path errors.
+
+Only `P3_01` has Python assignments. The other three parts remain in the scope
+and retain source IEEE empty-statistic results, serialized as null with explicit
+nonfinite annotations. This is a completed evaluation of a partial prediction,
+not complete reconstruction of Path 3 or all nine paths. `complete_manifest_path`
+means all expected annotation parts were scored, not that predictions cover them.
+Prediction failures/caps and LIM-001/LIM-002 non-comparability remain visible in
+the copied run summary; scoring does not resolve either limitation.
+
+The new report verifies hashes of consumed reference files, frozen root/run/
+inference manifests and vectors. It does not consume/re-hash the large cache or
+final tracker label files. Copied vectors and provenance support inspection;
+the separate original frozen exports remain the extraction evidence. The static
+cloud/reference/prediction overlay samples display records only. Every reference
+record is used for numerical scoring, and original source-based background
+labels/part overlaps remain intact. Matching is explicit and never based on
+automatic best-score layer selection.
+
+Artifacts remain local at `outputs/python-pilot-evaluation-verified/`. Pending
+nine-path initializations, full-scene prediction generation, Table I assembly,
+historical/source differences and the 100-region mapping remain separate work.
+Verification passes 692 tests, including 20 new matched-evaluation checks and
+a native fragment-adapter comparison, all three source/reconstruction audits,
+and a wheel build with the new modules and no dataset/cache payloads.
+**All 40 existing limitation IDs remain open.**
+
 ## Resolution history
 
 No entries are closed. Record future decisions here with ID, date, evidence,
