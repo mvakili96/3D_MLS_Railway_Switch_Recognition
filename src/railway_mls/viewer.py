@@ -122,6 +122,7 @@ def launch_viewer(path=None, *, radius=DEFAULT_CROP_RADIUS, preview_points=150_0
                 pose_panel.add_child(row)
             self.panel.add_child(pose_panel)
             self.confirm_button = self.button("Confirm start", self.confirm)
+            self.save_seed_button = self.button("Save starting pose...", self.save_start)
             self.panel.add_fixed(0.4 * em)
             self.panel.add_child(gui.Label("3  Follow the track windows"))
             row = gui.Horiz(0.3 * em)
@@ -219,6 +220,9 @@ def launch_viewer(path=None, *, radius=DEFAULT_CROP_RADIUS, preview_points=150_0
             self.example_button.enabled = (loaded and self.preview.info.contains(VANCOUVER_SEED.point)
                                            and not self.busy and not self.playing)
             self.confirm_button.enabled = not self.busy and phase == "preview"
+            self.save_seed_button.enabled = (not self.busy and not self.playing and self.session is not None
+                                             and self.session.confirmed_seed is not None
+                                             and phase in ("ready", "tracking", "stopped"))
             ready = phase in ("ready", "tracking")
             self.play_button.enabled = ready and not self.busy and not self.playing
             self.step_button.enabled = ready and not self.busy and not self.playing
@@ -415,6 +419,27 @@ def launch_viewer(path=None, *, radius=DEFAULT_CROP_RADIUS, preview_points=150_0
                                    self.edits[3].int_value, self.edits[4].int_value)
             self.set_status("Confirming starting windows…")
             self.submit(lambda: self.session.confirm(pose), self.apply_frame)
+
+        def save_start(self):
+            if self.session is None or self.session.confirmed_seed is None:
+                return
+            from .prediction.seeds import write_seed_capture
+            dialog = gui.FileDialog(gui.FileDialog.SAVE, "Save starting pose", self.window.theme)
+            dialog.add_filter(".json", "Starting pose JSON")
+            dialog.set_on_cancel(self.window.close_dialog)
+            pose = self.session.confirmed_seed
+            filename = self.session.crop.info.path
+            config = self.session.config
+
+            def selected(destination):
+                self.window.close_dialog()
+                self.set_status("Saving the starting pose and raw-file identity…")
+                self.submit(lambda: write_seed_capture(destination, pose, data_file=filename,
+                            random_seed=random_seed, config=config,
+                            provenance="Manual raw-cloud selection/confirmation in the Python viewer"),
+                            lambda result: self.set_status(f"Starting pose saved: {destination}"))
+            dialog.set_on_done(selected)
+            self.window.show_dialog(dialog)
 
         def extend_region(self):
             if self.busy or self.session is None or self.session.preview_seed is None:

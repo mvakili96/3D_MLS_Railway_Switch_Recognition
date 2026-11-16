@@ -1,4 +1,4 @@
-"""Headless scene inventory and experiment validation; prediction comes later."""
+"""Scene input, source prediction and explicit benchmark workflow commands."""
 
 import json
 from pathlib import Path
@@ -9,6 +9,33 @@ from .manifest import audit_prediction_manifest, load_inference_spec
 
 
 def add_cli(commands):
+    preview = commands.add_parser("benchmark-preview", help="plot frozen layers against original routes for review without calculating scores")
+    preview.add_argument("--manifest", required=True)
+    preview.add_argument("--predictions", action="append", required=True)
+    preview.add_argument("--output", required=True)
+    seed = commands.add_parser("prepare-benchmark-seed", help="apply a saved manual starting pose to a new experiment definition")
+    seed.add_argument("--manifest", required=True)
+    seed.add_argument("--run", required=True)
+    seed.add_argument("--capture", required=True)
+    seed.add_argument("--provenance", required=True)
+    seed.add_argument("--output", required=True)
+    for name, help_text in (("benchmark-plan", "account for all nine paths without reading point payloads"),
+                            ("benchmark-rails", "run declared ready starts and preserve missing-path accounting"),
+                            ("benchmark-evaluate", "evaluate reviewed benchmark layers and retain unavailable path scores")):
+        parser = commands.add_parser(name, help=help_text)
+        parser.add_argument("--manifest", required=True)
+        parser.add_argument("--output", required=True)
+        if name == "benchmark-rails":
+            parser.add_argument("--cache", required=True)
+            parser.add_argument("--run", action="append")
+            parser.add_argument("--max-steps", type=int)
+            parser.add_argument("--retain-history", action="store_true")
+        if name == "benchmark-evaluate":
+            parser.add_argument("--predictions", action="append", required=True, help="benchmark batch output; repeat for disjoint run batches")
+            parser.add_argument("--mapping", required=True, help="explicit reviewed matched-evaluation manifest")
+            parser.add_argument("--chunk-size", type=int, default=250_000)
+            parser.add_argument("--point-outcomes", action="store_true")
+            parser.add_argument("--overlay", action="store_true")
     catalog = commands.add_parser("scene-catalog", help="inventory extracted LAS/LAZ headers and SHA256 hashes")
     catalog.add_argument("sources", nargs="+", help="files/directories, in declared input order")
     catalog.add_argument("--root", default=".", help="root for catalog-relative file paths")
@@ -42,6 +69,38 @@ def run_cli(args):
         if output_path and Path(output_path).exists():
             raise FileExistsError(f"output already exists: {args.output}")
         progress = lambda message: print(message, file=sys.stderr, flush=True)
+        if args.command == "benchmark-preview":
+            from .review import preview_benchmark
+            report = preview_benchmark(args.manifest, args.predictions, args.output)
+            print(json.dumps({"status": report["status"], "output": str(Path(args.output)/"review.json"),
+                              "plots": len(report["plots"]), "evaluation_performed": False}, indent=2))
+            return 0
+        if args.command == "prepare-benchmark-seed":
+            from .seeds import prepare_seed_manifest
+            prepare_seed_manifest(args.manifest, args.run, args.capture, args.output, provenance=args.provenance)
+            print(json.dumps({"status": "ready", "run_id": args.run, "new_manifest": args.output,
+                              "prediction_executed": False}, indent=2))
+            return 0
+        if args.command.startswith("benchmark-"):
+            from .benchmark import plan_benchmark, run_benchmark, evaluate_benchmark
+            if args.command == "benchmark-plan":
+                report = plan_benchmark(args.manifest, args.output)
+            elif args.command == "benchmark-rails":
+                report = run_benchmark(args.manifest, args.cache, args.output, run_ids=args.run,
+                                       max_steps=args.max_steps, retain_history=args.retain_history, progress=progress)
+            else:
+                report = evaluate_benchmark(args.manifest, args.predictions, args.mapping, args.output,
+                                            chunk_size=args.chunk_size, point_outcomes=args.point_outcomes,
+                                            overlay=args.overlay, progress=progress)
+            print(json.dumps({"status": report["status"], "output": str(Path(args.output)/"report.json"),
+                              "accounted_paths": report["accounted_path_count"], "accounted_cases": report["accounted_case_count"],
+                              "all_paths_have_seeds": report["all_paths_have_seeds"],
+                              "all_reference_cases_evaluated": report["all_reference_cases_evaluated"],
+                              "paths": [{k: row[k] for k in ("path_id", "prediction_status", "evaluation_status")}
+                                        for row in report["paths"]]}, indent=2, allow_nan=False))
+            if report["status"] == "interrupted" or any(r["status"] == "interrupted" for r in report["run_summaries"]):
+                return 130
+            return 1 if report["status"] == "failed" else 0 if report["status"] == "evaluated" else 2
         if args.command == "predict-rails":
             from .runner import run_predictions
             result = run_predictions(args.manifest, args.cache, args.output, run_ids=args.run,

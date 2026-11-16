@@ -874,6 +874,69 @@ a native fragment-adapter comparison, all three source/reconstruction audits,
 and a wheel build with the new modules and no dataset/cache payloads.
 **All 40 existing limitation IDs remain open.**
 
+### Nine-path benchmark workflow and larger source run — 2026-11-15
+
+The new experiment definition declares all 47 extracted original Vancouver tiles
+in their catalog order, all nine intended path runs, and all 24 annotation parts.
+Tiles 57–59 remain archived-only; no archives were extracted to hide a gap. The
+immutable cache retains 835,672,256 source-even records after six documented
+few-ULP omissions: two each in tiles 13/16 and one each in tiles 18/45. Input
+coordinates, duplicates, intensity and record identities are preserved. Immutable
+payloads total 36,770,698,968 bytes; observed cache-build peak RSS is 112,996,352
+bytes. Memory/disk limits remain boundary checks rather than OS-enforced limits.
+
+Only the complete commented source pose is ready (intended Path 3). Eight other
+starting poses remain pending. Original workbook XY notes are incomplete and
+have not been converted into invented heights/directions. The viewer can save
+the literal confirmed pose with a raw-file hash; seed preparation creates a new
+definition and preserves source settings. Source preview draws, fitted rails,
+final viewer RNG and fitted-reference repairs are not imported into inference.
+Every independent run has fresh labels/RNG. Separately declared restarts remain
+independent; native passes/branches within one run retain shared state. A changed
+definition cannot silently reuse an older batch's scores.
+
+The real full-scene Path 3 attempt accepted 252 reverse windows and 298 forward
+windows without a cap or boundary reset. It retains 551 vertices per rail and
+552 source segments. Reverse termination is `insufficient_window_points`;
+forward termination is `undefined_source_head_extraction`, with the final
+head-extraction diagnostic `undefined_source_line_fit`. The last attempted
+forward center is approximately (513488.734362, 5458225.308560, 4.755421). Its
+two window point counts are 10,581 and 5,962. This is a source/undefined-path stop,
+not a declared scene edge. No repair, trimming, new seed or algorithm change was
+introduced to continue it. LIM-001/LIM-002/LIM-003 remain visible and open.
+Recorded runtime is 406.486840 s and observed peak RSS is 688,824,320 bytes.
+MSVC draws total 7,359,889; final state is 3,799,314,128.
+
+Post-run score-free route review identifies frozen layer 0 as intended Path 3;
+the reverse result also follows connected rails west of the supplied Path 3
+reference extent. Every exported segment is preserved. On the full four-part
+Path 3 scope (5,820,115 records, 559,511 positives), Python assigns 500,712
+positives (89.4910%), leaves 58,799 unassigned, and passes 433,494 (77.4773% of
+all positives). Native source Precision is 86.5755%, source Recall 83.5931%.
+The original model's same-scope assignment/success diagnostics remain 99.8840%
+and 83.4752%; source Precision/Recall are 83.5722%/85.5133%. Assigned subsets
+differ, so the source Precision values do not establish better Python accuracy.
+
+The benchmark ledger accounts for all nine paths and 24 cases, including eight
+`missing_seed` paths with unavailable scores. Planning reads no point payloads;
+route previews read frozen vectors/original models without scoring or reference
+label reads. Evaluation uses explicit reviewed fragments and complete per-path
+annotation scopes. Empty/pending/failed cases are not silently dropped or given
+zero scores. Source IEEE edge statistics retain explicit nonfinite annotations.
+Candidate layers are never selected automatically by score. Full path scoring
+does not establish full spatial coverage or native whole-application equivalence.
+
+Artifacts are local under `outputs/vancouver-nine-path-{cache,predictions,review}`,
+`outputs/vancouver-nine-path-reviewed-mapping.json` and
+`outputs/vancouver-nine-path-evaluation-verified/`. Software workflow completion
+is distinct from completion of the nine-path data experiment: eight manual starts,
+their generated/reviewed predictions and Table I reporting remain outstanding.
+Verification passes 715 tests (23 new benchmark/seed/review checks), the three
+source/reconstruction/evaluation audits and wheel packaging. The new seed-save
+API and workflow are tested; the native desktop Save dialog itself has not been
+exercised in this headless session.
+**All 40 existing limitation IDs remain open.**
+
 ## Resolution history
 
 No entries are closed. Record future decisions here with ID, date, evidence,

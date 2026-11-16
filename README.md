@@ -461,6 +461,133 @@ Source undefined-state limitations,
 nine-path seed completion, full-scene extraction and Table I reporting remain
 open. This milestone does not produce the complete Table I assessment.
 
+## Nine-path benchmark workflow
+
+`configs/prediction-vancouver-benchmark.json` declares all **47 extracted original
+Vancouver tiles**, all nine intended paths and all 24 numbered reference parts.
+It retains original file order, sampling and strict source branches. It does not
+extract the archived-only tiles 57–59 or change tracking to bridge a data gap.
+Every independent run defaults to the source bidirectional workflow, with fresh
+labels and RNG; passes/branches within that run retain native shared state.
+
+Only Path 3 currently has a complete source starting pose. The other **eight
+seeds remain pending**. Workbook XY hints do not supply missing heights or
+directions. The workflow is implemented, but complete nine-path predictions and
+Table I results still require those manual starts.
+
+```bash
+python -m railway_mls benchmark-plan \
+  --manifest configs/prediction-vancouver-benchmark.json \
+  --output outputs/nine-path-plan-run-02
+```
+
+The plan writes a nine-path/24-case JSON and CSV ledger without opening point
+payloads. Missing paths have unavailable scores, never fabricated zero scores.
+
+To provide a pending start, open the relevant **unannotated original** LAS tile
+with `python -m railway_mls view path/to/tile.las`. Pick the position/direction,
+confirm the starting windows, then use **Save starting pose...**. This saves the
+literal confirmed XYZ/angle/mode and raw-file hash. Preview fitting results,
+branch-reference recovery and the viewer's random-stream state are not imported
+into headless inference. Apply the capture to a new experiment definition:
+
+```bash
+python -m railway_mls prepare-benchmark-seed \
+  --manifest configs/prediction-vancouver-benchmark.json \
+  --run vancouver-path-1 \
+  --capture outputs/seeds/path-1.json \
+  --provenance "Manual selection on unannotated data; intended Path 1" \
+  --output configs/prediction-vancouver-benchmark-seeded-01.json
+```
+
+Repeat using the newest definition for the remaining starts, then freeze the
+final manifest before generating the final benchmark. Preparation preserves the
+other starts and source settings, checks that the captured raw tile belongs to
+the input collection, and resets that run's layer review. Existing definitions
+and captures are never overwritten. A restart needs a separately named run with
+explicit provenance, not an unrecorded replacement of a stopped path.
+
+Build a cache once, or reuse the already built local
+`outputs/vancouver-nine-path-cache` with a compatible definition. Seed-only edits
+do not change cache compatibility:
+
+```bash
+python -m railway_mls build-scene-cache \
+  --manifest configs/prediction-vancouver-benchmark.json \
+  --output outputs/nine-path-cache-run-02
+python -m railway_mls benchmark-rails \
+  --manifest configs/prediction-vancouver-benchmark.json \
+  --cache outputs/nine-path-cache-run-02 \
+  --output outputs/nine-path-predictions-run-02
+python -m railway_mls benchmark-preview \
+  --manifest configs/prediction-vancouver-benchmark.json \
+  --predictions outputs/nine-path-predictions-run-02 \
+  --output outputs/nine-path-review-run-02
+```
+
+Use the final seeded definition in each command when available. Tracking attempts
+every ready run by default; repeated `--run ID` selects a declared subset.
+`--max-steps` is an optional explicit diagnostic cap, with no default cap.
+`--retain-history` keeps detailed tracking steps. Available partial geometry,
+stops, failures, limitations, runtime, resource peaks and pending paths remain
+in the ledger. The source's required model/support state is retained.
+
+The prediction batch writes `mapping-template.json` and `layer-candidates.json`.
+The template keeps every path pending; candidate fragments include frozen
+root/run hashes and layer IDs. `benchmark-preview` plots all nonempty paired
+layers against original model routes without scoring or reading reference point
+labels. Review route identity after inference, then save a separate mapping
+with explicit fragments and review notes for the paths you can identify.
+Keep missing/uncertain paths pending. Do not select layers by score, use original
+model vertices as seeds, or change fitting/restarts based on evaluation feedback.
+
+```bash
+python -m railway_mls benchmark-evaluate \
+  --manifest configs/prediction-vancouver-benchmark.json \
+  --predictions outputs/nine-path-predictions-run-02 \
+  --mapping outputs/nine-path-reviewed-mapping.json \
+  --output outputs/nine-path-evaluation-run-02 \
+  --overlay
+```
+
+Evaluation retains all nine path rows and all 24 case rows, including unavailable
+ones. Each reviewed path uses its complete annotation-part list for Python and
+original predictions, with the unchanged source2018 evaluator. Missing seeds,
+failed predictions and pending reviews remain distinct from measured zero
+coverage. The nested `matched/` reports contain per-case error statistics and
+both models' detailed results. No Table I aggregation is performed here.
+
+Repeat `--predictions` to combine disjoint run batches from the **same frozen
+definition**. Duplicate attempts at one run ID are rejected; use separately named
+restarts. Seed edits create a new experiment and cannot silently mix older
+prediction batches into its scores. Outputs must be new directories separate
+from raw/reference data, cache and frozen predictions.
+
+CLI exit codes are 0 for a fully evaluated declared scope (or a successful
+preview/seed preparation), 2 for an incomplete benchmark, 1 for failures and
+130 for interruption. `all_reference_cases_evaluated` describes scoring scope;
+it does not establish spatial coverage, source comparability or published accuracy.
+The existing numerical and undefined-source limitations remain open.
+
+The local larger-scene attempt retained **550 accepted windows** (252 reverse,
+298 forward) from the known Path 3 start. The forward pass then reported
+`undefined_source_head_extraction`; its partial vectors and source findings were
+retained. No automatic repair, restart or diagnostic cap was used. The frozen
+layer was reviewed as Path 3, including its native continuation beyond the
+supplied reference route's extent, without trimming the geometry.
+
+Across the same four Path 3 parts used by the pilot, Python now assigns 500,712
+of 559,511 positives (**89.49%**) and passes 433,494 (**77.48%** of all positives).
+The saved original model assigns 99.88% and passes 83.48% of all positives.
+Source Precision/Recall remain separately reported under their native formulas.
+The complete nine-path ledger and comparison are local at
+`outputs/vancouver-nine-path-evaluation-verified/`; eight paths remain
+`missing_seed`, with unavailable scores. These are partial experiment results,
+not a completed Table I reconstruction. Verification passes **715 tests**,
+including 23 new benchmark/seed/review checks, all three source/reconstruction
+audits, and the wheel build. The scientific plotting and seed APIs are tested;
+the new native GUI save dialog has not been exercised on a desktop here.
+
 ## What stays local
 
 The root `.gitignore` excludes datasets and extracted data, dependency installation
