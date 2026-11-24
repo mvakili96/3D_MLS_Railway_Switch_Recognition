@@ -159,7 +159,7 @@ def concatenate_fragments(fragments):
                  for side in (0, 1))
 
 
-def load_matched_plan(manifest, *, data_root=None):
+def load_matched_plan(manifest, *, data_root=None, path_ids=None):
     """Validate reviewed identities, complete path scopes, and all consumed input pins."""
     path = Path(manifest).resolve()
     document, fingerprint = _json(path)
@@ -173,6 +173,14 @@ def load_matched_plan(manifest, *, data_root=None):
     reference_path = (path.parent/_text(reference["path"])).resolve()
     reference_fp = _pinned(reference_path, reference["sha256"])
     all_cases, context = load_cases(reference_path, data_root=data_root)
+    selected = None
+    if path_ids is not None:
+        if (not path_ids or any(isinstance(pid, bool) or not isinstance(pid, int) for pid in path_ids)
+                or len(path_ids) != len(set(path_ids))):
+            raise ValueError("select unique integer path IDs")
+        selected = set(path_ids)
+        if selected-set(map(int, context["expected_case_ids_by_path"])):
+            raise ValueError("selected path ID is outside reference scope")
     sources = {}
     if not isinstance(document["prediction_sources"], list):
         raise ValueError("prediction_sources must be a list")
@@ -190,6 +198,8 @@ def load_matched_plan(manifest, *, data_root=None):
         if str(pid) not in context["expected_case_ids_by_path"] or pid in seen_paths:
             raise ValueError("unknown/duplicate reference path ID")
         seen_paths.add(pid)
+        if selected is not None and pid not in selected:
+            continue
         _text(mapping["review_note"])
         expected = context["expected_case_ids_by_path"][str(pid)]
         if mapping["case_ids"] != expected:
@@ -220,6 +230,8 @@ def load_matched_plan(manifest, *, data_root=None):
         mappings.append({**mapping, "fragments": fragments, "rails": rails, "cases": cases})
     if not mappings:
         raise ValueError("no reviewed path mappings to evaluate")
+    if selected is not None and selected != {m["path_id"] for m in mappings}:
+        raise ValueError("every selected path requires a reviewed mapping")
     return {"manifest": fingerprint, "reference_manifest": reference_fp,
             "sources": sources, "mappings": mappings, "pending": pending,
             "unmapped_path_ids": sorted(int(pid) for pid in context["expected_case_ids_by_path"]
@@ -240,11 +252,11 @@ def _write_segments(path, rail):
 
 
 def run_matched_evaluation(manifest, output, *, data_root=None, chunk_size=250_000,
-                           point_outcomes=False, overlay=False, progress=None):
+                           point_outcomes=False, overlay=False, progress=None, path_ids=None):
     """Score both models on identical complete annotation parts, with fresh sessions."""
     if chunk_size <= 0:
         raise ValueError("chunk_size must be positive")
-    plan = load_matched_plan(manifest, data_root=data_root)
+    plan = load_matched_plan(manifest, data_root=data_root, path_ids=path_ids)
     if overlay:
         from .overlay import require_plotting
         require_plotting()

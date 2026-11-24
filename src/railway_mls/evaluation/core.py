@@ -26,6 +26,28 @@ def _read_residuals(path, block_size=100_000):
             yield block.reshape(-1, 2)
 
 
+def source_error_statistics(blocks, count):
+    """Two source-ordered passes over repeatable horizontal/signed-Z blocks.
+
+    Shared by native case evaluation and explicitly scoped report aggregation.
+    Preserve IEEE edge cases and signed residuals around the absolute Z mean.
+    """
+    total_h, total_v = 0.0, 0.0
+    for block in blocks():
+        total_h = _ordered_add(total_h, block[:, 0])
+        total_v = _ordered_add(total_v, np.abs(block[:, 1]))
+    with np.errstate(all="ignore"):
+        mean_h, mean_v = float(np.divide(total_h, count)), float(np.divide(total_v, count))
+    variance_h, variance_v = 0.0, 0.0
+    for block in blocks():
+        variance_h = _ordered_add(variance_h, (mean_h-block[:, 0])*(mean_h-block[:, 0]))
+        variance_v = _ordered_add(variance_v, (mean_v-block[:, 1])*(mean_v-block[:, 1]))
+    with np.errstate(all="ignore"):
+        return dict(mean_horizontal=mean_h, mean_absolute_vertical=mean_v,
+                    std_horizontal=float(np.sqrt(np.divide(variance_h, count-1))),
+                    std_vertical_source=float(np.sqrt(np.divide(variance_v, count-1))))
+
+
 def evaluate_chunks(chunks, left: RailSegments, right: RailSegments, *,
                     config=None, use_index=True, collect_points=False, point_callback=None):
     """Consume increasing original record IDs; never alter reference annotations.
@@ -94,27 +116,15 @@ def evaluate_chunks(chunks, left: RailSegments, right: RailSegments, *,
                 point_callback(output)
             if collect_points:
                 collected.append(output)
-        total_h, total_v = 0.0, 0.0
-        for segment in sorted(active):
-            for block in _read_residuals(directory / str(segment)):
-                total_h = _ordered_add(total_h, block[:, 0])
-                total_v = _ordered_add(total_v, np.abs(block[:, 1]))
-        count = coverage["assigned_positive"]
-        with np.errstate(all="ignore"):
-            mean_h, mean_v = float(np.divide(total_h, count)), float(np.divide(total_v, count))
-        variance_h, variance_v = 0.0, 0.0
-        for segment in sorted(active):
-            for block in _read_residuals(directory / str(segment)):
-                variance_h = _ordered_add(variance_h, (mean_h-block[:, 0])*(mean_h-block[:, 0]))
-                # Intentionally SIGNED residual around the ABSOLUTE vertical mean.
-                variance_v = _ordered_add(variance_v, (mean_v-block[:, 1])*(mean_v-block[:, 1]))
+        def blocks():
+            for segment in sorted(active):
+                yield from _read_residuals(directory / str(segment))
+        errors = source_error_statistics(blocks, coverage["assigned_positive"])
         with np.errstate(all="ignore"):
             metrics = dict(
                 source_precision_percent=float(np.divide(counts["nTP"], counts["nTP"]+counts["nFP"])*100),
                 source_recall_percent=float(np.divide(counts["nTP"], counts["nTP"]+counts["nFN"])*100),
-                mean_horizontal=mean_h, mean_absolute_vertical=mean_v,
-                std_horizontal=float(np.sqrt(np.divide(variance_h, count-1))),
-                std_vertical_source=float(np.sqrt(np.divide(variance_v, count-1))),
+                **errors,
             )
     diagnostics = []
     if coverage["unassigned_positive"]:

@@ -182,6 +182,15 @@ def evaluation_demo():
 
 
 def add_cli(commands):
+    table = commands.add_parser("table1-report", help="generate source-based Table I-style rows for explicitly selected paths")
+    table.add_argument("--experiment", required=True)
+    table.add_argument("--predictions", action="append", required=True, help="frozen benchmark batch directory; repeat for disjoint batches")
+    table.add_argument("--mapping", required=True)
+    table.add_argument("--path", type=int, action="append", required=True, help="reviewed path ID; repeat to report several paths")
+    table.add_argument("--output", required=True)
+    table.add_argument("--chunk-size", type=int, default=250_000)
+    table.add_argument("--overlay", action="store_true")
+    table.add_argument("--historical", help="optional pinned historical table JSON, displayed separately from measured results")
     matched = commands.add_parser("evaluate-predictions", help="compare frozen Python and original vectors on reviewed complete paths")
     matched.add_argument("--manifest", required=True)
     matched.add_argument("--output", required=True)
@@ -209,6 +218,21 @@ def add_cli(commands):
 
 def run_cli(args, parser):
     from .audit import evaluation_audit
+    if args.command == "table1-report":
+        from .table1 import run_table1_report
+        try:
+            report = run_table1_report(args.experiment, args.predictions, args.mapping, args.output,
+                                       path_ids=args.path, chunk_size=args.chunk_size,
+                                       overlay=args.overlay, historical=args.historical,
+                                       progress=lambda message: print(message, file=sys.stderr))
+        except (OSError, ValueError, ImportError, KeyError, TypeError) as error:
+            print(json.dumps({"status": "failed", "error": str(error)}), file=sys.stderr)
+            return 1
+        print(json.dumps(strict_json_value({"status": report["status"], "table": str(Path(args.output)/"table1.md"),
+                                           "requested_paths": report["requested_path_ids"], "rows": report["rows"],
+                                           "complete_experiment_scope": report["complete_experiment_scope"],
+                                           "failures": report["failures"]}), indent=2, allow_nan=False))
+        return 0 if report["status"] == "completed" else 1
     if args.command == "evaluate-predictions":
         from .matched import run_matched_evaluation
         try:

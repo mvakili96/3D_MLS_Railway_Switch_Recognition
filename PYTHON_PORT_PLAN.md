@@ -1,6 +1,6 @@
 # Python reproduction: repository review and implementation brief
 
-Originally reviewed on 2026-10-30; implementation progress updated 2026-11-01.
+Originally reviewed on 2026-10-30; implementation progress updated 2026-11-24.
 The review is followed by an independently runnable Python implementation below;
 it is not a claim of whole-application numerical equivalence. No legacy source
 was changed, and the Windows application was not built or executed.
@@ -25,6 +25,24 @@ must revisit every open ID, including LIM-001 (uninitialized toe reference lines
 
 ## Implementation progress
 
+The Table I-style reporter now produces the requested Path 3 result from frozen
+strict predictions and all four reference parts. It recomputes path statistics
+from a combined part stream, preserving raw labels, part/local identity and
+native segment-first reduction order. Native error arithmetic is shared with
+case evaluation; no standard deviations are averaged. Length is the source's
+commented paired-rail XY diagnostic, counting mapped segments once. CSV/JSON,
+Markdown, record maps, provenance and optional overlays/historical paper context
+are available. Multiple reviewed paths can use the same reporter with explicitly
+scoped residual pooling. The current report is Path 3 only; eight other paths
+remain outside its scoring scope, awaiting manual starts and prediction runs.
+
+Measured Path 3 Python results: length 551.219 m including native continuation
+beyond the reference extent, horizontal 2.7 ± 2.9 cm, absolute vertical mean /
+source STD 2.2 ± 4.9 cm, native Precision 86.58% and Recall 83.59%. Assignment
+coverage is 89.49%; nTP/all positives is 77.48%. Source stops and numerical/
+undefined-state limitations remain explicit. Published Table I values remain
+separate historical context. Artifacts: `outputs/table1-path3-verified/`.
+
 The nine-path workflow now declares all 47 extracted original tiles, independent
 bidirectional strict runs and all 24 reference parts. Planning/prediction/
 evaluation ledgers retain every path and missing/failed case. Manual viewer seed
@@ -34,7 +52,7 @@ the existing evaluator, including disjoint batches from one frozen definition.
 One complete source pose (Path 3) is available; eight manual starting poses remain
 pending. The full original-data cache retains 835,672,256 points after six
 documented ULP omissions. Full nine-path data generation is pending manual starts;
-Table I reporting remains separate. No source equations or repair policy changed.
+Table I reporting is now available. No source equations or repair policy changed.
 
 The expanded real Path 3 attempt accepts 252 reverse and 298 forward windows,
 then stops at `undefined_source_head_extraction`, preserving partial geometry.
@@ -63,7 +81,8 @@ the tile join; original 16/17 input stops in a header-footprint gap. Full and
 compact histories produce identical vectors, labels, journals and RNG outcomes.
 Source model/stacks remain retained, diagnostics are cumulative, and no viewer
 reference repair is enabled. Source-based extraction and matched pilot evaluation
-are runnable; nine-path seed completion and Table I assembly remain later.
+are runnable; nine-path seed completion/data generation and the limitations
+review remain outstanding. The reporting command is now available.
 
 The multi-tile input milestone adds immutable disk-backed XYZ/intensity/source
 identity storage, a sparse stable membership index and fresh per-run labels.

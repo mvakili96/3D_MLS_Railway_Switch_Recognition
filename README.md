@@ -588,6 +588,94 @@ including 23 new benchmark/seed/review checks, all three source/reconstruction
 audits, and the wheel build. The scientific plotting and seed APIs are tested;
 the new native GUI save dialog has not been exercised on a desktop here.
 
+## Table I-style Path 3 results
+
+`table1-report` generates a readable Markdown table, full-precision CSV/JSON,
+source-based path statistics, coverage diagnostics and an optional inspection
+overlay. It consumes frozen benchmark predictions and explicit reviewed mappings.
+For the current Path 3 artifacts:
+
+```bash
+python -m railway_mls table1-report \
+  --experiment configs/prediction-vancouver-benchmark.json \
+  --predictions outputs/vancouver-nine-path-predictions \
+  --mapping outputs/vancouver-nine-path-reviewed-mapping.json \
+  --path 3 \
+  --historical configs/table1-paper-path3.json \
+  --output outputs/table1-path3-run-02 \
+  --overlay
+```
+
+Choose a new output directory. The existing `evaluation` extra supplies LAS and
+plotting dependencies. `--historical` is optional: its pinned paper values are
+displayed separately and never fill or change measured results. `--overlay`
+samples display points only; all reference records enter numerical evaluation.
+The command never reruns tracking or opens the large inference cache/label state.
+
+All four parts `P3_01`–`P3_04` are evaluated independently under `parts/`, then
+streamed in manifest order into a fresh **combined Path 3 evaluation**. Global
+record IDs rebase the original part-local IDs; `path-3/reference-record-map.json`
+records the exact intervals and input hashes. Duplicate coordinates and original
+classification bytes are retained. Error means/standard deviations are recomputed
+with the source formulas over the combined records; case standard deviations
+are never averaged. Combined counts and coverage must equal independent-part
+totals. The evaluator's two-pass error reducer is shared with the reporter,
+preserving source arithmetic order and IEEE edge cases.
+
+The actual local report is at `outputs/table1-path3-verified/table1.md`:
+
+| Model | Length XY (m) | Horizontal mean ± STD (cm) | Absolute vertical mean ± source STD (cm) | Precision (source, %) | Recall (source, %) |
+|---|---:|---:|---:|---:|---:|
+| Python, partial source prediction | 551.219 | 2.7 ± 2.9 | 2.2 ± 4.9 | 86.58 | 83.59 |
+| Team's saved original vectors | 337.836 | 2.8 ± 2.4 | 3.0 ± 6.4 | 83.57 | 85.51 |
+
+Python assigns 89.49% of the 559,511 reference positives and passes 77.48% of
+all positives. Original-model values are 99.88% and 83.48%. These coverage
+diagnostics are separate from the native percentages. The original model's
+tracking setup/equivalence is not established merely by re-evaluating its vectors.
+
+Length is an explicit report diagnostic from the C++ evaluator's **commented**
+length block: half the sum of the left/right segment lengths in XY. It counts
+each mapped segment once per path, keeps source gaps, never bridges fragments,
+and includes geometry outside the reference extent. Python's larger length
+includes the native reverse continuation west of the supplied Path 3 model.
+Its `undefined_source_head_extraction` stop, partial status and LIM-001/002/003
+findings remain in the report. No trimming, repair or parameter tuning was used.
+
+The vertical mean remains absolute. The source vertical STD uses **signed**
+residuals around that absolute mean with denominator N−1; it is not the standard
+deviation of absolute residuals. Table I's signed vertical mean and historical
+recall use different definitions/protocols. The optional paper row is 338 m,
+horizontal 2.8 ± 2.4 cm, signed vertical −0.3 ± 0.5 cm and recall 99.23%; these
+published values are not current source2018 results or numerical acceptance
+targets. Current discrepancies remain open.
+
+Exports are `table1.md`, `table1.csv`, `report.json`, `selected-path-summary.csv`,
+combined per-model summaries/record maps, copied provenance and the independent
+part reports. Raw errors stay in metres and explicit cm fields retain full
+precision. Markdown displays cm to one decimal, lengths to three decimals and
+percentages to two decimals. Source nonfinite statistics become JSON null plus
+explicit annotations, blank CSV cells and `N/A` in the readable table.
+
+Repeat `--path` for additional reviewed paths when predictions become available;
+repeat `--predictions` for disjoint batches from the same frozen experiment.
+The selected-path summary pools residuals with each path's assignment preserved,
+in path/segment/part/record order. Its errors are in metres. It is an explicitly
+scoped report aggregate, not a native GUI Total row. Eight unrequested paths are
+outside the current Path 3 table; no missing score is replaced by zero. Selected
+pending/unknown paths are rejected before output creation.
+
+CLI exit 0 means the requested reporting scope completed, including preserved
+native nonfinite results or partial tracking artifacts; exit 1 means validation
+or evaluation failed. It does not establish complete spatial coverage or
+published-result reproduction. Full nine-path results still need the other eight
+manual starting poses and their frozen, reviewed runs.
+
+Verification passes **737 tests**, including 22 new reporting checks and a
+combined-part comparison with the actual extracted C++ evaluator. All three
+source/reconstruction/evaluation audits and wheel packaging pass. The final
+Markdown/CSV renderer also passes its targeted reporting suite.
+
 ## What stays local
 
 The root `.gitignore` excludes datasets and extracted data, dependency installation
