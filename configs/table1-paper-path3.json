@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "kind": "historical_table1",
+  "source": {
+    "path": "../Multi-Railway_Track_and_Switch_Region_Recognition_Using_Mobile_Laser_Scanning_Data.pdf",
+    "sha256": "9f9b8e6b4655230bd6e9db0543581d85c5cdcc3e56ccc22284eff7fe59928d47",
+    "description": "Published Table I, Path 3 (parking lot). Rounded paper values; different historical evaluation protocol and source/artifact snapshot."
+  },
+  "rows": [
+    {
+      "path_id": 3,
+      "length_m": 338.0,
+      "mean_horizontal_cm": 2.8,
+      "std_horizontal_cm": 2.4,
+      "signed_mean_vertical_cm": -0.3,
+      "std_vertical_cm": 0.5,
+      "reported_recall_percent": 99.23
+    }
+  ]
+}

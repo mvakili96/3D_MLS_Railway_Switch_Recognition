@@ -931,7 +931,7 @@ def main(argv: list[str] | None = None) -> int:
                               "prepare-benchmark-seed", "benchmark-plan", "benchmark-rails", "benchmark-preview", "benchmark-evaluate"):
         from .prediction.cli import run_cli as run_prediction_cli
         return run_prediction_cli(arguments)
-    if arguments.command in ("evaluation-demo", "evaluation-audit", "evaluate-rails", "evaluate-predictions"):
+    if arguments.command in ("evaluation-demo", "evaluation-audit", "evaluate-rails", "evaluate-predictions", "table1-report"):
         from .evaluation.runner import run_cli as run_evaluation_cli
         return run_evaluation_cli(arguments, parser)
     if arguments.command == "view":

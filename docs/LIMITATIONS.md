@@ -937,6 +937,70 @@ API and workflow are tested; the native desktop Save dialog itself has not been
 exercised in this headless session.
 **All 40 existing limitation IDs remain open.**
 
+### Table I-style Path 3 reporting — 2026-11-24
+
+The reporting stage now re-evaluates all four declared Path 3 parts in one fresh
+source2018 session for each model, retaining the independent case evaluations.
+It preserves raw classification bytes, all original point records and part order;
+the record map rebases original part-local IDs without coordinate deduplication.
+Combined counts and coverage are checked against independent-part totals. Error
+means and STDs are recomputed over the combined stream in native segment order,
+not averaged from case values. The unchanged two-pass source error arithmetic is
+shared with case evaluation, including signed residuals around the absolute
+vertical mean, N−1 variance denominators and native IEEE edge cases.
+
+Multiple selected paths retain separate assignments. The report-level selected
+summary pools their assigned-positive residuals in path/segment/part/record order;
+it never reassigns all annotations against a combined rail pool. This multi-file
+and cross-path orchestration is a declared report policy, not an asserted native
+GUI behavior. Counts remain annotation-part record counts rather than globally
+unique scene counts. Source percentages keep their native names/denominators.
+
+The actual full-reference Path 3 rows are:
+
+| Model | Paired XY length (m) | Horizontal mean / STD (cm) | Absolute vertical mean / source STD (cm) | Precision (source, %) | Recall (source, %) |
+|---|---:|---:|---:|---:|---:|
+| Python, partial prediction | 551.219 | 2.7 / 2.9 | 2.2 / 4.9 | 86.58 | 83.59 |
+| Saved original vectors | 337.836 | 2.8 / 2.4 | 3.0 / 6.4 | 83.57 | 85.51 |
+
+Length follows the source's **commented** diagnostic (half the sum of the two
+rails' XY segment lengths), exposed only as a report diagnostic. It counts each
+segment once per path, keeps gaps and separate fragments, and never clips to the
+reference extent. The Python run's native westward continuation explains its
+larger mapped extent; source failed-step mutations remain preserved. This length
+is not proof of complete/correct Path 3 extraction. The existing forward stop at
+`undefined_source_head_extraction` and LIM-001/002/003 are retained, with the
+prediction marked partial/non-comparable where recorded by extraction.
+
+Assignment/success coverage remains 500,712/433,494 out of 559,511 positives
+(89.4910% / 77.4773%) for Python, versus original 558,862/467,053 (99.8840% /
+83.4752%). Assigned subsets differ. The paper's Path 3 row (338 m, horizontal
+2.8 ± 2.4 cm, signed vertical −0.3 ± 0.5 cm, recall 99.23%) is optional,
+separately displayed historical data with a pinned PDF/manifest. It is never
+substituted into measured values or used to tune the tracker/evaluator.
+Signed/absolute definitions and historical protocol/artifact differences remain
+unresolved; changing the statistic's label alone does not reconcile the values.
+
+`complete_requested_scope` means the explicitly selected paths were scored over
+all expected parts. The current Path 3 report sets whole-experiment completeness
+and full spatial coverage false. Eight other paths remain unrequested/missing
+starts; no unavailable row is silently replaced with zero or original-team
+predictions. Source nonfinite results retain JSON annotations, blank CSV cells
+and N/A display. Source geometry, prediction labels/RNG, inference caches and
+original/reference input files are not mutated by reporting.
+
+The actual tables, combined summaries, stable reference-record map, per-part
+evaluations, frozen provenance and overlay remain at
+`outputs/table1-path3-verified/`. **All 40 existing limitation IDs remain open.**
+The reporting workflow is available; complete nine-path data generation and the
+post-reconstruction review of all limitations still remain.
+Verification passes 737 test methods, including 22 new reporting tests and a
+native combined-part oracle comparison; all three audits and wheel packaging
+pass. Tests cover residual pooling, source IEEE/signed-Z rules, record identity,
+fragment-preserving length, selected scope, hash drift, failure states, historical
+separation, unit conversion and display-only plotting. The final renderer's
+targeted reporting suite also passes.
+
 ## Resolution history
 
 No entries are closed. Record future decisions here with ID, date, evidence,
