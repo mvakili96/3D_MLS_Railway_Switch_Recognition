@@ -149,6 +149,23 @@ class SceneCacheTests(unittest.TestCase):
             self.assertEqual(one.cloud.class_codes[2], 7)
         self.assertEqual(open_scene_cache(cache.path).metadata["files"], cache.metadata["files"])
 
+    def test_private_trials_share_the_cache_with_independent_live_labels(self):
+        cache = build_scene_cache(self.spec, self.root / "cache")
+        with (
+            cache.new_run(self.root / "template") as template,
+            template.private_run() as first,
+            template.private_run() as second,
+        ):
+            first.cloud.select([2]).set_class_code(7)
+            first.cloud.select([2]).set_segment_id(9)
+            first.cloud.release_pages()
+            self.assertEqual((first.cloud.class_codes[2], first.cloud.segment_ids[2]), (7, 9))
+            self.assertEqual((second.cloud.class_codes[2], second.cloud.segment_ids[2]), (0, -1))
+            self.assertEqual((template.cloud.class_codes[2], template.cloud.segment_ids[2]), (0, -1))
+            assert_array_equal(first.grid.members(0).xyz, second.grid.members(0).xyz)
+        assert_array_equal(np.fromfile(template.path / "class_codes.bin", dtype="<i4"), 0)
+        assert_array_equal(np.fromfile(template.path / "segment_ids.bin", dtype="<i4"), -1)
+
     def test_repeated_existing_cache_or_run_paths_never_overwrite(self):
         cache = build_scene_cache(self.spec, self.root/"cache")
         with self.assertRaises(FileExistsError):

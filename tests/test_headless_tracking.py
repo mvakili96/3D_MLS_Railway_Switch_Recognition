@@ -17,8 +17,11 @@ from numpy.testing import assert_array_equal
 
 from railway_mls import GridIndex, MsvcRand, Point3D, TrackLayer, TrackingEngine
 from railway_mls.artifacts import strict_json_value
+from railway_mls.branching import BranchStart, TraceCoverage
+from railway_mls.continuations import RailPair
 from railway_mls.pipeline import _state_signature
-from railway_mls.prediction import build_scene_cache, load_inference_spec
+from railway_mls.prediction import build_scene_cache, load_inference_spec, open_scene_cache
+from railway_mls.prediction.branching import _trace_branch, track_branches
 from railway_mls.prediction.resources import ResourceLimitError
 from railway_mls.prediction.runner import _Journal, run_predictions
 from railway_mls.prediction.switch_probe import probe_switch
@@ -221,6 +224,83 @@ class HeadlessPredictionTests(unittest.TestCase):
             (self.root / "strict" / "generated" / "steps.jsonl").read_bytes(),
         )
         self.assertFalse(list(output.glob(".state-*")))
+
+    def test_automatic_discovery_preserves_source_journal_on_a_straight_track(self):
+        self.predict("strict", max_steps=5)
+        output = self.root / "branches"
+        report = track_branches(self.manifest, self.cache, output, run_id="generated", max_steps=5)
+        self.assertEqual(report["status"], "limits_reached")
+        self.assertEqual(report["source"]["journal_routes"][0]["accepted_steps"], 5)
+        self.assertEqual(report["branches"], [])
+        self.assertFalse(report["reference_files_read"])
+        self.assertEqual(
+            (output / "source" / "steps.jsonl").read_bytes(),
+            (self.root / "strict" / "generated" / "steps.jsonl").read_bytes(),
+        )
+        self.assertFalse(list(output.glob(".states-*")))
+
+    def test_branch_queue_survives_source_and_trial_stops_and_tracks_child_budget(self):
+        begins = (Point3D(1000, 2000, 0.2), Point3D(1000, 2001.5, 0.2))
+        pair = RailPair((1, 1), begins, tuple(p + Point3D(1, 0, 0) for p in begins),
+                        (60, 60), 1.5, 1.0, 0.15)
+        first = BranchStart("source-00", 1, 1, pair, 123)
+        second = BranchStart("source-00", 2, 2, pair, 456)
+        child = BranchStart("branch-002", 4, 6, pair, 789)
+        visited = []
+
+        def source(template, config, run, output, cap, coverage, queue, progress):
+            queue.extend((first, second))
+            return {"status": "undefined_source_head_extraction", "error": None,
+                    "initialization": {"source_return": True}}
+
+        def branch(template, config, start, output, route, cap, coverage):
+            visited.append((route, start, cap))
+            if start == first:
+                raise RuntimeError("controlled trial failure")
+            return {"route": route, "confirmed_at": 3, "error": None,
+                    "status": "rejoined"}, [child] if start == second else []
+
+        with (
+            patch("railway_mls.prediction.branching._trace_source", side_effect=source),
+            patch("railway_mls.prediction.branching._trace_branch", side_effect=branch),
+        ):
+            report = track_branches(self.manifest, self.cache, self.root / "branches",
+                                    run_id="generated", max_steps=10)
+        self.assertEqual(visited, [
+            ("branch-001", first, 9), ("branch-002", second, 8), ("branch-003", child, 4),
+        ])
+        self.assertEqual(report["status"], "partial")
+        self.assertEqual(report["pending_candidates"], 0)
+        self.assertEqual(report["branches"][0]["error"]["message"], "controlled trial failure")
+        self.assertEqual(report["branches"][-1]["status"], "rejoined")
+
+    def test_confirmed_branch_stops_at_a_rejoin_and_exports_only_to_the_join(self):
+        spec = load_inference_spec(self.manifest)
+        cache = open_scene_cache(self.cache, inference=spec)
+        seed, config = self.scene.seed, spec.config
+        angle = np.deg2rad(seed.angle)
+        tangent = Point3D(np.cos(angle), np.sin(angle), 0)
+        normal = Point3D(-tangent.y, tangent.x, 0)
+
+        def rails(station):
+            first = seed.point + tangent * station
+            return first, first + normal * config.track_gauge
+
+        coverage = TraceCoverage(config)
+        coverage.add("known", [rails(station) for station in np.arange(3.5, 8.5, 0.5)])
+        pair = RailPair((1, 1), rails(-0.5), rails(0.5), (60, 60), config.track_gauge, 1.0, 0.15)
+        start = BranchStart("parent", 1, 1, pair, 1)
+        with cache.new_run(self.root / "template") as template:
+            report, discoveries = _trace_branch(
+                template, config, start, self.root, "trial", 8, coverage
+            )
+        self.assertEqual(report["confirmed_at"], 3)
+        self.assertEqual(report["status"], "rejoined")
+        self.assertEqual(report["rejoin"]["route"], "known")
+        self.assertEqual(report["rejoin"]["window"], report["exported_steps"])
+        self.assertEqual(report["accepted_steps"], report["exported_steps"] + 2)
+        self.assertEqual(report["layers"][0]["vertices"]["center"], report["exported_steps"] + 1)
+        self.assertEqual(discoveries, [])
 
     def test_pending_unknown_and_duplicate_selection_cannot_silently_run(self):
         for runs in (["vancouver-path-1"], ["unknown"], ["generated", "generated"]):
