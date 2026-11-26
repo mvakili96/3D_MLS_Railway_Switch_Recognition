@@ -278,6 +278,21 @@ class SequentialTracker:
             diagnostic_counts=tuple(sorted(self.finding_counts.items())),
         )
 
+    def _select_turnout_observation(
+        self, models: tuple[MDLResult, ...], attempt: WindowAttempt, mode: int
+    ) -> ObservationSelection | None:
+        return determine_observation(
+            models[0].lines,
+            models[1].lines,
+            self.current.track1.member_line,
+            self.current.track2.member_line,
+            track_mode=self.track_direction,
+            stack_size=len(self.active_stack.track_segments),
+            line_mode=mode,
+            config=self.config,
+            cloud=self.grid.cloud,
+        )
+
     def _step(self) -> TrackingStep:
         settings, current = self.config, self.current
         # Native vector.size() promotes a negative int threshold to size_t.
@@ -384,17 +399,9 @@ class SequentialTracker:
         for window, model in zip((candidate.track1, candidate.track2), models):
             window.turnout = len(model.lines) > 1
         if turnout:
-            selection = determine_observation(
-                models[0].lines,
-                models[1].lines,
-                first.member_line,
-                second.member_line,
-                track_mode=self.track_direction,
-                stack_size=len(self.active_stack.track_segments),
-                line_mode=mode,
-                config=settings,
-                cloud=self.grid.cloud,
-            )
+            selection = self._select_turnout_observation(models, attempts[-1], mode)
+            if selection is None:
+                return finish("no_continuation_pair")
             if selection.status == "unresolved_gauge_tie":
                 return finish("undefined_source_observation_tie")
             fit_points = selection.observations

@@ -390,6 +390,38 @@ The full regression suite passed **672 tests**, including 17 new headless checks
 Existing LIM-001 and LIM-002 findings remain recorded. The following milestone
 now connects frozen predictions to the reference evaluator.
 
+### Follow both pairs at a selected switch
+
+`probe-switch` replays a ready source run to a selected forward window. It pairs
+the supported MDL lines across the two rail windows using their common measured
+span and the configured gauge. Each plausible pair starts a short continuation
+with its own fitted positions, heights, labels and random stream.
+The source-selected pair keeps its accepted window pose. Alternate pairs start
+from the midpoint of their shared measured span.
+
+```bash
+python -m railway_mls probe-switch \
+  --manifest outputs/path1-initialization/benchmark-with-path1.json \
+  --cache outputs/vancouver-nine-path-cache \
+  --run vancouver-path-1 --split-step 203 --lookahead-steps 30 \
+  --output outputs/path1-switch-probe-run-01
+```
+
+The example uses the western Path 1 seed and the matching Vancouver cache.
+The source replay goes in `prefix/`. Each continuation gets a `branch-NN/`
+directory with its accepted rail and center vectors, segments and step journal.
+`report.json` records the candidate pairs and their stopping conditions. The
+probe uses raw returns for tracking and reads no evaluation files.
+
+For a bidirectional run the reverse pass must finish within the selected step
+limit before the replay reaches the forward pass. The probe returns exit code 0
+when all continuations reach their lookahead limit and 2 when the split is
+unreached, fewer than two pairs qualify or a continuation stops early. Exit
+code 1 denotes a run error and 130 denotes an interruption. The Vancouver run
+accepted 30 windows on each continuation, with the centerlines 3.73 m apart at
+their last shared easting. Automatic discovery of downstream switches and
+full-route tracing remain future work.
+
 ## Matched Python prediction evaluation
 
 `evaluate-predictions` evaluates frozen Python exports and the supplied original

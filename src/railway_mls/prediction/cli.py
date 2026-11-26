@@ -61,6 +61,16 @@ def add_cli(commands):
     predict.add_argument("--data-root")
     predict.add_argument("--max-steps", type=int, help="explicit diagnostic bound per source invocation")
     predict.add_argument("--retain-history", action="store_true", help="retain full diagnostic step objects")
+    probe = commands.add_parser(
+        "probe-switch", help="trace separate rail-pair candidates at a selected tracking window"
+    )
+    probe.add_argument("--manifest", required=True)
+    probe.add_argument("--cache", required=True)
+    probe.add_argument("--run", required=True, help="ready source run ID")
+    probe.add_argument("--split-step", type=int, required=True, help="one-based forward window")
+    probe.add_argument("--lookahead-steps", type=int, required=True)
+    probe.add_argument("--output", required=True, help="new directory for the probe")
+    probe.add_argument("--data-root")
 
 
 def run_cli(args):
@@ -101,6 +111,30 @@ def run_cli(args):
             if report["status"] == "interrupted" or any(r["status"] == "interrupted" for r in report["run_summaries"]):
                 return 130
             return 1 if report["status"] == "failed" else 0 if report["status"] == "evaluated" else 2
+        if args.command == "probe-switch":
+            from .switch_probe import probe_switch
+            try:
+                report = probe_switch(
+                    args.manifest, args.cache, args.output, run_id=args.run,
+                    split_step=args.split_step, lookahead_steps=args.lookahead_steps,
+                    data_root=args.data_root, progress=progress,
+                )
+            except KeyboardInterrupt:
+                return 130
+            if "error" in report:
+                print(json.dumps({"status": report["status"], **report["error"]}), file=sys.stderr)
+                return 1
+            print(json.dumps({
+                "status": report["status"],
+                "output": args.output,
+                "candidate_pairs": len(report["pairs"]),
+                "branches": [
+                    {key: branch[key] for key in
+                     ("pair_indices", "status", "accepted_steps", "length_xy_m")}
+                    for branch in report["branches"]
+                ],
+            }, indent=2, allow_nan=False))
+            return 0 if report["status"] == "lookahead_complete" else 2
         if args.command == "predict-rails":
             from .runner import run_predictions
             result = run_predictions(args.manifest, args.cache, args.output, run_ids=args.run,
