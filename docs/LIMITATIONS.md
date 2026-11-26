@@ -1060,6 +1060,34 @@ This test covers one selected fork and a bounded follow-up. General switch
 discovery, continuation through later splits and merges, and full Path 1
 evaluation remain open under LIM-020 and the related tracking limitations.
 
+### Automatic branch scheduling on Path 1 — 2026-11-26
+
+`track-branches` looks for alternative paired fits during the source pass and
+while following confirmed branches. It gives each trial private labels,
+heights and a random stream. Three consecutive accepted windows outside the
+covered rail pairs confirm a continuation. For a confirmed branch, three
+advancing matches to the same known trace with coverage ahead establish a
+rejoin. The exported geometry ends at the first matched window. A controlled
+raw-cloud test exercises that rejoin and its export.
+
+With the western Path 1 seed and the 235-window bound, the Vancouver run
+matched all 237 journal events through the bounded source pass, including the
+reverse pass. It tried 59 candidates, including 16 discovered while following
+confirmed branches. Three further starts fell at the window bound. The two
+confirmed starts were at forward windows 203 and 222. The window-203 branch
+followed the straight Path 1 rails for 32 windows over 31.95 m. Its 64 accepted
+rail centers were within 2.2 cm in XY of the team's saved geometry in a
+post-run comparison. The second local trace ran 13 windows over 12.81 m and
+its route identity remains unverified. Artifacts are local at
+`outputs/path1-automatic-branching-test/`.
+
+Discovery depends on the source windows exposing supported pairs. The initial
+confirmation horizon and coverage tolerance can miss alternatives that stay
+close to a known trace for longer. Rejoin checks require previously tracked
+coverage in the travel direction. The source pass retains its original
+initialization and stopping conditions. LIM-020 and LIM-021 remain open for
+longer traces, loops, route identification and full Path 1 evaluation.
+
 ## Resolution history
 
 No entries are closed. Record future decisions here with ID, date, evidence,

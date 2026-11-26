@@ -1,6 +1,8 @@
 """Mapped implementations of the existing cloud/selection/grid interfaces."""
 
 import json
+from contextlib import contextmanager
+from copy import copy
 from operator import index
 from pathlib import Path
 
@@ -40,8 +42,9 @@ class MappedPointCloud(PointCloud):
     All cached points were validated while building the immutable snapshot.
     """
 
-    def __init__(self, cache, run_directory, memory):
+    def __init__(self, cache, run_directory, memory, *, private_labels=False):
         self.cache, self.memory = cache, memory
+        self._private_labels = private_labels
         self._closed, self._arrays = False, []
         try:
             for attribute, key in (("_xyz", "xyz"), ("intensity", "intensity"), ("_records", "records")):
@@ -49,7 +52,10 @@ class MappedPointCloud(PointCloud):
                 self._arrays.append((array, False))
                 setattr(self, attribute, array)
             for name in ("class_codes", "segment_ids"):
-                array = np.memmap(Path(run_directory)/(name+".bin"), dtype="<i4", mode="r+", shape=(len(self),))
+                array = np.memmap(
+                    Path(run_directory)/(name+".bin"), dtype="<i4",
+                    mode="c" if private_labels else "r+", shape=(len(self),),
+                )
                 self._arrays.append((array, True))
                 setattr(self, name, array)
         except BaseException:
@@ -115,12 +121,14 @@ class MappedPointCloud(PointCloud):
     def release_pages(self):
         if not self._closed:
             for array, writable in self._arrays:
-                release_pages(array, writable=writable)
+                # Discarding a private label page would silently reset its changes.
+                if not writable or not self._private_labels:
+                    release_pages(array, writable=writable)
 
     def close(self):
         if not self._closed:
             for array, writable in self._arrays:
-                close_mapping(array, writable=writable)
+                close_mapping(array, writable=writable and not self._private_labels)
             self._closed = True
 
 
@@ -224,6 +232,19 @@ class CachedScene:
             self.grid.close()
         if self.cloud is not None:
             self.cloud.close()
+
+    @contextmanager
+    def private_run(self):
+        """Open a copy-on-write label state over this scene's scratch files."""
+        self.cloud.require_open()
+        scene = copy(self)
+        scene.cloud = MappedPointCloud(
+            self.cache, self.path, MemoryBudget(self.cache.memory_bytes), private_labels=True
+        )
+        scene.grid = None
+        with scene:
+            scene.grid = MappedGridIndex(self.cache, scene.cloud)
+            yield scene
 
     def __enter__(self):
         return self

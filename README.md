@@ -419,8 +419,43 @@ when all continuations reach their lookahead limit and 2 when the split is
 unreached, fewer than two pairs qualify or a continuation stops early. Exit
 code 1 denotes a run error and 130 denotes an interruption. The Vancouver run
 accepted 30 windows on each continuation, with the centerlines 3.73 m apart at
-their last shared easting. Automatic discovery of downstream switches and
-full-route tracing remain future work.
+their last shared easting. This command tests one selected fork.
+
+### Discover switch continuations during tracking
+
+`track-branches` starts from a ready manifest seed and discovers gauge-compatible
+alternative rail pairs as the source tracker advances. It queues proposals
+from the source pass and from confirmed branches. Each trial has its own
+positions, heights, labels and random stream. A stop in one trace leaves the
+other proposals available.
+
+```bash
+python -m railway_mls track-branches \
+  --manifest outputs/path1-initialization/benchmark-with-path1.json \
+  --cache outputs/vancouver-nine-path-cache \
+  --run vancouver-path-1 --max-steps 235 \
+  --output outputs/path1-automatic-branching-run-01
+```
+
+A trial must follow previously uncovered paired rails for three consecutive
+windows within its first eight accepted windows to become a branch. The
+coverage check compares both rails, their heights and the direction of travel
+at a shared station. Three advancing matches to a known trace mark a rejoin
+when that trace has coverage ahead. The exported branch ends at the first
+matched window in that sequence.
+
+`source/` holds the source vectors and journal. Each `branch-NNN/` contains
+the trial geometry and journal. In `report.json`, `confirmed_at` identifies
+the accepted branches and the parent route and window identify their starts.
+The report records unresolved trials, rejoins, and any resource or source
+stops. Tracking uses the cached raw points. Path selection and Table I
+evaluation follow a separate review.
+
+`--max-steps` bounds each route, counting the tracking windows before and
+after a fork. `--max-branch-attempts` optionally bounds queue processing.
+Limits and partial runs exit with code 2. `queue_drained` means all queued
+candidates were processed. Full scene coverage requires a review of the
+resulting tracks.
 
 ## Matched Python prediction evaluation
 

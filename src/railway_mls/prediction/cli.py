@@ -71,6 +71,16 @@ def add_cli(commands):
     probe.add_argument("--lookahead-steps", type=int, required=True)
     probe.add_argument("--output", required=True, help="new directory for the probe")
     probe.add_argument("--data-root")
+    branches = commands.add_parser(
+        "track-branches", help="discover supported switch continuations during scene tracking"
+    )
+    branches.add_argument("--manifest", required=True)
+    branches.add_argument("--cache", required=True)
+    branches.add_argument("--run", required=True, help="ready source run ID")
+    branches.add_argument("--output", required=True, help="new directory for the branch run")
+    branches.add_argument("--data-root")
+    branches.add_argument("--max-steps", type=int, help="bound along each route from its initial seed")
+    branches.add_argument("--max-branch-attempts", type=int)
 
 
 def run_cli(args):
@@ -111,6 +121,32 @@ def run_cli(args):
             if report["status"] == "interrupted" or any(r["status"] == "interrupted" for r in report["run_summaries"]):
                 return 130
             return 1 if report["status"] == "failed" else 0 if report["status"] == "evaluated" else 2
+        if args.command == "track-branches":
+            from .branching import track_branches
+            try:
+                report = track_branches(
+                    args.manifest, args.cache, args.output, run_id=args.run,
+                    max_steps=args.max_steps, max_branch_attempts=args.max_branch_attempts,
+                    data_root=args.data_root, progress=progress,
+                )
+            except KeyboardInterrupt:
+                return 130
+            if "error" in report:
+                print(json.dumps({"status": report["status"], **report["error"]}), file=sys.stderr)
+                return 1
+            print(json.dumps({
+                "status": report["status"],
+                "output": args.output,
+                "source_stop": report["source"]["status"],
+                "branch_attempts": len(report["branches"]),
+                "confirmed_branches": [
+                    {key: branch[key] for key in
+                     ("route", "parent", "parent_window", "status", "accepted_steps", "length_xy_m")}
+                    for branch in report["branches"] if branch["confirmed_at"] is not None
+                ],
+                "pending_candidates": report["pending_candidates"],
+            }, indent=2, allow_nan=False))
+            return 0 if report["status"] == "queue_drained" else 2
         if args.command == "probe-switch":
             from .switch_probe import probe_switch
             try:

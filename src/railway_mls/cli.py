@@ -929,7 +929,7 @@ def main(argv: list[str] | None = None) -> int:
     arguments = parser.parse_args(argv)
     if arguments.command in (
         "scene-catalog", "prediction-audit", "build-scene-cache", "scene-cache-audit",
-        "predict-rails", "probe-switch", "prepare-benchmark-seed", "benchmark-plan",
+        "predict-rails", "probe-switch", "track-branches", "prepare-benchmark-seed", "benchmark-plan",
         "benchmark-rails", "benchmark-preview", "benchmark-evaluate",
     ):
         from .prediction.cli import run_cli as run_prediction_cli
