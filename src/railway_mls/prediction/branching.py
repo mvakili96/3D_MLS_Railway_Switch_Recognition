@@ -18,6 +18,7 @@ from ..branching import (
     outgoing_starts,
 )
 from ..continuations import ContinuationTracker
+from ..evaluation.io import file_fingerprint
 from ..geometry import distance_2d
 from ..models import InitialLocation
 from ..orchestration import TrackingEngine
@@ -25,7 +26,15 @@ from ..points import Point3D
 from ..sampling import MsvcRand
 from .cache import open_scene_cache
 from .manifest import load_inference_spec
-from .runner import _initialization, _invocations, _Journal, _point, _write_geometry, _write_report
+from .runner import (
+    _initialization,
+    _invocations,
+    _Journal,
+    _layer_from_rail_centers,
+    _point,
+    _write_geometry,
+    _write_report,
+)
 
 
 def _failure(error):
@@ -73,6 +82,9 @@ def _trace_source(template, config, run, output, cap, coverage, queue, progress)
         except (OSError, ValueError, RuntimeError, MemoryError) as exception:
             status, error = getattr(exception, "status", "failed"), _failure(exception)
         layers = _write_geometry(directory, engine.layers)
+    accepted = directory / "accepted"
+    accepted.mkdir()
+    _write_geometry(accepted, (_layer_from_rail_centers(rails) for rails in positions.values()))
     for route, rails in positions.items():
         coverage.add(route, rails)
     return {
@@ -82,12 +94,16 @@ def _trace_source(template, config, run, output, cap, coverage, queue, progress)
         "invocations": _invocations(workflow),
         "journal_routes": [
             {"route": route, "invocation": sequence, "accepted_steps": len(rails) - 1,
-             "layer": journal.traces[sequence]["layer"]}
+             "layer": journal.traces[sequence]["layer"], "accepted_layer": sequence}
             for sequence, (route, rails) in enumerate(positions.items())
         ],
         "layers": layers,
         "random_state": rng.state,
         "random_draws": rng.draw_count,
+        "artifacts": {
+            name: file_fingerprint(directory / name)
+            for name in ("steps.jsonl", "vectors.csv", "accepted/vectors.csv")
+        },
     }
 
 
@@ -177,6 +193,7 @@ def _trace_branch(template, config, start, output, route, cap, coverage):
         "random_state": rng.state,
         "random_draws": rng.draw_count,
         "layers": layers,
+        "artifacts": {"vectors.csv": file_fingerprint(directory / "vectors.csv")},
     }, discoveries
 
 

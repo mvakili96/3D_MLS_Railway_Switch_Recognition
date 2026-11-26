@@ -16,7 +16,7 @@ import time
 import numpy as np
 
 from ..artifacts import strict_json_value
-from ..models import InitialLocation
+from ..models import InitialLocation, TrackLayer
 from ..orchestration import TrackingEngine
 from ..pipeline import pipeline_invocations
 from ..points import Point3D
@@ -188,6 +188,14 @@ class _Journal:
         if self.progress:
             self.progress(f"{self.run_id}: invocation {trace['sequence']} step {step.number}: {step.status}")
         self.resources()
+
+
+def _layer_from_rail_centers(positions):
+    first, second = map(list, zip(*positions))
+    return TrackLayer(
+        rail1_vector=first, rail2_vector=second,
+        center_vector=[(a + b) / 2 for a, b in zip(first, second)],
+    )
 
 
 def _write_geometry(directory, track_layers):

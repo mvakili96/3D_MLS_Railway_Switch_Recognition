@@ -930,7 +930,7 @@ def main(argv: list[str] | None = None) -> int:
     if arguments.command in (
         "scene-catalog", "prediction-audit", "build-scene-cache", "scene-cache-audit",
         "predict-rails", "probe-switch", "track-branches", "prepare-benchmark-seed", "benchmark-plan",
-        "benchmark-rails", "benchmark-preview", "benchmark-evaluate",
+        "benchmark-rails", "benchmark-preview", "benchmark-evaluate", "export-branch-route",
     ):
         from .prediction.cli import run_cli as run_prediction_cli
         return run_prediction_cli(arguments)

@@ -231,6 +231,11 @@ class HeadlessPredictionTests(unittest.TestCase):
         report = track_branches(self.manifest, self.cache, output, run_id="generated", max_steps=5)
         self.assertEqual(report["status"], "limits_reached")
         self.assertEqual(report["source"]["journal_routes"][0]["accepted_steps"], 5)
+        accepted = output / "source" / "accepted" / "vectors.csv"
+        self.assertTrue(accepted.is_file())
+        self.assertEqual(report["source"]["journal_routes"][0]["accepted_layer"], 0)
+        self.assertEqual(report["source"]["artifacts"]["accepted/vectors.csv"]["bytes"],
+                         accepted.stat().st_size)
         self.assertEqual(report["branches"], [])
         self.assertFalse(report["reference_files_read"])
         self.assertEqual(

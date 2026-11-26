@@ -1088,6 +1088,38 @@ coverage in the travel direction. The source pass retains its original
 initialization and stopping conditions. LIM-020 and LIM-021 remain open for
 longer traces, loops, route identification and full Path 1 evaluation.
 
+### End-to-end Path 1 tracking and evaluation — 2026-11-26
+
+The automatic run matched all 547 events in the frozen strict source journal.
+The source pass stopped at the same undefined head-extraction result after
+544 accepted forward windows. The scheduler then tried the first 24 queued
+candidates. The candidate at forward window 203 tracked the straight Path 1
+alignment for 1,379 accepted windows, using the original western seed and
+the detected fork. The next window and all five length retries had zero points
+in both rail windows. The terminal coordinates reached the saved Path 1 extent.
+The queue retained 246 other candidate starts.
+
+`export-branch-route` froze the approach through window 202 and the straight
+branch as two measured fragments. It preserved the 1.001 m gap between the
+fragments. Both endpoints of the saved Path 1 rails fell within 5 mm in XY of
+the exported rails. The display comparison and route review occurred after
+tracking, before scores were calculated.
+
+The existing source2018 evaluator scored all six Path 1 parts and recomputed
+statistics over 9,021,527 records. The automatic Python route measured
+1,580.205 m, with horizontal error of 1.868 ± 1.260 cm, source recall of
+98.895%, and 99.890% of positives assigned. The saved team vectors measured
+1,580.619 m, with horizontal error of 1.895 ± 1.334 cm, source recall of
+98.778%, and 99.943% of positives assigned. The published row is retained as
+historical context with its own metric definitions.
+
+The artifacts are local at `outputs/path1-full-automatic-run/`,
+`outputs/path1-route-export/`, `outputs/path1-route-review/`, and
+`outputs/table1-path1-automatic/`. This verification covers Path 1 and all
+its annotation parts. The earlier mixed-route run remains its own experiment.
+The remaining path seeds, pending network candidates, and broader LIM-020
+and LIM-021 reviews remain open.
+
 ## Resolution history
 
 No entries are closed. Record future decisions here with ID, date, evidence,
