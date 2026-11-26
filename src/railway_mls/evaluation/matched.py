@@ -78,8 +78,9 @@ def _source(entry, parent):
     directory = (parent/_text(entry["directory"])).resolve()
     _pinned(directory/"manifest.json", entry["manifest_sha256"])
     root, fingerprint = _json(directory/"manifest.json", entry["manifest_sha256"])
-    if root.get("kind") != "headless_prediction_run" or root.get("schema_version") != 1:
-        raise ValueError("prediction source must be a schema 1 headless prediction export")
+    if (root.get("kind") not in ("headless_prediction_run", "automatic_branch_route_export")
+            or root.get("schema_version") != 1):
+        raise ValueError("expected a schema 1 source prediction or automatic route export")
     if root.get("reference_files_read") is not False or root.get("evaluation_performed") is not False:
         raise ValueError("expected prediction exports generated without reference evaluation")
     definition = (parent/_text(entry["inference_manifest"])).resolve()
@@ -109,8 +110,13 @@ def _fragment(entry, sources):
     # root summaries have their annotations at the root, not inside each run.
     if {key: value for key, value in metadata.items() if key != "nonfinite_values"} != recorded:
         raise ValueError(f"{rid}: run manifest differs from pinned root export")
-    if metadata.get("schema_version") != 1 or metadata.get("branch_policy") != "strict":
-        raise ValueError("matched source evaluation requires the strict prediction profile")
+    automatic = source["root"]["kind"] == "automatic_branch_route_export"
+    policy = "automatic" if automatic else "strict"
+    if metadata.get("schema_version") != 1 or metadata.get("branch_policy") != policy:
+        raise ValueError(f"matched source evaluation requires the {policy} prediction profile")
+    if automatic and (metadata.get("reference_comparable") is not False
+                      or not metadata.get("route_fragments") or not metadata.get("automatic_run")):
+        raise ValueError("automatic route export requires explicit route provenance")
     if metadata.get("status") in (None, "initializing", "running"):
         raise ValueError("prediction run must be frozen after completion or a recorded stop/failure")
     inference = source["inference"]

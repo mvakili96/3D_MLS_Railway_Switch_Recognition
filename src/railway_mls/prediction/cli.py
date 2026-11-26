@@ -81,6 +81,15 @@ def add_cli(commands):
     branches.add_argument("--data-root")
     branches.add_argument("--max-steps", type=int, help="bound along each route from its initial seed")
     branches.add_argument("--max-branch-attempts", type=int)
+    route = commands.add_parser(
+        "export-branch-route", help="freeze an automatic branch lineage for explicit route review"
+    )
+    route.add_argument("--manifest", required=True)
+    route.add_argument("--tracking", required=True, help="finished track-branches output directory")
+    route.add_argument("--branch", required=True, help="confirmed branch ID at the chosen route end")
+    route.add_argument("--follow-rejoins", action="store_true",
+                       help="include recorded continuations beyond a detected rejoin")
+    route.add_argument("--output", required=True)
 
 
 def run_cli(args):
@@ -89,6 +98,19 @@ def run_cli(args):
         if output_path and Path(output_path).exists():
             raise FileExistsError(f"output already exists: {args.output}")
         progress = lambda message: print(message, file=sys.stderr, flush=True)
+        if args.command == "export-branch-route":
+            from .route import export_branch_route
+            report = export_branch_route(
+                args.manifest, args.tracking, args.output, branch=args.branch,
+                follow_rejoins=args.follow_rejoins,
+            )
+            print(json.dumps({
+                "status": "requires_explicit_review",
+                "output": args.output,
+                "branch": report["selected_branch"],
+                "fragments": report["route_fragments"],
+            }, indent=2, allow_nan=False))
+            return 0
         if args.command == "benchmark-preview":
             from .review import preview_benchmark
             report = preview_benchmark(args.manifest, args.predictions, args.output)

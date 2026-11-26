@@ -655,7 +655,7 @@ including 23 new benchmark/seed/review checks, all three source/reconstruction
 audits, and the wheel build. The scientific plotting and seed APIs are tested;
 the new native GUI save dialog has not been exercised on a desktop here.
 
-## Table I-style Path 3 results
+## Table I-style reporting
 
 `table1-report` generates a readable Markdown table, full-precision CSV/JSON,
 source-based path statistics, coverage diagnostics and an optional inspection
@@ -678,6 +678,48 @@ plotting dependencies. `--historical` is optional: its pinned paper values are
 displayed separately and never fill or change measured results. `--overlay`
 samples display points only; all reference records enter numerical evaluation.
 The command never reruns tracking or opens the large inference cache/label state.
+
+### Report a route from automatic branch tracking
+
+`export-branch-route` takes a confirmed branch and its observed ancestry from
+a finished `track-branches` run. Each approach ends at the last accepted window
+before its fork. Separate layers preserve the measured fragments and their
+gaps. Use `--follow-rejoins` to include whole recorded segments beyond a
+reported rejoin. New tracking runs save the accepted windows for each source
+traversal. Earlier runs can be read when their accepted journal centers match
+a unique sequence in the exported vectors.
+
+```bash
+python -m railway_mls export-branch-route \
+  --manifest outputs/path1-initialization/benchmark-with-path1.json \
+  --tracking outputs/path1-full-automatic-run \
+  --branch branch-024 \
+  --output outputs/path1-route-export
+python -m railway_mls benchmark-preview \
+  --manifest outputs/path1-initialization/benchmark-with-path1.json \
+  --predictions outputs/path1-route-export \
+  --output outputs/path1-route-review
+```
+
+After reviewing the geometry, copy `mapping-template.json` to a new file.
+Use the ordered entries in `route-candidates.json` as the intended path's
+fragments. Set that path's status to `reviewed` and record the route judgment
+in `review_note`. The exporter keeps experiment, tracking report and geometry
+fingerprints. Scoring uses the existing source2018 evaluator and reports the
+automatic prediction's tracking stop.
+
+```bash
+python -m railway_mls table1-report \
+  --experiment outputs/path1-initialization/benchmark-with-path1.json \
+  --predictions outputs/path1-route-export \
+  --mapping outputs/path1-route-reviewed.json \
+  --path 1 --output outputs/table1-path1-automatic
+```
+
+For Path 1 the evaluator scores all six annotation parts. Its report gives the
+measured assignment coverage for the route available at the tracking stop.
+
+### Combined Path 3 statistics
 
 All four parts `P3_01`–`P3_04` are evaluated independently under `parts/`, then
 streamed in manifest order into a fresh **combined Path 3 evaluation**. Global
