@@ -21,6 +21,7 @@ from railway_mls.pipeline import _state_signature
 from railway_mls.prediction import build_scene_cache, load_inference_spec
 from railway_mls.prediction.resources import ResourceLimitError
 from railway_mls.prediction.runner import _Journal, run_predictions
+from railway_mls.prediction.switch_probe import probe_switch
 from railway_mls.synthetic import bidirectional_scene, branch_scene, tracking_scene
 from railway_mls.tracking import SequentialTracker
 
@@ -204,6 +205,22 @@ class HeadlessPredictionTests(unittest.TestCase):
         _, run = self.predict("one", max_steps=1)
         self.assertEqual(run["invocations"][0]["accepted_steps"], 1)
         self.assertEqual(run["invocations"][0]["toes"], [])
+
+    def test_switch_probe_without_a_split_preserves_the_source_prefix(self):
+        self.predict("strict", max_steps=3)
+        output = self.root / "probe"
+        report = probe_switch(
+            self.manifest, self.cache, output, run_id="generated", split_step=3, lookahead_steps=4
+        )
+        self.assertEqual(report["status"], "no_split")
+        self.assertEqual(report["prefix"]["split"]["step"], 3)
+        self.assertEqual(report["branches"], [])
+        self.assertFalse(report["reference_files_read"])
+        self.assertEqual(
+            (output / "prefix" / "steps.jsonl").read_bytes(),
+            (self.root / "strict" / "generated" / "steps.jsonl").read_bytes(),
+        )
+        self.assertFalse(list(output.glob(".state-*")))
 
     def test_pending_unknown_and_duplicate_selection_cannot_silently_run(self):
         for runs in (["vancouver-path-1"], ["unknown"], ["generated", "generated"]):

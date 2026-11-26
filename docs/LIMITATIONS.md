@@ -1001,6 +1001,65 @@ fragment-preserving length, selected scope, hash drift, failure states, historic
 separation, unit conversion and display-only plotting. The final renderer's
 targeted reporting suite also passes.
 
+### Path 1 branch discovery audit — 2026-11-26
+
+The split exposes a route-selection limit under LIM-020 as well as the
+previously documented branch-recovery limits. In a replay that matched all 234
+checked event positions, statuses and random states, forward window 203 offered
+two pairs with plausible gauge. The pair rejected by the original observation
+rule had a 1.515 m gauge and lay within 1.45 cm of both saved Path 1 rails at the
+comparison station. The selected pair had a 1.489 m gauge and its larger XY
+offset was 16.44 cm. The order-based rule selected that pair while the turnout
+stack was active. In the next window, the closest gauge-consistent pair in the
+retained candidates had a larger rail offset of about 28 cm. This is a local
+geometry check on frozen outputs. It establishes that the straight Path 1
+candidate was available at the decision point. It does not establish a full
+counterfactual trace through the split.
+
+Separately, the prior recovery test saved fitted references and processed
+completed switch stacks after `undefined_source_head_extraction`. An exact
+template match at this split remained ambiguous under the active unary matcher.
+The two recovered switch points were types 14 and 7 and were excluded by the
+source scheduler. Forcing the type-7 candidate followed Path 7 for 49.8 m.
+The tile 16 demo remains evidence that an eligible switch point can launch
+a branch. Automatic discovery of every supported outgoing route remains open.
+
+The proposed variant would retain multiple paired-rail continuations through
+local lookahead, then track each confirmed continuation with its own state.
+Switch templates can label junctions even when geometry resolves branch starts.
+A branch stop should leave other viable starts in the queue. Branch identity
+must account for shared switch geometry, rejoining tracks and loops. Use the
+strict source run as the comparison baseline. The Path 1 acceptance case must
+trace the straight and diverging routes independently from the same west start
+using raw points, then score only the reviewed Path 1 route across all six parts.
+
+Replay, candidate geometry and the comparison plot are local at
+`outputs/path1-switch-audit/`. All 76 focused recognition, scheduling and viewer
+branch tests passed. LIM-001, LIM-003, LIM-004, LIM-020 and LIM-021 remain open.
+
+### Bounded Path 1 switch continuations — 2026-11-26
+
+The `probe-switch` command replayed the western Path 1 initialization and
+matched all 205 source journal events through forward window 203. It retained
+two gauge-compatible pairs with measured gauges of 1.515 m and 1.489 m.
+A trial that restarted both pairs with the fixed-angle MDL headings returned
+the diverging pair to the straight track by the third window. The verified
+probe carries the accepted source pose into that continuation and starts the
+other from its measured rail pair. Each run uses independent labels, heights
+and random state.
+
+The straight and diverging continuations each accepted 30 windows over 29.95 m
+and 29.44 m, respectively. Their centerlines were 3.73 m apart at their last
+shared easting. A separate geometry check placed all 60 accepted straight
+rail centers within 2.2 cm in XY of the team's saved Path 1 rails. The probe
+used raw returns, the original western seed and a specified fork window.
+Artifacts and the post-run comparison are local at
+`outputs/path1-switch-probe-verified/`.
+
+This test covers one selected fork and a bounded follow-up. General switch
+discovery, continuation through later splits and merges, and full Path 1
+evaluation remain open under LIM-020 and the related tracking limitations.
+
 ## Resolution history
 
 No entries are closed. Record future decisions here with ID, date, evidence,

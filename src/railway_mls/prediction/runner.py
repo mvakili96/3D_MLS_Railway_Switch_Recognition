@@ -190,13 +190,13 @@ class _Journal:
         self.resources()
 
 
-def _write_geometry(directory, engine):
+def _write_geometry(directory, track_layers):
     layers = []
     with (directory/"vectors.csv").open("x", newline="") as vectors, (directory/"segments.csv").open("x", newline="") as segments:
         vertices, lines = csv.writer(vectors), csv.writer(segments)
         vertices.writerow(("layer", "vector", "vertex", "x", "y", "z", "point_type"))
         lines.writerow(("layer", "vector", "segment", "begin_x", "begin_y", "begin_z", "end_x", "end_y", "end_z"))
-        for i, layer in enumerate(engine.layers if engine is not None else ()):
+        for i, layer in enumerate(track_layers):
             sizes = {}
             for name, vector in (("rail1", layer.rail1_vector), ("rail2", layer.rail2_vector), ("center", layer.center_vector)):
                 sizes[name] = len(vector)
@@ -248,7 +248,7 @@ def _one_run(cache, spec, run, directory, root, *, retain_history, cap, progress
                 except KeyboardInterrupt:
                     status, failure = "interrupted", {"error": "interrupted by user"}
                 invocations = _invocations(workflow)
-                layers = _write_geometry(directory, engine)
+                layers = _write_geometry(directory, engine.layers if engine is not None else ())
                 resources = {"observed_peak_rss_bytes": scene.cloud.memory.observed_peak,
                              "rss_at_export_bytes": resident_bytes()}
     except (ResourceLimitError, MemoryError, OSError, ValueError, RuntimeError) as error:
@@ -256,12 +256,12 @@ def _one_run(cache, spec, run, directory, root, *, retain_history, cap, progress
         failure = {"type": type(error).__name__, "error": str(error)}
         resources = {"rss_at_failure_bytes": resident_bytes()}
         if not (directory/"vectors.csv").exists():
-            layers = _write_geometry(directory, engine)
+            layers = _write_geometry(directory, engine.layers if engine is not None else ())
     except KeyboardInterrupt:
         status, failure = "interrupted", {"error": "interrupted by user"}
         resources = {"rss_at_failure_bytes": resident_bytes()}
         if not (directory/"vectors.csv").exists():
-            layers = _write_geometry(directory, engine)
+            layers = _write_geometry(directory, engine.layers if engine is not None else ())
     initialization = _initialization(initialized)
     limitations = _limitations(invocations+(journal.traces if journal else []), initialization, status)
     comparable = workflow is not None and workflow.reference_comparable and not limitations
